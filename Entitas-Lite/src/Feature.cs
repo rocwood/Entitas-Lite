@@ -16,18 +16,20 @@ namespace Entitas
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class FeatureAttribute : Attribute
 	{
+		public const string DefaultName = "";
+
 		public readonly string featureName;
 		public readonly int priority;
 
-		public FeatureAttribute(string name="", int prior = 0) { featureName = name; priority = prior; }
+		public FeatureAttribute(string name = DefaultName, int prior = 0) { featureName = name; priority = prior; }
 	}
-	
+
 
 #if (!ENTITAS_DISABLE_VISUAL_DEBUGGING && UNITY_EDITOR)
 
 	public class Feature : VisualDebugging.Unity.DebugSystems
 	{
-		public Feature(string name) : base(name)
+		public Feature(string name = FeatureAttribute.DefaultName) : base(name)
 		{
 			FeatureHelper.CollectSystems(name, this);
 		}
@@ -37,7 +39,7 @@ namespace Entitas
 
 	public class Feature : Systems 
 	{
-		public Feature(string name) 
+		public Feature(string name = FeatureAttribute.DefaultName) 
 		{
 			FeatureHelper.CollectSystems(name, this);
 		}
