@@ -60,7 +60,7 @@ public class ViewSystem : IExecuteSystem
 
 public class GameController
 {
-	private Feature _feature;
+	private Systems _feature;
 
 	public void Start()
 	{

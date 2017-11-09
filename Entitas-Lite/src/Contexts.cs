@@ -44,6 +44,16 @@ namespace Entitas
 		public IContext[] allContexts { get { return _contextList; } }
 		public Context defaultContext { get { return _defaultContext; } }
 
+		public Context this[string key]
+		{
+			get
+			{
+				Context val = null;
+				_contextLookup.TryGetValue(key, out val);
+				return val;
+			}
+		}
+
 
 		public Contexts()
 		{

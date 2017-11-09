@@ -11,7 +11,7 @@ namespace Entitas
 {
 
 	/// Provide generic templates for easy Matcher creation
-	public class Matcher
+	public static class Matcher
 	{
 		public static IAllOfMatcher<Entity> AllOf<T1>() where T1:IComponent
 			{ return AllOf(IDX<T1>()); }
