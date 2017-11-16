@@ -5,34 +5,51 @@
  */
 
 using System;
-
+using System.Collections.Generic;
 
 namespace Entitas
 {
 	// A context which auto-register all Components to ComponentInfoManager
 	public class Context : Context<Entity>
 	{
+		private Dictionary<int, Entity> _creationIndexer;
+
 		public Context(string name, Type[] componentTypes, int startCreationIndex = 1)
 			: base(componentTypes.Length, startCreationIndex, MakeContextInfo(name, componentTypes), GetAERC)
 		{
 			RegisterComponents(this, componentTypes);
+			InitCreationIndexer();
 		}
+
 
 		/// returns entity matching the specified creationIndex
 		public Entity GetEntityByCreationIndex(int creationIndex)
 		{
-			// TODO: need optimize
-			var entities = GetEntities();
+			if (_creationIndexer == null)
+				return null;
 
-			int count = entities.Length;
-			for (int i = 0; i < count; i++)
-			{
-				var entity = entities[i];
-				if (entity.creationIndex == creationIndex)
-					return entity;
-			}
+			Entity entity = null;
+			_creationIndexer.TryGetValue(creationIndex, out entity);
 
-			return null;
+			return entity;
+		}
+
+		private void InitCreationIndexer()
+		{
+			_creationIndexer = new Dictionary<int, Entity>();
+
+			OnEntityCreated += AddCreationIndex;
+			OnEntityDestroyed += RemoveCreationIndex;
+		}
+
+		private void AddCreationIndex(IContext context, IEntity entity)
+		{
+			_creationIndexer.Add(entity.creationIndex, (Entity)entity);
+		}
+
+		private void RemoveCreationIndex(IContext context, IEntity entity)
+		{
+			_creationIndexer.Remove(entity.creationIndex);
 		}
 
 		private static ContextInfo MakeContextInfo(string name, Type[] componentTypes)
