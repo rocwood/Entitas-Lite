@@ -28,6 +28,7 @@ public class PositionComponent : IComponent {
   public int y;
 }
 
+// default with [DefaultContext]
 public class VelocityComponent : IComponent {
   public int x;
   public int y;
@@ -42,10 +43,10 @@ public class MovementSystem : IExecuteSystem {
     var context = Contexts.sharedInstance.defaultContext; // NewAPI
     
     var entities = context.GetEntities(
-        Matcher.AllOf<PositionComponent, VelocityComponent>()); // NewAPI
+        MatchDefault.AllOf<PositionComponent, VelocityComponent>()); // NewAPI
     foreach (var e in entities) {
-      var pos = e.GetComponent<PositionComponent>(); // NewAPI
-      var vel = e.GetComponent<VelocityComponent>();
+      var pos = e.Get<PositionComponent>(); // NewAPI
+      var vel = e.Get<VelocityComponent>();
       pos.x += vel.x;
       pos.y += vel.y;
     }
@@ -83,7 +84,8 @@ public class GameController {
 ### Improvement & NewAPI beyond Entitas
 
 * Entity, Context, Contexts, Matcher, Feature are now just one class.<br/>
-No more generated GameEntity, GameContext, GameMatcher, InputEntity ... 
+No more generated GameEntity, GameContext, GameMatcher, InputEntity ...<br/>
+Use new attributes like ContextScope, FeatureScope for scorping.
 
 
 * Entity: Generic API for Add/Replace/Get/RemoveComponents. Forget component-index!
@@ -91,37 +93,33 @@ No more generated GameEntity, GameContext, GameMatcher, InputEntity ...
 e.AddComponent<PositionComponent>();
 e.RemoveComponent<PositionComponent>();
 var vel = e.GetComponent<VelocityComponent>();
-```  
+var pos = e.Get<PositionComponent>();  // shorter API
+```
 
 
 * Context: Auto register all components. Add API for getting entity with creationIndex.
 ```
-Entity e = context.GetEntityByCreationIndex(100);
+Entity e = context.GetEntity(100);	
 ```
 
 
 * Contexts: Auto register all context. Add name-Context lookup and a defaultContext for notitled Components.
 ```
 Context c = Contexts.sharedInstance.defaultContext;
-Context game = Contexts.sharedInstance["Game"];
+Context game = Contexts.sharedInstance.GetContext("Game");
+Context input = Contexts.sharedInstance.GetContext<Input>(); // where Input : ContextScope
 ```
 
 
 * Matcher: Generic templates for easy Matcher creation
 ```
-var matcher = Matcher.AllOf<PositionComponent, VelocityComponent>();
-```  
+var matcher = Match<Game>.AllOf<PositionComponent, VelocityComponent>();
+var matcher2 = MatchDefault.AllOf<PositionComponent, VelocityComponent>();  // shorter for Match<DefaultContext>
+```
 
 
 * Feature: Auto add matched Systems, no manual Systems.Add(ISystem) required
 
-
-* ComponentInfo, ComponentInfoManager: new classes for automatical handle for Component->Index mapping.
-```
-int pos_index = ComponentInfo<PositionComponent>.index; // cached and fast
-Context pos_context = ComponentInfo<PositionComponent>.context;
-var vel_info = ComponentInfoManager.GetComponentInfo<VelocityComponent>();
-```
 
 
 ---
