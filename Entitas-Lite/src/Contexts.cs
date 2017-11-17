@@ -11,17 +11,6 @@ using System.Linq;
 
 namespace Entitas
 {
-
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
-	public class ContextAttribute : Attribute
-	{
-		public const string DefaultName = "";
-		public readonly string contextName;
-
-		public ContextAttribute(string name = DefaultName) { contextName = name; }
-	}
-
-
 	/// A singleton Contexts, with name-Context lookup, and a defaultContext
 	public class Contexts : IContexts
 	{
@@ -40,25 +29,17 @@ namespace Entitas
 		private Dictionary<string, Context> _contextLookup;
 		private Context[] _contextList;
 		public Context _defaultContext;
-
+		
 		public IContext[] allContexts { get { return _contextList; } }
 		public Context defaultContext { get { return _defaultContext; } }
 
-		public Context this[string key]
-		{
-			get
-			{
-				Context val = null;
-				_contextLookup.TryGetValue(key, out val);
-				return val;
-			}
-		}
+		public Context GetContext<S>() where S:ContextScope { return GetContext(ContextScopeHelper.GetName<S>()); }
+		public Context GetContext(string key) { return _contextLookup[key]; }
 
 
 		public Contexts()
 		{
-			InitContexts();
-			CreateObservers();
+			InitAllContexts();
 		}
 
 		public void Reset()
@@ -71,7 +52,7 @@ namespace Entitas
 		}
 
 		/// Build contexts' list and lookup according to collected Component-Types
-		private void InitContexts()
+		private void InitAllContexts()
 		{
 			var comps = CollectAllComponents();
 
@@ -89,57 +70,55 @@ namespace Entitas
 				contextList.Add(c);
 			}
 
-			_defaultContext = _contextLookup[ContextAttribute.DefaultName];
+			_defaultContext = _contextLookup[DefaultContext.Name];
 			_contextList = contextList.ToArray();
 		}
 
 		/// Collect all Compoent-Types in current domain
-		private Dictionary<string, List<Type>> CollectAllComponents()
+		private static Dictionary<string, List<Type>> CollectAllComponents()
 		{
 			var compType = typeof(IComponent);
 			var types = AppDomain.CurrentDomain.GetAssemblies()
 								.SelectMany(s => s.GetTypes())
-								.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && compType.IsAssignableFrom(p));
+								.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && 
+											compType.IsAssignableFrom(p));
 
 			Dictionary<string, List<Type>> comps = new Dictionary<string, List<Type>>();
-			comps[ContextAttribute.DefaultName] = new List<Type>();
+			comps[DefaultContext.Name] = new List<Type>();
 
-			var attribType = typeof(ContextAttribute);
+			var scopeType = typeof(ContextScope);
 
-			foreach (var p in types)
+			foreach (var t in types)
 			{
-				var attribs = p.GetCustomAttributes(attribType, false);
+				var scopes = t.GetCustomAttributes(scopeType, false);
 
-				string name = (attribs == null || attribs.Length <= 0) 
-					? ContextAttribute.DefaultName
-					: ((ContextAttribute)attribs[0]).contextName;
-
-				List<Type> list;
-				if (!comps.TryGetValue(name, out list))
+				if (scopes == null || scopes.Length <= 0)
 				{
-					list = new List<Type>();
-					comps[name] = list;
+					CollectComponent(comps, DefaultContext.Name, t);
 				}
-
-				list.Add(p);
+				else
+				{
+					foreach (var scope in scopes)
+					{
+						string name = ContextScopeHelper.GetName(scope.GetType());
+						CollectComponent(comps, name, t);
+					}
+				}
 			}
 
 			return comps;
 		}
 
-		private void CreateObservers()
+		private static void CollectComponent(Dictionary<string, List<Type>> comps, string name, Type t)
 		{
-#if (!ENTITAS_DISABLE_VISUAL_DEBUGGING && UNITY_EDITOR)
-			if (UnityEngine.Application.isPlaying)
+			List<Type> list;
+			if (!comps.TryGetValue(name, out list))
 			{
-				int count = _contextList.Length;
-				for (int i = 0; i < count; i++)
-				{
-					var observer = new VisualDebugging.Unity.ContextObserver(_contextList[i]);
-					UnityEngine.Object.DontDestroyOnLoad(observer.gameObject);
-				}
+				list = new List<Type>();
+				comps[name] = list;
 			}
-#endif
+
+			list.Add(t);
 		}
 	}
 }

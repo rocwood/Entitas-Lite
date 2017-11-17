@@ -7,72 +7,33 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace Entitas
 {
-	// A context which auto-register all Components to ComponentInfoManager
+	/// A context which auto-register all Components to ComponentInfoManager
 	public class Context : Context<Entity>
 	{
-		private Dictionary<int, Entity> _creationIndexer;
-
 		public Context(string name, Type[] componentTypes, int startCreationIndex = 1)
-			: base(componentTypes.Length, startCreationIndex, MakeContextInfo(name, componentTypes), GetAERC)
+			: base(componentTypes.Length, startCreationIndex, ContextInfoHelper.Make(name, componentTypes), GetAERC)
 		{
-			RegisterComponents(this, componentTypes);
-			InitCreationIndexer();
+			// add listener for updating lookup
+			OnEntityCreated += (c, ent) => _entityLookup.Add(ent.creationIndex, (Entity)ent);
+			OnEntityDestroyed += (c, ent) => _entityLookup.Remove(ent.creationIndex);
 		}
 
-
 		/// returns entity matching the specified creationIndex
-		public Entity GetEntityByCreationIndex(int creationIndex)
+		public Entity GetEntity(int creationIndex)
 		{
-			if (_creationIndexer == null)
+			if (_entityLookup == null)
 				return null;
 
 			Entity entity = null;
-			_creationIndexer.TryGetValue(creationIndex, out entity);
+			_entityLookup.TryGetValue(creationIndex, out entity);
 
 			return entity;
 		}
 
-		private void InitCreationIndexer()
-		{
-			_creationIndexer = new Dictionary<int, Entity>();
-
-			OnEntityCreated += AddCreationIndex;
-			OnEntityDestroyed += RemoveCreationIndex;
-		}
-
-		private void AddCreationIndex(IContext context, IEntity entity)
-		{
-			_creationIndexer.Add(entity.creationIndex, (Entity)entity);
-		}
-
-		private void RemoveCreationIndex(IContext context, IEntity entity)
-		{
-			_creationIndexer.Remove(entity.creationIndex);
-		}
-
-		private static ContextInfo MakeContextInfo(string name, Type[] componentTypes)
-		{
-			int count = componentTypes.Length;
-			string[] componentNames = new string[count];
-
-			for (int i = 0; i < count; i++)
-			{
-				componentNames[i] = componentTypes[i].Name;
-			}
-
-			return new ContextInfo(name, componentNames, componentTypes);
-		}
-
-		private static void RegisterComponents(Context c, Type[] componentTypes)
-		{
-			int count = componentTypes.Length;
-			for (int i = 0; i < count; i++)
-			{
-				ComponentInfoManager.RegisterComponent(componentTypes[i], c, i);
-			}
-		}
+		private Dictionary<int, Entity> _entityLookup = new Dictionary<int, Entity>();
 
 		private static IAERC GetAERC(IEntity entity)
 		{

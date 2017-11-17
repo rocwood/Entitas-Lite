@@ -7,12 +7,12 @@
 
 namespace Entitas
 {
-	/// API Extension for Entity, using ComponentInfo<T> to Component->Index mapping
+	/// Extension for Entity, using ComponentIndex<T> to Component->Index mapping
 	public static class EntityExtension
 	{
 		public static T AddComponent<T>(this Entity entity) where T : IComponent, new()
 		{
-			int index = ComponentInfo<T>.index;
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
 
 			T component = entity.CreateComponent<T>(index);
 			entity.AddComponent(index, component);
@@ -22,7 +22,7 @@ namespace Entitas
 
 		public static T ReplaceComponent<T>(this Entity entity) where T : IComponent, new()
 		{
-			int index = ComponentInfo<T>.index;
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
 
 			T component = entity.CreateComponent<T>(index);
 			entity.ReplaceComponent(index, component);
@@ -32,17 +32,27 @@ namespace Entitas
 
 		public static void RemoveComponent<T>(this Entity entity) where T: IComponent
 		{
-			entity.RemoveComponent(ComponentInfo<T>.index);
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			entity.RemoveComponent(index);
 		}
 
 		public static bool HasComponent<T>(this Entity entity) where T : IComponent
 		{
-			return entity.HasComponent(ComponentInfo<T>.index);
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			return entity.HasComponent(index);
 		}
 
 		public static T GetComponent<T>(this Entity entity) where T : IComponent
 		{
-			return (T)entity.GetComponent(ComponentInfo<T>.index);
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			return (T)entity.GetComponent(index);
+		}
+
+		/// shorter version of GetComponent<T>
+		public static T Get<T>(this Entity entity) where T : IComponent
+		{
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			return (T)entity.GetComponent(index);
 		}
 	}
 }
