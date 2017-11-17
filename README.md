@@ -5,9 +5,9 @@ Entitas-Lite focusses on easy development **WITHOUT** CodeGenerator of original 
 
 CodeGenerator is less efficiency for large projects and teams. <br>Why not keep it simple and easy?
 
----
 
-### Getting Start
+
+## Getting Start
 Download and extract "Entitas-Lite" and "Entitas" folder into your Unity Project/Assets/.<br>
 Just write your own Components and Systems, then a GameController class for game entry.<br/>
 **No** CodeGenerator required! Have fun!
@@ -15,9 +15,9 @@ Just write your own Components and Systems, then a GameController class for game
 Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite  <br>
 Get Entitas : https://github.com/sschmid/Entitas-CSharp
 
----
 
-### Example 1
+
+## Example 1
 
 ```csharp
 using System;
@@ -79,9 +79,9 @@ public class GameController {
 }
 ```
 
----
 
-### Improvement & NewAPI beyond Entitas
+
+## Improvement & NewAPI beyond Entitas
 
 * Entity, Context, Contexts, Matcher, Feature are now just one class.<br/>
 No more generated GameEntity, GameContext, GameMatcher, InputEntity ...<br/>
@@ -122,9 +122,8 @@ var matcher2 = MatchDefault.AllOf<PositionComponent, VelocityComponent>();  // s
 
 
 
----
 
-### TODO
+## TODO
 
 * Performance tweak
 * Clean document
