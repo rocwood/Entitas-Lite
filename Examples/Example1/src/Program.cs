@@ -29,7 +29,7 @@ public class MovementSystem : IExecuteSystem
 	{
 		var context = Contexts.sharedInstance.defaultContext;
 
-		var entities = context.GetEntities(Matcher.AllOf<PositionComponent, VelocityComponent>());
+		var entities = context.GetEntities(MatchDefault.AllOf<PositionComponent, VelocityComponent>());
 		foreach (var e in entities)
 		{
 			var pos = e.GetComponent<PositionComponent>();
@@ -48,7 +48,7 @@ public class ViewSystem : IExecuteSystem
 	{
 		var context = Contexts.sharedInstance.defaultContext;
 
-		var entities = context.GetEntities(Matcher.AllOf<PositionComponent>());
+		var entities = context.GetEntities(MatchDefault.AllOf<PositionComponent>());
 		foreach (var e in entities)
 		{
 			var pos = e.GetComponent<PositionComponent>();

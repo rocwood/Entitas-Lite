@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9CDA172D-E860-4821-BB3D-9A3D66BCEA40}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{DA499CA3-EB8F-4F8A-8E33-D431ED813CB4}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Example1</RootNamespace>
-    <AssemblyName>Example1</AssemblyName>
+    <RootNamespace>Entitas_Lite</RootNamespace>
+    <AssemblyName>Entitas-Lite</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,20 +30,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Entitas, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\depends\Entitas.dll</HintPath>
+    <Reference Include="Entitas">
+      <HintPath>..\depends\Entitas.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Entitas-Lite\Entitas-Lite.csproj">
-      <Project>{da499ca3-eb8f-4f8a-8e33-d431ed813cb4}</Project>
-      <Name>Entitas-Lite</Name>
-    </ProjectReference>
+    <Compile Include="src\ComponentIndex.cs" />
+    <Compile Include="src\Context.cs" />
+    <Compile Include="src\ContextInfoHelper.cs" />
+    <Compile Include="src\Contexts.cs" />
+    <Compile Include="src\ContextScope.cs" />
+    <Compile Include="src\Entity.cs" />
+    <Compile Include="src\Feature.cs" />
+    <Compile Include="src\FeatureHelper.cs" />
+    <Compile Include="src\FeatureScope.cs" />
+    <Compile Include="src\Matcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
