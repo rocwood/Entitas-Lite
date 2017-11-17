@@ -4,33 +4,31 @@
  *	https://github.com/rocwood/Entitas-Lite
  */
 
+using UnityEngine;
+
 
 namespace Entitas
 {
-	public class ContextObserverHelper
+	public static class ContextObserverHelper
 	{
-		public static void CreateAll(Contexts contexts)
+		public static void ObserveAll(Contexts contexts)
 		{
-#if (!ENTITAS_DISABLE_VISUAL_DEBUGGING && UNITY_EDITOR)
-			if (!UnityEngine.Application.isPlaying)
+			if (!Application.isPlaying || !Application.isEditor)
 				return;
 
 			foreach (var c in contexts.allContexts)
 			{
-				Create(c);
+				Observe(c);
 			}
-#endif
 		}
 
-		public static void Create(IContext c)
+		public static void Observe(IContext c)
 		{
-#if (!ENTITAS_DISABLE_VISUAL_DEBUGGING && UNITY_EDITOR)
-			if (!UnityEngine.Application.isPlaying)
+			if (!Application.isPlaying || !Application.isEditor)
 				return;
 
 			var observer = new Entitas.VisualDebugging.Unity.ContextObserver(c);
-			UnityEngine.Object.DontDestroyOnLoad(observer.gameObject);
-#endif
+			Object.DontDestroyOnLoad(observer.gameObject);
 		}
 	}
 }

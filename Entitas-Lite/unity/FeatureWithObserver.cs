@@ -4,29 +4,33 @@
  *	https://github.com/rocwood/Entitas-Lite
  */
 
+using UnityEngine;
+
 
 namespace Entitas
 {
-#if (!ENTITAS_DISABLE_VISUAL_DEBUGGING && UNITY_EDITOR)
-	public class FeatureWithObserver : Entitas.VisualDebugging.Unity.DebugSystems
+	internal class FeatureWithObserver : Entitas.VisualDebugging.Unity.DebugSystems
 	{
-		public FeatureWithObserver() : base(DefaultFeature.Name)
-		{
-			Init(DefaultFeature.Name);
-		}
-
 		public FeatureWithObserver(string name) : base(name)
 		{
-			Init(name);
-		}
-
-		private void Init(string name)
-		{
 			FeatureHelper.CollectSystems(name, this);
-			UnityEngine.Object.DontDestroyOnLoad(this.gameObject);
+			Object.DontDestroyOnLoad(this.gameObject);
 		}
 	}
-#else
-	using FeatureWithObserver = Feature;
-#endif
+
+	public static class FeatureObserverHelper
+	{
+		public static Systems Create()
+		{
+			return Create(DefaultFeature.Name);
+		}
+
+		public static Systems Create(string name)
+		{
+			if (!Application.isPlaying || !Application.isEditor)
+				return new Feature(name);
+
+			return new FeatureWithObserver(name);
+		}
+	}
 }
