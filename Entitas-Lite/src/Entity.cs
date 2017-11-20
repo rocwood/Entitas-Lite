@@ -20,7 +20,8 @@ namespace Entitas
 			return component;
 		}
 
-		public static T ReplaceComponent<T>(this Entity entity) where T : IComponent, new()
+		/// replace Component with a NEW one, add if not existed
+		public static T ReplaceNewComponent<T>(this Entity entity) where T : IComponent, new()
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
 
@@ -53,6 +54,13 @@ namespace Entitas
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
 			return (T)entity.GetComponent(index);
+		}
+
+		/// Mark component-updated, trigger GroupEvent and ReactiveSystem
+		public static void MarkUpdated<T>(this Entity entity) where T : IComponent, new()
+		{
+			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			entity.ReplaceComponent(index, entity.GetComponent(index));
 		}
 	}
 }
