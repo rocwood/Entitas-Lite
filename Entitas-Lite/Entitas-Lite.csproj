@@ -46,6 +46,7 @@
     <Compile Include="src\FeatureHelper.cs" />
     <Compile Include="src\FeatureScope.cs" />
     <Compile Include="src\Matcher.cs" />
+    <Compile Include="src\ReactiveSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -28,7 +28,7 @@ public class MovementSystem : IExecuteSystem
 {
 	public void Execute()
 	{
-		var context = Contexts.sharedInstance.defaultContext;
+		var context = Contexts.Default;
 
 		var entities = context.GetEntities(MatchDefault.AllOf<PositionComponent, VelocityComponent>());
 		foreach (var e in entities)
@@ -44,23 +44,15 @@ public class MovementSystem : IExecuteSystem
 	}
 }
 
-// Sample view just display Entity's Position
-public class ViewSystem : ReactiveSystem<Entity>
+
+// Sample view just display Entity's Position if changed
+public class ViewSystem : ReactiveSystem
 {
-	public ViewSystem() : base(Contexts.sharedInstance.defaultContext)
+	public ViewSystem() 
+		: base(Contexts.Default.CreateCollector(MatchDefault.AllOf<PositionComponent>()))
 	{
 	}
-
-	protected override ICollector<Entity> GetTrigger(IContext<Entity> context)
-	{
-		return context.CreateCollector(MatchDefault.AllOf<PositionComponent>());
-	}
-
-	protected override bool Filter(Entity entity)
-	{
-		return entity.HasComponent<PositionComponent>();
-	}
-
+	
 	protected override void Execute(List<Entity> entities)
 	{
 		foreach (var e in entities)
@@ -82,7 +74,7 @@ public class GameController
 
 		// create random entity
 		var rand = new Random();
-		var context = Contexts.sharedInstance.defaultContext;
+		var context = Contexts.Default;
 		var e = context.CreateEntity();
 			e.AddComponent<PositionComponent>();
 			e.AddComponent<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);

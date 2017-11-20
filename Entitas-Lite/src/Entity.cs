@@ -10,17 +10,28 @@ namespace Entitas
 	/// Extension for Entity, using ComponentIndex<T> to Component->Index mapping
 	public static class EntityExtension
 	{
-		public static T AddComponent<T>(this Entity entity) where T : IComponent, new()
+		/// add a new Component, return the old one if exists
+		public static T AddComponent<T>(this Entity entity, bool keepOldIfExists = false) where T : IComponent, new()
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
 
-			T component = entity.CreateComponent<T>(index);
-			entity.AddComponent(index, component);
+			T component;
+			
+			if (keepOldIfExists && entity.HasComponent(index))
+			{
+				component = (T)entity.GetComponent(index);
+				entity.MarkUpdated(index);
+			}
+			else
+			{
+				component = entity.CreateComponent<T>(index);
+				entity.AddComponent(index, component);
+			}
 
 			return component;
 		}
 
-		/// replace Component with a NEW one, add if not existed
+		/// replace Component with a NEW one
 		public static T ReplaceNewComponent<T>(this Entity entity) where T : IComponent, new()
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
@@ -60,6 +71,11 @@ namespace Entitas
 		public static void MarkUpdated<T>(this Entity entity) where T : IComponent, new()
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+			entity.MarkUpdated(index);
+		}
+
+		public static void MarkUpdated(this Entity entity, int index)
+		{
 			entity.ReplaceComponent(index, entity.GetComponent(index));
 		}
 	}

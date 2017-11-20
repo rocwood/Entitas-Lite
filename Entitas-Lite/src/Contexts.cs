@@ -33,8 +33,13 @@ namespace Entitas
 		public IContext[] allContexts { get { return _contextList; } }
 		public Context defaultContext { get { return _defaultContext; } }
 
-		public Context GetContext<S>() where S:ContextScope { return GetContext(ContextScopeHelper.GetName<S>()); }
-		public Context GetContext(string key) { return _contextLookup[key]; }
+		public Context GetContext<S>() where S:ContextScope { return _contextLookup[ContextScopeHelper.GetName<S>()]; }
+		public Context GetContext(string contextName) { return _contextLookup[contextName]; }
+
+
+		public static Context Default { get { return sharedInstance.defaultContext; } }
+		public static Context Get<S>() where S : ContextScope { return sharedInstance._contextLookup[ContextScopeHelper.GetName<S>()]; }
+		public static Context Get(string contextName) { return sharedInstance._contextLookup[contextName]; }
 
 
 		public Contexts()
