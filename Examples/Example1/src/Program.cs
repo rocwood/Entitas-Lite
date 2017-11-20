@@ -1,5 +1,6 @@
 ﻿using Entitas;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 
@@ -37,22 +38,35 @@ public class MovementSystem : IExecuteSystem
 
 			pos.x += vel.x;
 			pos.y += vel.y;
+
+			e.MarkUpdated<PositionComponent>();
 		}
 	}
 }
 
 // Sample view just display Entity's Position
-public class ViewSystem : IExecuteSystem
+public class ViewSystem : ReactiveSystem<Entity>
 {
-	public void Execute()
+	public ViewSystem() : base(Contexts.sharedInstance.defaultContext)
 	{
-		var context = Contexts.sharedInstance.defaultContext;
+	}
 
-		var entities = context.GetEntities(MatchDefault.AllOf<PositionComponent>());
+	protected override ICollector<Entity> GetTrigger(IContext<Entity> context)
+	{
+		return context.CreateCollector(MatchDefault.AllOf<PositionComponent>());
+	}
+
+	protected override bool Filter(Entity entity)
+	{
+		return entity.HasComponent<PositionComponent>();
+	}
+
+	protected override void Execute(List<Entity> entities)
+	{
 		foreach (var e in entities)
 		{
 			var pos = e.GetComponent<PositionComponent>();
-			Console.WriteLine("Entity" + e.creationIndex + ": x="+pos.x+" y="+pos.y);
+			Console.WriteLine("Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
 		}
 	}
 }
