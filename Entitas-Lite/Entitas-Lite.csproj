@@ -42,6 +42,7 @@
     <Compile Include="src\Contexts.cs" />
     <Compile Include="src\ContextScope.cs" />
     <Compile Include="src\Entity.cs" />
+    <Compile Include="src\ExecuteSystem.cs" />
     <Compile Include="src\Feature.cs" />
     <Compile Include="src\FeatureHelper.cs" />
     <Compile Include="src\FeatureScope.cs" />
