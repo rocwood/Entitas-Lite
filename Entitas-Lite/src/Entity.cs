@@ -42,9 +42,13 @@ namespace Entitas
 			return component;
 		}
 
-		public static void RemoveComponent<T>(this Entity entity) where T: IComponent
+		public static void RemoveComponent<T>(this Entity entity, bool ignoreNotExists = false) where T: IComponent
 		{
 			int index = ComponentIndex<T>.FindIn(entity.contextInfo);
+
+			if (ignoreNotExists && !entity.HasComponent(index))
+				return;
+
 			entity.RemoveComponent(index);
 		}
 

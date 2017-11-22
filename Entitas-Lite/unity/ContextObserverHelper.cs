@@ -11,6 +11,11 @@ namespace Entitas
 {
 	public static class ContextObserverHelper
 	{
+		public static void ObserveAll()
+		{
+			ObserveAll(Contexts.sharedInstance);
+		}
+
 		public static void ObserveAll(Contexts contexts)
 		{
 			if (!Application.isPlaying || !Application.isEditor)
