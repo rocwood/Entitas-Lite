@@ -5,15 +5,13 @@ We focusses on easy development **WITHOUT** CodeGenerator.
 
 AFAIK, CodeGenerator is less efficiency for large projects and teams. <br>So why not keep it simple and easy?
 
-```
-We are planning rewrite of core implementation in Entitas-CSharp, for less template and more easy interface.
-```
+_We are planning rewrite core implementation in Entitas-CSharp, provide less template and more easy interface._
 
 
 ## Getting Start
 Download and extract "Entitas-Lite/src", "Entitas-Lite/unity" and "Entitas" folder into your Unity Project/Assets/.<br>
 Just write your own Components and Systems, then a GameController class for game entry.<br/>
-**No** CodeGenerator required! Have fun!
+**No CodeGenerator** required! Have fun!
 
 Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite  <br>
 Get Entitas : https://github.com/sschmid/Entitas-CSharp
@@ -52,7 +50,7 @@ public class MovementSystem : IExecuteSystem {
       var vel = e.Get<VelocityComponent>();
       pos.x += vel.x;
       pos.y += vel.y;
-      e.MarkUpdated<PositionComponent>(); // NewAPI, we must trigger modification event and ReactiveSystem
+      e.MarkUpdated<PositionComponent>(); // NewAPI, we must trigger modification for ReactiveSystem
     }
   }
 }
@@ -162,7 +160,7 @@ var matcher2 = MatchDefault.AllOf<PositionComponent, VelocityComponent>();  // s
 
 * new ReactiveSystem: simplify ReactiveSystem<Entity> for subclass
 ```
-constructor ReactiveSystem(ICollector<Entity> collector) // only accept Collector, no need to override GetTrigger(), see Example for detail.
+constructor ReactiveSystem(ICollector<Entity> collector) // only accept Collector, no need to override GetTrigger()
 bool Filter(Entity entity) // return true by default, not override required
 ```
 
