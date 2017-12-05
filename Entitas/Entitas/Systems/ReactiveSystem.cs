@@ -23,11 +23,15 @@ namespace Entitas {
             _buffer = new List<Entity>();
         }
 
-        /// Specify the collector that will trigger the ReactiveSystem.
-        protected abstract ICollector GetTrigger(IContext context);
+		/// Specify the collector that will trigger the ReactiveSystem.
+		protected virtual ICollector GetTrigger(IContext context) {
+			return null;
+		}
 
         /// This will exclude all entities which don't pass the filter.
-        protected abstract bool Filter(Entity entity);
+        protected virtual bool Filter(Entity entity) {
+			return true;
+		}
 
         protected abstract void Execute(List<Entity> entities);
 

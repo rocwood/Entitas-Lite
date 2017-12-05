@@ -24,10 +24,14 @@ namespace Entitas {
         }
 
         /// Specify the collector that will trigger the ReactiveSystem.
-        protected abstract ICollector[] GetTrigger(IContexts contexts);
+        protected virtual ICollector[] GetTrigger(IContexts contexts) {
+			return null;
+		}
 
         /// This will exclude all entities which don't pass the filter.
-        protected abstract bool Filter(Entity entity);
+        protected virtual bool Filter(Entity entity) {
+			return true;
+		}
 
         protected abstract void Execute(List<Entity> entities);
 
