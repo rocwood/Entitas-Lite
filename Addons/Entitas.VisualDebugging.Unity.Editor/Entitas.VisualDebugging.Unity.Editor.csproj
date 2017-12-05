@@ -89,10 +89,6 @@
       <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
       <Name>Entitas</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Entitas.Utils\Entitas.Utils.csproj">
-      <Project>{344251CF-6CA3-4272-B92E-69CCF7D26700}</Project>
-      <Name>Entitas.Utils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Entitas.Unity\Entitas.Unity.csproj">
       <Project>{CB3ADCB3-E842-4A71-B32E-15ABDE7311F6}</Project>
       <Name>Entitas.Unity</Name>

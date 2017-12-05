@@ -97,6 +97,20 @@
     <Compile Include="Entitas\Collector\TriggerOnEventMatcherExtension.cs" />
     <Compile Include="Entitas\Collector\ICollector.cs" />
     <Compile Include="Entitas\Systems\MultiReactiveSystem.cs" />
+    <Compile Include="Entitas\Utils\Caching\ObjectCache.cs" />
+    <Compile Include="Entitas\Utils\Caching\ObjectPool.cs" />
+    <Compile Include="Entitas\Utils\Configuration\AbstractConfigurableConfig.cs" />
+    <Compile Include="Entitas\Utils\Configuration\IConfigurable.cs" />
+    <Compile Include="Entitas\Utils\Configuration\Preferences.cs" />
+    <Compile Include="Entitas\Utils\Configuration\Properties.cs" />
+    <Compile Include="Entitas\Utils\Extensions\AppDomainExtension.cs" />
+    <Compile Include="Entitas\Utils\Extensions\DictionaryExtension.cs" />
+    <Compile Include="Entitas\Utils\Extensions\InterfaceTypeExtension.cs" />
+    <Compile Include="Entitas\Utils\Extensions\StringExtension.cs" />
+    <Compile Include="Entitas\Utils\Extensions\TypeSerializationExtension.cs" />
+    <Compile Include="Entitas\Utils\PublicMemberInfo\AttributeInfo.cs" />
+    <Compile Include="Entitas\Utils\PublicMemberInfo\PublicMemberInfo.cs" />
+    <Compile Include="Entitas\Utils\PublicMemberInfo\PublicMemberInfoExtension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -104,11 +118,5 @@
     <EmbeddedResource Include="Entitas\version">
       <LogicalName>version</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Entitas.Utils\Entitas.Utils.csproj">
-      <Project>{344251CF-6CA3-4272-B92E-69CCF7D26700}</Project>
-      <Name>Entitas.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>
