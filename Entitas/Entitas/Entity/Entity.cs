@@ -8,7 +8,7 @@ namespace Entitas {
     /// Use context.CreateEntity() to create a new entity and
     /// entity.Destroy() to destroy it.
     /// You can add, replace and remove IComponent to an entity.
-    public class Entity : IEntity {
+    public partial class Entity : IEntity {
 
         /// Occurs when a component gets added.
         /// All event handlers will be removed when

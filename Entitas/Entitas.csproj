@@ -34,7 +34,7 @@
     <Compile Include="Entitas\Context\ComponentIndex.cs" />
     <Compile Include="Entitas\Context\ContextInfo.cs" />
     <Compile Include="Entitas\Context\Contexts.cs" />
-    <Compile Include="Entitas\Entity\EntityExtension.cs" />
+    <Compile Include="Entitas\Entity\EntityGeneric.cs" />
     <Compile Include="Entitas\Feature\Feature.cs" />
     <Compile Include="Entitas\Feature\FeatureHelper.cs" />
     <Compile Include="Entitas\Matcher\Matcher.cs" />
