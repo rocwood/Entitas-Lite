@@ -68,9 +68,10 @@ namespace Entitas {
         int _creationIndex;
 
         Entity[] _entitiesCache;
+		Dictionary<int, Entity> _entitiesLookup = new Dictionary<int, Entity>();
 
-        // Cache delegates to avoid gc allocations
-        EntityComponentChanged _cachedEntityChanged;
+		// Cache delegates to avoid gc allocations
+		EntityComponentChanged _cachedEntityChanged;
         EntityComponentReplaced _cachedComponentReplaced;
         EntityEvent _cachedEntityReleased;
         EntityEvent _cachedDestroyEntity;
@@ -165,6 +166,12 @@ namespace Entitas {
 
             return entity;
         }
+
+		public Entity CreateEntity(string name) {
+			Entity entity = CreateEntity();
+			entity.name = name;
+			return entity;
+		}
 
         /// Destroys the entity, removes all its components and pushs it back
         /// to the internal ObjectPool for entities.
@@ -373,8 +380,6 @@ namespace Entitas {
             DestroyEntity((Entity)entity);
         }
 
-
-		private Dictionary<int, Entity> _entitiesLookup = new Dictionary<int, Entity>();
 
 		/// returns entity matching the specified creationIndex
 		public Entity GetEntity(int creationIndex) {

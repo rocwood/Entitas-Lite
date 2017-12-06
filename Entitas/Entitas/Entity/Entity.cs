@@ -45,6 +45,9 @@ namespace Entitas {
         /// The context manages the state of an entity.
         /// Active entities are enabled, destroyed entities are not.
         public bool isEnabled { get { return _isEnabled; } }
+		
+		/// Optional name
+		public String name { get { return _name; } set { _name = value; } }
 
         /// componentPools is set by the context which created the entity and
         /// is used to reuse removed components.
@@ -68,6 +71,7 @@ namespace Entitas {
 
         int _creationIndex;
         bool _isEnabled;
+		String _name;
 
         int _totalComponents;
         IComponent[] _components;
@@ -380,32 +384,42 @@ namespace Entitas {
 
         // This method is used internally. Don't call it yourself.
         // Use entity.Destroy();
-        public void InternalDestroy() {
-            _isEnabled = false;
-            RemoveAllComponents();
+        internal void InternalDestroy() {
+			_isEnabled = false;
+			_name = null;
+			RemoveAllComponents();
             OnComponentAdded = null;
             OnComponentReplaced = null;
             OnComponentRemoved = null;
             OnDestroyEntity = null;
-        }
+		}
 
-        // Do not call this method manually. This method is called by the context.
-        public void RemoveAllOnEntityReleasedHandlers() {
+		// Do not call this method manually. This method is called by the context.
+		public void RemoveAllOnEntityReleasedHandlers() {
             OnEntityReleased = null;
         }
 
         /// Returns a cached string to describe the entity
         /// with the following format:
-        /// Entity_{creationIndex}(*{retainCount})({list of components})
+        /// Entity_{creationIndex}_{name}_(*{retainCount})({list of components})
         public override string ToString() {
             if (_toStringCache == null) {
                 if (_toStringBuilder == null) {
                     _toStringBuilder = new StringBuilder();
                 }
                 _toStringBuilder.Length = 0;
-                _toStringBuilder
-                    .Append("Entity_")
-                    .Append(_creationIndex)
+				_toStringBuilder
+					.Append("Entity_")
+					.Append(_creationIndex);
+
+				if (!string.IsNullOrEmpty(_name)) {
+					_toStringBuilder
+						.Append("_")
+						.Append(_name)
+						.Append("_");
+				}
+
+				_toStringBuilder
                     .Append("(*")
                     .Append(retainCount)
                     .Append(")")
