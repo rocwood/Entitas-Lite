@@ -38,6 +38,7 @@
     <Compile Include="Entitas\Feature\Feature.cs" />
     <Compile Include="Entitas\Feature\FeatureHelper.cs" />
     <Compile Include="Entitas\Matcher\Matcher.cs" />
+    <Compile Include="Entitas\Matcher\MatcherGeneric.cs" />
     <Compile Include="Entitas\Matcher\MatcherToString.cs" />
     <Compile Include="Entitas\Matcher\MatcherEquals.cs" />
     <Compile Include="Entitas\Matcher\MatcherStatic.cs" />
