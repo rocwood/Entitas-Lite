@@ -44,5 +44,19 @@ namespace Entitas.Utils {
 
             return sb.ToString();
         }
-    }
+
+		public static string AddSuffix(this string text, string suffix)
+		{
+			return text.EndsWith(suffix, StringComparison.Ordinal)
+							  ? text 
+							  : text + suffix;
+		}
+
+		public static string RemoveSuffix(this string text, string suffix)
+		{
+			return text.EndsWith(suffix, StringComparison.Ordinal)
+							  ? text.Substring(0, text.Length - suffix.Length)
+							  : text;
+		}
+	}
 }
