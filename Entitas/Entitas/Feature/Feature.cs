@@ -8,7 +8,7 @@ namespace Entitas
 		public Feature(string name)
 		{
 			if (string.IsNullOrEmpty(name))
-				name = NonameFeature.NAME;
+				name = UnnamedFeature.NAME;
 
 			FeatureHelper.CollectSystems(name, this);
 		}

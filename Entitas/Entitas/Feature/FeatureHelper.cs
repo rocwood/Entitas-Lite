@@ -37,7 +37,7 @@ namespace Entitas
 				var attribs = p.GetCustomAttributes(attribType, false)
 								.Where(attr => ((FeatureAttribute)attr).name == name);
 
-				string n = NonameFeature.NAME;
+				string n = UnnamedFeature.NAME;
 				int w = 0;
 
 				foreach (var attr in attribs)

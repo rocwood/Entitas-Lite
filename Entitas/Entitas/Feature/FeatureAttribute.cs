@@ -28,10 +28,10 @@ namespace Entitas
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class NonameFeature: FeatureAttribute
+	public class UnnamedFeature: FeatureAttribute
 	{
-		public static readonly string NAME = "Noname";
+		public static readonly string NAME = "Unnamed";
 
-		public NonameFeature(int prior = 0) :base(prior) {}
+		public UnnamedFeature(int prior = 0) :base(prior) {}
 	}
 }

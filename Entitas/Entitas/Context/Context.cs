@@ -88,9 +88,9 @@ namespace Entitas {
                    contextInfo,
                    (entity) => new SafeAERC(entity)) { }
 
-        /// The prefered way to create a context is to use the generated methods
-        /// from the code generator, e.g. var context = new GameContext();
-        public Context(int totalComponents, int startCreationIndex, ContextInfo contextInfo, Func<IEntity, IAERC> aercFactory) {
+		/// The prefered way to create a context is to use the generated methods
+		/// from the code generator, e.g. var context = new GameContext();
+		public Context(int totalComponents, int startCreationIndex, ContextInfo contextInfo, Func<IEntity, IAERC> aercFactory) {
             _totalComponents = totalComponents;
             _creationIndex = startCreationIndex;
 
@@ -121,9 +121,13 @@ namespace Entitas {
             _cachedComponentReplaced = updateGroupsComponentReplaced;
             _cachedEntityReleased = onEntityReleased;
             _cachedDestroyEntity = onDestroyEntity;
-        }
 
-        ContextInfo createDefaultContextInfo() {
+			// Add listener for updating lookup
+			OnEntityCreated += (c, entity) => _entitiesLookup.Add(entity.creationIndex, (Entity)entity);
+			OnEntityDestroyed += (c, entity) => _entitiesLookup.Remove(entity.creationIndex);
+		}
+
+		ContextInfo createDefaultContextInfo() {
             var componentNames = new string[_totalComponents];
             const string prefix = "Index ";
             for (int i = 0; i < componentNames.Length; i++) {
@@ -208,6 +212,7 @@ namespace Entitas {
             }
 
             _entities.Clear();
+			_entitiesLookup.Clear();
 
             if (_retainedEntities.Count != 0) {
                 throw new ContextStillHasRetainedEntitiesException(this, _retainedEntities.ToArray());
@@ -367,5 +372,19 @@ namespace Entitas {
         void onDestroyEntity(IEntity entity) {
             DestroyEntity((Entity)entity);
         }
-    }
+
+
+		private Dictionary<int, Entity> _entitiesLookup = new Dictionary<int, Entity>();
+
+		/// returns entity matching the specified creationIndex
+		public Entity GetEntity(int creationIndex) {
+			if (_entitiesLookup == null)
+				return null;
+
+			Entity entity = null;
+			_entitiesLookup.TryGetValue(creationIndex, out entity);
+
+			return entity;
+		}
+	}
 }
