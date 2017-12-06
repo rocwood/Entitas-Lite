@@ -31,6 +31,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entitas\Feature\Feature.cs" />
+    <Compile Include="Entitas\Feature\FeatureHelper.cs" />
     <Compile Include="Entitas\Matcher\Matcher.cs" />
     <Compile Include="Entitas\Matcher\MatcherToString.cs" />
     <Compile Include="Entitas\Matcher\MatcherEquals.cs" />
@@ -42,7 +44,7 @@
     <Compile Include="Entitas\Group\Group.cs" />
     <Compile Include="Entitas\Context\Context.cs" />
     <Compile Include="Entitas\Context\ContextAttribute.cs" />
-    <Compile Include="Entitas\Feature\FeatureAttruibte.cs" />
+    <Compile Include="Entitas\Feature\FeatureAttribute.cs" />
     <Compile Include="Entitas\Systems\Systems.cs" />
     <Compile Include="Entitas\Systems\ReactiveSystem.cs" />
     <Compile Include="Entitas\Group\GroupEvent.cs" />

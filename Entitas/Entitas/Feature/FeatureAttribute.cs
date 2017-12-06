@@ -4,18 +4,18 @@ using Entitas.Utils;
 namespace Entitas
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-	public class FeatureAttruibte : Attribute
+	public class FeatureAttribute : Attribute
 	{
 		public readonly string name;
 		public readonly int priority;
 
-		public FeatureAttruibte(string name, int prior = 0)
+		public FeatureAttribute(string name, int prior = 0)
 		{
 			this.name = name;
 			priority = prior;
 		}
 
-		protected FeatureAttruibte(int prior = 0)
+		protected FeatureAttribute(int prior = 0)
 		{
 			this.name = RemoveSuffix(GetType().Name);
 			priority = prior;
@@ -28,7 +28,7 @@ namespace Entitas
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class NonameFeature: FeatureAttruibte
+	public class NonameFeature: FeatureAttribute
 	{
 		public static readonly string NAME = "Noname";
 
