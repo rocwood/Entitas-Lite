@@ -384,7 +384,7 @@ namespace Entitas {
 
         // This method is used internally. Don't call it yourself.
         // Use entity.Destroy();
-        internal void InternalDestroy() {
+        public void InternalDestroy() {
 			_isEnabled = false;
 			_name = null;
 			RemoveAllComponents();

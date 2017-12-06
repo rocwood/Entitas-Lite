@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,8 +37,10 @@
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserver.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverBehaviour.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverExtension.cs" />
+    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverHelper.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystems.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystemsBehaviour.cs" />
+    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\FeatureObserver.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\SystemInfo.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\DontDrawComponentAttribute.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\EntityBehaviour.cs" />
@@ -50,9 +52,6 @@
       <Name>Entitas</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entitas.VisualDebugging.Unity\" />
-    <Folder Include="Entitas.VisualDebugging.Unity\Unity\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
