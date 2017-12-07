@@ -51,9 +51,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\Entitas\Entitas.csproj">
+    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
       <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
-      <Name>Entitas</Name>
+      <Name>Entitas.Lite</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

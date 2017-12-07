@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Addons", "Addons", "{B68761FF-EFF7-4611-9F1E-6B0127C89301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas", "Entitas\Entitas.csproj", "{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.Lite", "Entitas\Entitas.Lite.csproj", "{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.Unity.Editor", "Addons\Entitas.Unity.Editor\Entitas.Unity.Editor.csproj", "{9AF72B25-85B0-4FDC-85C3-660926C82438}"
 EndProject

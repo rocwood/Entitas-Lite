@@ -6,7 +6,7 @@
     <ProjectGuid>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Entitas</RootNamespace>
-    <AssemblyName>Entitas</AssemblyName>
+    <AssemblyName>Entitas.Lite</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ReleaseVersion>1.0.0</ReleaseVersion>
   </PropertyGroup>
