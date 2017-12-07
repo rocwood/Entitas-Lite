@@ -31,18 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Entitas">
-      <HintPath>..\..\depends\Entitas.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Entitas-Lite\Entitas-Lite.csproj">
-      <Project>{da499ca3-eb8f-4f8a-8e33-d431ed813cb4}</Project>
-      <Name>Entitas-Lite</Name>
+    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
+      <Project>{a0a11cc3-8b1e-4345-a5fa-01fc60e581d8}</Project>
+      <Name>Entitas.Lite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

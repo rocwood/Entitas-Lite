@@ -34,16 +34,14 @@ namespace Example1
 		{
 			var context = Contexts.Default;
 
-			var entities = context.GetEntities(Match<DefaultContext>.AllOf<PositionComponent, VelocityComponent>());
+			var entities = context.GetEntities(Matcher<Default>.AllOf<PositionComponent, VelocityComponent>());
 			foreach (var e in entities)
 			{
-				var pos = e.GetComponent<PositionComponent>();
-				var vel = e.GetComponent<VelocityComponent>();
+				var vel = e.Get<VelocityComponent>();
+				var pos = e.Modify<PositionComponent>();
 
 				pos.x += vel.x;
 				pos.y += vel.y;
-
-				e.MarkUpdated<PositionComponent>();
 			}
 		}
 	}
@@ -53,7 +51,7 @@ namespace Example1
 	public class ViewSystem : ReactiveSystem
 	{
 		public ViewSystem() 
-			: base(Contexts.Default.CreateCollector(MatchDefault.AllOf<PositionComponent>()))
+			: base(Contexts.Default.CreateCollector(Matcher<Default>.AllOf<PositionComponent>()))
 		{
 		}
 	
@@ -61,7 +59,7 @@ namespace Example1
 		{
 			foreach (var e in entities)
 			{
-				var pos = e.GetComponent<PositionComponent>();
+				var pos = e.Get<PositionComponent>();
 #if CONSOLE_APP
 				Console.WriteLine(
 #else
@@ -88,11 +86,11 @@ namespace Example1
 			var rand = new System.Random();
 			var context = Contexts.Default;
 			var e = context.CreateEntity();
-				e.AddComponent<PositionComponent>();
-				e.AddComponent<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+				e.Add<PositionComponent>();
+				e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
 			// init systems
-			_feature = new Feature();
+			_feature = new Feature(null);
 			_feature.Initialize();
 		}
 
