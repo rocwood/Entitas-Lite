@@ -25,7 +25,7 @@ namespace Entitas
 	}
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-	public class Default : ContextAttribute
+	public sealed class Default : ContextAttribute
 	{
 		public const string NAME = "Default";
 	}
