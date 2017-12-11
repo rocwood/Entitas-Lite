@@ -4,60 +4,91 @@ namespace Entitas
 	public class Matcher<C> where C : ContextAttribute
 	{
 		public static IAllOfMatcher AllOf<T1>() where T1 : IComponent
-		{ return AllOf(ref a1, idx<T1>()); }
+		{ return Matcher<C, T1>.All(); }
 		public static IAllOfMatcher AllOf<T1, T2>() where T1 : IComponent where T2 : IComponent
-		{ return AllOf(ref a2, idx<T1>(), idx<T2>()); }
+		{ return Matcher<C, T1, T2>.All(); }
 		public static IAllOfMatcher AllOf<T1, T2, T3>() where T1 : IComponent where T2 : IComponent where T3 : IComponent
-		{ return AllOf(ref a3, idx<T1>(), idx<T2>(), idx<T3>()); }
+		{ return Matcher<C, T1, T2, T3>.All(); }
 		public static IAllOfMatcher AllOf<T1, T2, T3, T4>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
-		{ return AllOf(ref a4, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>()); }
+		{ return Matcher<C, T1, T2, T3, T4>.All(); }
 		public static IAllOfMatcher AllOf<T1, T2, T3, T4, T5>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
-		{ return AllOf(ref a5, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>()); }
+		{ return Matcher<C, T1, T2, T3, T4, T5>.All(); }
 		public static IAllOfMatcher AllOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
-		{ return AllOf(ref a6, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>()); }
-		public static IAllOfMatcher AllOf<T1, T2, T3, T4, T5, T6, T7>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent
-		{ return AllOf(ref a7, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>()); }
-		public static IAllOfMatcher AllOf<T1, T2, T3, T4, T5, T6, T7, T8>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent where T8 : IComponent
-		{ return AllOf(ref a8, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>(), idx<T8>()); }
+		{ return Matcher<C, T1, T2, T3, T4, T5, T6>.All(); }
 
 		public static IAnyOfMatcher AnyOf<T1>() where T1 : IComponent
-		{ return AnyOf(ref o1, idx<T1>()); }
+		{ return Matcher<C, T1>.Any(); }
 		public static IAnyOfMatcher AnyOf<T1, T2>() where T1 : IComponent where T2 : IComponent
-		{ return AnyOf(ref o2, idx<T1>(), idx<T2>()); }
+		{ return Matcher<C, T1, T2>.Any(); }
 		public static IAnyOfMatcher AnyOf<T1, T2, T3>() where T1 : IComponent where T2 : IComponent where T3 : IComponent
-		{ return AnyOf(ref o3, idx<T1>(), idx<T2>(), idx<T3>()); }
+		{ return Matcher<C, T1, T2, T3>.Any(); }
 		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
-		{ return AnyOf(ref o4, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>()); }
+		{ return Matcher<C, T1, T2, T3, T4>.Any(); }
 		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
-		{ return AnyOf(ref o5, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>()); }
+		{ return Matcher<C, T1, T2, T3, T4, T5>.Any(); }
 		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
-		{ return AnyOf(ref o6, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>()); }
-		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5, T6, T7>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent
-		{ return AnyOf(ref o7, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>()); }
-		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5, T6, T7, T8>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent where T8 : IComponent
-		{ return AnyOf(ref o8, idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>(), idx<T8>()); }
+		{ return Matcher<C, T1, T2, T3, T4, T5, T6>.Any(); }
+	}
 
-
-		private static IAllOfMatcher a1, a2, a3, a4, a5, a6, a7, a8;
-		private static IAnyOfMatcher o1, o2, o3, o4, o5, o6, o7, o8;
-
-		private static IAllOfMatcher AllOf(ref IAllOfMatcher matcher, params int[] indices)
-		{
-			if (matcher == null)
-				matcher = Matcher.AllOf(indices);
-			return matcher;
-		}
-
-		private static IAnyOfMatcher AnyOf(ref IAnyOfMatcher matcher, params int[] indices)
-		{
-			if (matcher == null)
-				matcher = Matcher.AnyOf(indices);
-			return matcher;
-		}
-
-		private static int idx<T>() where T : IComponent
+	class MatcherGeneric<C> where C : ContextAttribute
+	{
+		protected static int idx<T>() where T : IComponent
 		{
 			return ComponentIndex<C, T>.value;
 		}
+	}
+
+	class Matcher<C, T1> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>())); }
+	}
+
+	class Matcher<C, T1, T2> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent where T2 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>(), idx<T2>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>(), idx<T2>())); }
+	}
+
+	class Matcher<C, T1, T2, T3> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent where T2 : IComponent where T3 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>(), idx<T2>(), idx<T3>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>(), idx<T2>(), idx<T3>())); }
+	}
+
+	class Matcher<C, T1, T2, T3, T4> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>())); }
+	}
+
+	class Matcher<C, T1, T2, T3, T4, T5> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>())); }
+	}
+
+	class Matcher<C,T1,T2,T3,T4,T5,T6> : MatcherGeneric<C> where C : ContextAttribute where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
+	{
+		private static IAllOfMatcher _all;
+		private static IAnyOfMatcher _any;
+
+		public static IAllOfMatcher All() { return (_all!=null)?_all:(_all=Matcher.AllOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>())); }
+		public static IAnyOfMatcher Any() { return (_any!=null)?_any:(_any=Matcher.AnyOf(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>())); }
 	}
 }
