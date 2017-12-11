@@ -4,12 +4,9 @@ namespace Entitas.VisualDebugging.Unity
 {
 	public class FeatureWithObserver : DebugSystems
 	{
-		public FeatureWithObserver(string name) : base(name)
+		public FeatureWithObserver(string name) : base(FeatureHelper.GetUnnamed(name))
 		{
-			if (string.IsNullOrEmpty(name))
-				name = UnnamedFeature.NAME;
-
-			FeatureHelper.CollectSystems(name, this);
+			FeatureHelper.CollectSystems(this.name, this);
 			Object.DontDestroyOnLoad(this.gameObject);
 		}
 	}

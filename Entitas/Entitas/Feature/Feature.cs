@@ -7,8 +7,7 @@ namespace Entitas
 		/// Constructor, name could be empty/null for noname systems
 		public Feature(string name)
 		{
-			if (string.IsNullOrEmpty(name))
-				name = UnnamedFeature.NAME;
+			name = FeatureHelper.GetUnnamed(name);
 
 			FeatureHelper.CollectSystems(name, this);
 		}

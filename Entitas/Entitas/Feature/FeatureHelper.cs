@@ -7,6 +7,14 @@ namespace Entitas
 	/// Collect all matched System in current domain, then add them to Feature ordered by priority
 	public class FeatureHelper
 	{
+		public static string GetUnnamed(string name)
+		{
+			if (string.IsNullOrEmpty(name))
+				return UnnamedFeature.NAME;
+			else
+				return name;
+		}
+
 		private class SystemProxy : IComparable<SystemProxy>
 		{
 			public ISystem system;
