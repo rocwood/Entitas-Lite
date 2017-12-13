@@ -44,9 +44,6 @@
     <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\EditorWindow.cs" />
     <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\GUI.cs" />
     <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\Layout.cs" />
-    <Compile Include="Entitas.Unity.Editor\Editor\GUI\PreferencesWindow.cs" />
-    <Compile Include="Entitas.Unity.Editor\Editor\Menu\CheckForUpdates.cs" />
-    <Compile Include="Entitas.Unity.Editor\Editor\Menu\EntitasMenuItems.cs" />
     <Compile Include="Entitas.Unity.Editor\Editor\ScriptingDefineSymbols.cs" />
   </ItemGroup>
   <ItemGroup />

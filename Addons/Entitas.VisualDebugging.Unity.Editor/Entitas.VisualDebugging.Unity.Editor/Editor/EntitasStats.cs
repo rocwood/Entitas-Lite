@@ -45,26 +45,24 @@ namespace Entitas.VisualDebugging.Unity.Editor {
         }
 
         static Dictionary<string, int> getContexts(Type[] components) {
-			// TODO: use attribute to fetch context info
-			return new Dictionary<string, int>();
+			return components.Aggregate(new Dictionary<string, int>(), (contexts, type) => {
+				var DefaultAttribs = new object[] { new Default() };
 
-			/*
-            var preferences = Preferences.sharedInstance;
-            preferences.Refresh();
-            var provider = new ContextsComponentDataProvider();
-            provider.Configure(preferences);
-            return components.Aggregate(new Dictionary<string, int>(), (contexts, type) => {
-                var contextNames = provider.GetContextNamesOrDefault(type);
-                foreach (var contextName in contextNames) {
-                    if (!contexts.ContainsKey(contextName)) {
-                        contexts.Add(contextName, 0);
-                    }
+				foreach (var t in components) {
+					var attribs = t.GetCustomAttributes(typeof(ContextAttribute), false);
+					if (attribs == null || attribs.Length <= 0)
+						attribs = DefaultAttribs;
 
-                    contexts[contextName] += 1;
-                }
+					foreach (var attr in attribs) {
+						var contextName = ((ContextAttribute)attr).name;
+						if (!contexts.ContainsKey(contextName))
+							contexts.Add(contextName, 1);
+						else 
+							contexts[contextName] += 1;
+					}
+				}
                 return contexts;
             });
-			*/
         }
 
         static bool isSystem(Type type) {
