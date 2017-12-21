@@ -24,7 +24,12 @@ namespace Entitas
 
 			return component;
 		}
-		
+
+		public T AddComponent<T>(bool useExisted = true) where T : IComponent, new()
+		{
+			return Add<T>(useExisted);
+		}
+
 		/// replace Component with a NEW one
 		public T ReplaceNew<T>() where T : IComponent, new()
 		{
@@ -36,6 +41,11 @@ namespace Entitas
 			return component;
 		}
 
+		public T ReplaceNewComponent<T>() where T : IComponent, new()
+		{
+			return ReplaceNew<T>();
+		}
+
 		public void Remove<T>(bool ignoreNotFound = true) where T: IComponent
 		{
 			int index = ComponentIndex<T>.FindIn(_contextInfo);
@@ -45,27 +55,46 @@ namespace Entitas
 			RemoveComponent(index);
 		}
 
+		public void RemoveComponent<T>(bool ignoreNotFound = true) where T : IComponent
+		{
+			Remove<T>(ignoreNotFound);
+		}
+		
 		public bool Has<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.FindIn(_contextInfo);
 			return HasComponent(index);
 		}
 
-		/// shorter version of GetComponent<T>
+		public bool HasComponent<T>() where T : IComponent
+		{
+			return Has<T>();
+		}
+
 		public T Get<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.FindIn(_contextInfo);
 			return (T)GetComponent(index);
 		}
 
+		public T GetComponent<T>() where T : IComponent
+		{
+			return Get<T>();
+		}
+
 		/// Get Component for modification, mark automatically
 		public T Modify<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.FindIn(_contextInfo);
-			return (T)Modify(index);
+			return (T)ModifyComponent(index);
 		}
 
-		public IComponent Modify(int index)
+		public T ModifyComponent<T>() where T : IComponent
+		{
+			return Modify<T>();
+		}
+
+		public IComponent ModifyComponent(int index)
 		{
 			IComponent component = GetComponent(index);
 			FireModifiedEvent(index, component);

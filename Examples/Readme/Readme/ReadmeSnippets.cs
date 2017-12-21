@@ -98,17 +98,11 @@ namespace Readme {
         }
 
         #pragma warning disable
-		/*
         static void userComponent(Context context, UserComponent component) {
-            var e = context.userEntity;
-            var name = context.user.name;
-            var has = context.hasUser;
-
-            context.SetUser("John", 42);
-            context.ReplaceUser("Max", 24);
-            context.RemoveUser();
+            var e = context.GetSingleEntity<UserComponent>();
+			var has = (e != null);
+			var user = e.Get<UserComponent>();
         }
-		*/
 
         static void movableComponent(Entity e) {
             var movable = e.Has<MovableComponent>();
@@ -116,13 +110,9 @@ namespace Readme {
             e.Remove<MovableComponent>();
         }
 
-		/*
         static void animatingComponent(Context context) {
-            var e = context.animatingEntity;
-            var isAnimating = context.isAnimating;
-            context.isAnimating = true;
-            context.isAnimating = false;
+            var e = context.GetSingleEntity<AnimatingComponent>();
+			var isAnimating = (e != null);
         }
-		*/
     }
 }
