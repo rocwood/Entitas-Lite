@@ -453,7 +453,7 @@ namespace Entitas {
 		}
 
 		/// return unique entity with specified component
-		public Entity GetSingleEntity<T>() where T : IComponent {
+		public Entity GetSingleEntity<T>() where T : IUniqueComponent {
 			return GetSingleEntity(ComponentIndex<T>.FindIn(this.contextInfo));
 		}
 

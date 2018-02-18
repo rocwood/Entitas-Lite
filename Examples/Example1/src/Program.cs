@@ -54,7 +54,12 @@ namespace Example1
 			: base(Contexts.Default.CreateCollector(Matcher<Default>.AllOf<PositionComponent>()))
 		{
 		}
-	
+
+		protected override bool Filter(Entity entity)
+		{
+			return entity.Has<PositionComponent>();
+		}
+
 		protected override void Execute(List<Entity> entities)
 		{
 			foreach (var e in entities)

@@ -1,7 +1,7 @@
 
 namespace Entitas
 {
-	public class Matcher<C> where C : ContextAttribute
+	public static class Matcher<C> where C : ContextAttribute
 	{
 		public static IAllOfMatcher AllOf<T1>() where T1 : IComponent
 		{ return Matcher<C, T1>.All(); }
