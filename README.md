@@ -1,21 +1,15 @@
 # Entitas-Lite
 
-Entitas-Lite is a helper extension of Entitas.<br>
-We focusses on easy development **WITHOUT** CodeGenerator.
-
-AFAIK, CodeGenerator is less efficiency for large projects and teams. <br>So why not keep it simple and easy?
-
-_We are planning rewrite core implementation in Entitas-CSharp, provide less template and more easy interface._
+Entitas-Lite is a **No-CodeGenerator** edition of Entitas.
+We rewrote some core of Entitas-CSharp, and provide easy interface for hand-coding.
 
 
 ## Getting Start
-Download and extract "Entitas-Lite/src", "Entitas-Lite/unity" and "Entitas" folder into your Unity Project/Assets/.<br>
+Download and extract "Build/deploy/Entitas-Lite" folder into your Unity Project/Assets/.<br>
 Just write your own Components and Systems, then a GameController class for game entry.<br/>
 **No CodeGenerator** required! Have fun!
 
 Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite  <br>
-Get Entitas : https://github.com/sschmid/Entitas-CSharp
-
 
 
 ## Example 1
@@ -24,45 +18,46 @@ Get Entitas : https://github.com/sschmid/Entitas-CSharp
 using System;
 using Entitas;
 
-// [DefaultContext] by default
+[Default]  
 public class PositionComponent : IComponent {
   public int x;
   public int y;
 }
 
+// if no context declaration, it comes into Default context
 public class VelocityComponent : IComponent {
   public int x;
   public int y;
 
-  public void SetValue(int nx, int ny) { x = nx; y = ny; }   // don't be afraid of writing helper accessor
+  // don't be afraid of writing helper accessor
+  public void SetValue(int nx, int ny) { x = nx; y = ny; }
 }
 
-// [DefaultFeature] by default
+// if no feature-set declaration, it comes into UnnamedFeature
 public class MovementSystem : IExecuteSystem {
   public void Execute() {
-    var context = Contexts.Default; // NewAPI
-    
-    var entities = context.GetEntities(
-        Match<DefaultContext>.AllOf<PositionComponent, VelocityComponent>()); // NewAPI
-    
-    foreach (var e in entities) {
-      var pos = e.Get<PositionComponent>(); // NewAPI
-      var vel = e.Get<VelocityComponent>();
-      pos.x += vel.x;
-      pos.y += vel.y;
-      e.MarkUpdated<PositionComponent>(); // NewAPI, we must trigger modification for ReactiveSystem
-    }
+
+    // new API for getting all matched entities from context
+    var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>();
+	
+	foreach (var e in entities) {
+	  var vel = e.Get<VelocityComponent>();
+	  var pos = e.Modify<PositionComponent>();  // new API for trigger Monitor/ReactiveSystem
+	  
+	  pos.x += vel.x;
+	  pos.y += vel.y;
+	}
   }
 }
 
 // Sample view just display Entity's Position if changed
 public class ViewSystem : ReactiveSystem {
-  // constructor now only accepts collector
-  public ViewSystem() 
-    : base(Contexts.Default.CreateCollector(Match<DefaultContext>.AllOf<PositionComponent>().AddedOrRemoved()))
-  {}
+  public ViewSystem() {
+    // new API, add monitor that watch Position changed and call Process 
+    monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(this.Process);
+  }
 
-  protected override void Execute(List<Entity> entities) {
+  void Process(List<Entity> entities) {
     foreach (var e in entities) {
       var pos = e.GetComponent<PositionComponent>();
       Console.WriteLine("Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
@@ -85,14 +80,14 @@ public class GameController {
     var rand = new Random();
     var context = Contexts.Default;
     var e = context.CreateEntity();
-        e.AddComponent<PositionComponent>();  // NewAPI
-        e.AddComponent<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+        e.Add<PositionComponent>();  // NewAPI
+        e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
     // init systems, auto collect matched systems, no manual Systems.Add(ISystem) required
 #if UNITY_EDITOR
     _feature = new FeatureObserverHelper.Create();  // Unity-only API, shorter for Create("DefaultFeature")
 #else
-    _feature = new Feature();
+    _feature = new Feature(null);
 #endif
     _feature.Initialize();
   }
