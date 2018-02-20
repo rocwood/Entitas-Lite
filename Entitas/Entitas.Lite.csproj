@@ -31,7 +31,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entitas\Collector\CollectorExtension.cs" />
+    <Compile Include="Entitas\Monitor\IMonitor.cs" />
+    <Compile Include="Entitas\Monitor\Monitor.cs" />
     <Compile Include="Entitas\Context\ComponentIndex.cs" />
+    <Compile Include="Entitas\Context\ContextGeneric.cs" />
     <Compile Include="Entitas\Context\ContextInfo.cs" />
     <Compile Include="Entitas\Context\Contexts.cs" />
     <Compile Include="Entitas\Entity\EntityGeneric.cs" />
@@ -50,9 +54,10 @@
     <Compile Include="Entitas\Context\Context.cs" />
     <Compile Include="Entitas\Context\ContextAttribute.cs" />
     <Compile Include="Entitas\Feature\FeatureAttribute.cs" />
+    <Compile Include="Entitas\Monitor\MonitorList.cs" />
     <Compile Include="Entitas\Systems\ExecuteSystem.cs" />
-    <Compile Include="Entitas\Systems\Systems.cs" />
     <Compile Include="Entitas\Systems\ReactiveSystem.cs" />
+    <Compile Include="Entitas\Systems\Systems.cs" />
     <Compile Include="Entitas\Group\GroupEvent.cs" />
     <Compile Include="Entitas\Context\ContextExtension.cs" />
     <Compile Include="Entitas\Group\GroupExtension.cs" />
@@ -105,7 +110,6 @@
     <Compile Include="Entitas\Collector\CollectorContextExtension.cs" />
     <Compile Include="Entitas\Collector\TriggerOnEventMatcherExtension.cs" />
     <Compile Include="Entitas\Collector\ICollector.cs" />
-    <Compile Include="Entitas\Systems\MultiReactiveSystem.cs" />
     <Compile Include="Entitas\Utils\Caching\ObjectCache.cs" />
     <Compile Include="Entitas\Utils\Caching\ObjectPool.cs" />
     <Compile Include="Entitas\Utils\Configuration\AbstractConfigurableConfig.cs" />

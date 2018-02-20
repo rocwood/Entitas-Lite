@@ -1,7 +1,7 @@
 ﻿using Entitas;
 
 [Game]
-public sealed class UserComponent : IComponent {
+public sealed class UserComponent : IUniqueComponent {
 
     public string name;
     public int age;

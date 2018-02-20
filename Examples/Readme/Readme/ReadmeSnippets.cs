@@ -16,21 +16,14 @@ namespace Readme {
 			return entity;
         }
 
-        static void moveSystem(Context context) {
-            var entities = context.GetEntities(Matcher<Game>.AllOf<PositionComponent, VelocityComponent>());
+        static void moveSystem() {
+            var entities = Context<Game>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
             foreach (var e in entities) {
 				var vel = e.Get<VelocityComponent>();
 				var pos = e.Modify<PositionComponent>();
 				pos.value += vel.value;
             }
         }
-
-        /*
-         * 
-         * Wiki
-         * 
-         * 
-         */
 
         static void entityExample(Entity entity) {
             entity.Add<PositionComponent>().value = new Vector3(1, 2, 3);
@@ -86,6 +79,19 @@ namespace Readme {
             // ----------------------------
             collector.Deactivate();
         }
+
+		static void monitorExample() {
+			var group = Context<Game>.AllOf<PositionComponent>();
+			var monitor = group.OnAdded(
+				entities => {
+					foreach (var e in entities) {
+						// do something
+					}
+				}	
+			);
+
+			monitor.Execute();
+		}
 
         static void positionComponent(Entity e, PositionComponent component, Vector3 position, Vector3 newPosition) {
             var pos = e.Get<PositionComponent>();

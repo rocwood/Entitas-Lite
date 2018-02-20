@@ -468,12 +468,11 @@ namespace Entitas {
 			return group.GetSingleEntity();
 		}
 
-		/*
-		public T GetUnique<T>() where T : IComponent {
+		public T GetUnique<T>() where T : IUniqueComponent {
 			return GetUniqueComponent<T>();
 		}
 
-		public T GetUniqueComponent<T>() where T : IComponent {
+		public T GetUniqueComponent<T>() where T : IUniqueComponent {
 			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
 
 			IComponent component = GetUniqueComponent(componentIndex);
@@ -490,6 +489,5 @@ namespace Entitas {
 			
 			return entity.GetComponent(componentIndex);
 		}
-		*/
 	}
 }

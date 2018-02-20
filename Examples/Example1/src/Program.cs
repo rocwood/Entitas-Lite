@@ -32,9 +32,7 @@ namespace Example1
 	{
 		public void Execute()
 		{
-			var context = Contexts.Default;
-
-			var entities = context.GetEntities(Matcher<Default>.AllOf<PositionComponent, VelocityComponent>());
+			var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
 			foreach (var e in entities)
 			{
 				var vel = e.Get<VelocityComponent>();
@@ -46,21 +44,15 @@ namespace Example1
 		}
 	}
 
-
 	// Sample view just display Entity's Position if changed
 	public class ViewSystem : ReactiveSystem
 	{
-		public ViewSystem() 
-			: base(Contexts.Default.CreateCollector(Matcher<Default>.AllOf<PositionComponent>()))
+		public ViewSystem()
 		{
+			monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
 		}
 
-		protected override bool Filter(Entity entity)
-		{
-			return entity.Has<PositionComponent>();
-		}
-
-		protected override void Execute(List<Entity> entities)
+		protected void Process(List<Entity> entities)
 		{
 			foreach (var e in entities)
 			{

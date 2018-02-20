@@ -1,5 +1,5 @@
 ﻿using Entitas;
 
 [Game]
-public sealed class AnimatingComponent : IComponent {
+public sealed class AnimatingComponent : IUniqueComponent {
 }
