@@ -24,7 +24,7 @@ namespace Entitas
 
 		private Dictionary<string, Context> _contextLookup;
 		private Context[] _contextList;
-		public Context _defaultContext;
+		private Context _defaultContext;
 		
 		public IContext[] allContexts { get { return _contextList; } }
 		public Context defaultContext { get { return _defaultContext; } }

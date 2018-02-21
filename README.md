@@ -1,8 +1,8 @@
 # Entitas-Lite
 
-Entitas-Lite is a **No-CodeGenerator** branch of Entitas.
-It's suitable for large projects and teams perfer ECS without code-generation. 
-We rewrote some core of Entitas, and provided easy interface for hand-coding.
+Entitas-Lite is a **No-CodeGenerator** branch of Entitas.<br/>
+It's suitable for large projects and teams perfer ECS without code-generation.<br/> 
+Some core of Entitas was rewritten to provide easy interface for hand-coding.
 
 ## Getting Start
 Download and extract "Build/deploy/Entitas-Lite" folder into your Unity Project/Assets/.<br/>
@@ -90,8 +90,8 @@ public class GameController : MonoBehaviour
 		var rand = new System.Random();
 		var context = Contexts.Default;
 		var e = context.CreateEntity();
-			e.Add<PositionComponent>();
-			e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+		    e.Add<PositionComponent>();
+		    e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
 #if UNITY_EDITOR
 		_feature = FeatureObserverHelper.CreateFeature(null);
@@ -130,7 +130,7 @@ public class MyFeature : FeatureAttribute { public MyFeature(int prior = 0) :bas
 
 * Entity: Generic API for Add/Replace/Get/RemoveComponents. Forget component-index!
 ```
-e.Add<PositionComponent>();		// equals to e.AddComponent<PositionComponent>();
+e.Add<PositionComponent>();	// equals to e.AddComponent<PositionComponent>();
 e.Remove<PositionComponent>();	// equals to e.RemoveComponent<PositionComponent>();
 var vel = e.Get<VelocityComponent>();
 var pos = e.Modify<PositionComponent>();  // get component for modification, will trigger Monitor/ReactiveSystem
@@ -161,8 +161,8 @@ var group = Context<Game>.AllOf<PositionComponent, VelocityComponent>(); // easy
 * Monitor/Collector: Monitor combins collector/filter/processor for Reactive-programming
 ```
 var monitor = Context<Default>.AllOf<PositionComponent>() // group => monitor
-				.OnAdded(entities => { foreach (var e in entities) { /* do something */ }}) // processor when trigger
-				.where(e => e.Has<ViewComponent>); // filter
+		.OnAdded(entities => { foreach (var e in entities) { /* do something */ }}) // processor when trigger
+		.where(e => e.Has<ViewComponent>); // filter
 
 monitor.Execute(); // in each update
 ```
