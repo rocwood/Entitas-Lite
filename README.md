@@ -161,7 +161,7 @@ var group = Context<Game>.AllOf<PositionComponent, VelocityComponent>(); // easy
 * Monitor/Collector: Monitor combins collector/filter/processor for Reactive-programming
 ```
 var monitor = Context<Default>.AllOf<PositionComponent>() // group => monitor
-		.OnAdded(entities => { foreach (var e in entities) { /* do something */ }}) // processor when trigger
+		.OnAdded(entities => { foreach (var e in entities) { /* do something */ }})
 		.where(e => e.Has<ViewComponent>); // filter
 
 monitor.Execute(); // in each update
