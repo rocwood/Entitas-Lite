@@ -9,18 +9,20 @@ using UnityEngine;
 
 namespace Example1
 {
-
+	[Default]
 	public class PositionComponent : IComponent
 	{
 		public int x;
 		public int y;
 	}
 
+	// if no context declaration, it comes into Default context
 	public class VelocityComponent : IComponent
 	{
 		public int x;
 		public int y;
 
+		// don't be afraid of writing helper accessor
 		public void SetValue(int nx, int ny)
 		{
 			x = nx;
@@ -28,15 +30,18 @@ namespace Example1
 		}
 	}
 
+	// if no feature-set declaration, it comes into UnnamedFeature
 	public class MovementSystem : IExecuteSystem
 	{
 		public void Execute()
 		{
+			// new API for getting group with all matched entities from context
 			var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
+
 			foreach (var e in entities)
 			{
 				var vel = e.Get<VelocityComponent>();
-				var pos = e.Modify<PositionComponent>();
+				var pos = e.Modify<PositionComponent>(); // new API for trigger Monitor/ReactiveSystem
 
 				pos.x += vel.x;
 				pos.y += vel.y;
@@ -49,6 +54,7 @@ namespace Example1
 	{
 		public ViewSystem()
 		{
+			// new API, add monitor that watch Position changed and call Process 
 			monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
 		}
 
@@ -79,6 +85,10 @@ namespace Example1
 		{
 			var contexts = Contexts.sharedInstance;
 
+#if UNITY_EDITOR
+			ContextObserverHelper.ObserveAll(contexts);
+#endif
+
 			// create random entity
 			var rand = new System.Random();
 			var context = Contexts.Default;
@@ -86,8 +96,12 @@ namespace Example1
 				e.Add<PositionComponent>();
 				e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
-			// init systems
+#if UNITY_EDITOR
+			_feature = FeatureObserverHelper.CreateFeature(null);
+#else
+			// init systems, auto collect matched systems, no manual Systems.Add(ISystem) required
 			_feature = new Feature(null);
+#endif
 			_feature.Initialize();
 		}
 

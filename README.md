@@ -1,140 +1,149 @@
 # Entitas-Lite
 
-Entitas-Lite is a **No-CodeGenerator** edition of Entitas.
-We rewrote some core of Entitas-CSharp, and provide easy interface for hand-coding.
-
+Entitas-Lite is a **No-CodeGenerator** branch of Entitas.
+It's suitable for large projects and teams perfer ECS without code-generation. 
+We rewrote some core of Entitas, and provided easy interface for hand-coding.
 
 ## Getting Start
-Download and extract "Build/deploy/Entitas-Lite" folder into your Unity Project/Assets/.<br>
+Download and extract "Build/deploy/Entitas-Lite" folder into your Unity Project/Assets/.<br/>
 Just write your own Components and Systems, then a GameController class for game entry.<br/>
 **No CodeGenerator** required! Have fun!
 
-Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite  <br>
+Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite
 
 
 ## Example 1
 
 ```csharp
-using System;
-using Entitas;
-
-[Default]  
-public class PositionComponent : IComponent {
-  public int x;
-  public int y;
+[Default]
+public class PositionComponent : IComponent
+{
+	public int x;
+	public int y;
 }
 
 // if no context declaration, it comes into Default context
-public class VelocityComponent : IComponent {
-  public int x;
-  public int y;
+public class VelocityComponent : IComponent
+{
+	public int x;
+	public int y;
 
-  // don't be afraid of writing helper accessor
-  public void SetValue(int nx, int ny) { x = nx; y = ny; }
+	// don't be afraid of writing helper accessor
+	public void SetValue(int nx, int ny)
+	{
+		x = nx;
+		y = ny;
+	}
 }
 
 // if no feature-set declaration, it comes into UnnamedFeature
-public class MovementSystem : IExecuteSystem {
-  public void Execute() {
+public class MovementSystem : IExecuteSystem
+{
+	public void Execute()
+	{
+		// new API for getting group with all matched entities from context
+		var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
 
-    // new API for getting all matched entities from context
-    var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>();
-	
-	foreach (var e in entities) {
-	  var vel = e.Get<VelocityComponent>();
-	  var pos = e.Modify<PositionComponent>();  // new API for trigger Monitor/ReactiveSystem
-	  
-	  pos.x += vel.x;
-	  pos.y += vel.y;
+		foreach (var e in entities)
+		{
+			var vel = e.Get<VelocityComponent>();
+			var pos = e.Modify<PositionComponent>(); // new API for trigger Monitor/ReactiveSystem
+
+			pos.x += vel.x;
+			pos.y += vel.y;
+		}
 	}
-  }
 }
 
 // Sample view just display Entity's Position if changed
-public class ViewSystem : ReactiveSystem {
-  public ViewSystem() {
-    // new API, add monitor that watch Position changed and call Process 
-    monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(this.Process);
-  }
+public class ViewSystem : ReactiveSystem
+{
+	public ViewSystem()
+	{
+		// new API, add monitor that watch Position changed and call Process 
+		monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
+	}
 
-  void Process(List<Entity> entities) {
-    foreach (var e in entities) {
-      var pos = e.GetComponent<PositionComponent>();
-      Console.WriteLine("Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
-    }
-  }
+	protected void Process(List<Entity> entities)
+	{
+		foreach (var e in entities)
+		{
+			var pos = e.Get<PositionComponent>();
+			Debug.Log("Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
+		}
+	}
 }
 
-// Game Entry
-public class GameController {
-  private Systems _feature;
+public class GameController : MonoBehaviour
+{
+	private Systems _feature;
 
-  public void Start() {
-    var contexts = Contexts.sharedInstance;
+	public void Start()
+	{
+		var contexts = Contexts.sharedInstance;
 
 #if UNITY_EDITOR
-    ContextObserverHelper.ObserveAll(contexts); // Unity-only API
+		ContextObserverHelper.ObserveAll(contexts);
 #endif
 
-    // create random entity
-    var rand = new Random();
-    var context = Contexts.Default;
-    var e = context.CreateEntity();
-        e.Add<PositionComponent>();  // NewAPI
-        e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+		// create random entity
+		var rand = new System.Random();
+		var context = Contexts.Default;
+		var e = context.CreateEntity();
+			e.Add<PositionComponent>();
+			e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
-    // init systems, auto collect matched systems, no manual Systems.Add(ISystem) required
 #if UNITY_EDITOR
-    _feature = new FeatureObserverHelper.Create();  // Unity-only API, shorter for Create("DefaultFeature")
+		_feature = FeatureObserverHelper.CreateFeature(null);
 #else
-    _feature = new Feature(null);
+		// init systems, auto collect matched systems, no manual Systems.Add(ISystem) required
+		_feature = new Feature(null);
 #endif
-    _feature.Initialize();
-  }
+		_feature.Initialize();
+	}
 
-  public void Update() {
-    _feature.Execute();
-    _feature.Cleanup();
-  }
+	public void Update()
+	{
+		_feature.Execute();
+		_feature.Cleanup();
+	}
 }
 ```
-
 
 
 ## Improvement & NewAPI beyond Entitas
 
-* Entity, Context, Contexts, Matcher, Feature are now just one class.<br/>
+* Entity, Context, Contexts, Matcher, Feature are now just one class. <br/>
 No more generated GameEntity, GameContext, GameMatcher, InputEntity ...<br/>
-Use new attributes like ContextScope, FeatureScope for scoping.
+However, another generic helpers were added for easy hand-coding.
+
+* Feature: Auto add matched Systems, no manual Systems.Add(ISystem) required
+
+* Scoping: Subclassing from ContextAttribute for Components, and FeatureAttribute for Systems.
 ```
-public class Game : ContextScope {
-}
-public class GameFeature : FeatureScope { 
-	public GameFeature(int prior = 0) : base("GameFeature", prior) { }
-}
+public class Game : ContextAttribute {}
+public class MyFeature : FeatureAttribute { public MyFeature(int prior = 0) :base(prior) {} }
 
-[Game]
-public class MyComponent : IComponent {}
-
-[GameFeature]
-public class MySystem : IExecuteSystem {}
+[Game] public class MyComponent : IComponent {}
+[MyFeature] public class MySystem : IExecuteSystem {}
 ```
-
 
 * Entity: Generic API for Add/Replace/Get/RemoveComponents. Forget component-index!
 ```
-e.AddComponent<PositionComponent>();
-e.RemoveComponent<PositionComponent>();
-var vel = e.GetComponent<VelocityComponent>();
-var pos = e.Get<PositionComponent>();  // shorter API
+e.Add<PositionComponent>();		// equals to e.AddComponent<PositionComponent>();
+e.Remove<PositionComponent>();	// equals to e.RemoveComponent<PositionComponent>();
+var vel = e.Get<VelocityComponent>();
+var pos = e.Modify<PositionComponent>();  // get component for modification, will trigger Monitor/ReactiveSystem
 ```
 
-
-* Context: Auto register all components. Add API for getting entity with creationIndex.
+* Context: Auto register all components with the same ContextAttribute. 
 ```
-Entity e = context.GetEntity(100);	
-```
+var e1 = context.GetEntity(100);	// get entity with creationIndex==100
 
+public class UserComponent : IUniqueComponent {}	// mark this component unique in context
+var e2 = context.GetSingleEntity<UserComponent>();	// whill raise exception if not unique
+var user = context.GetUnique<UserComponent>();		// directly fetch unique component
+```
 
 * Contexts: Auto register all context. Add name-Context lookup and a defaultContext for notitled Components.
 ```
@@ -143,20 +152,28 @@ Context game = Contexts.Get("Game");  // = Contexts.sharedInstance.GetContext("G
 Context input = Contexts.Get<Input>(); // = Contexts.sharedInstance.GetContext<Input>();
 ```
 
-
 * Matcher: Generic templates for easy Matcher creation
 ```
 var matcher = Match<Game>.AllOf<PositionComponent, VelocityComponent>();
-var matcher2 = MatchDefault.AllOf<PositionComponent, VelocityComponent>();  // shorter for Match<DefaultContext>
+var group = Context<Game>.AllOf<PositionComponent, VelocityComponent>(); // easy combin context.GetGroup(matcher)
 ```
 
-
-* Feature: Auto add matched Systems, no manual Systems.Add(ISystem) required
-
-* new ReactiveSystem: simplify ReactiveSystem<Entity> for subclass
+* Monitor/Collector: Monitor combins collector/filter/processor for Reactive-programming
 ```
-constructor ReactiveSystem(ICollector<Entity> collector) // only accept Collector, no need to override GetTrigger()
-bool Filter(Entity entity) // return true by default, not override required
+var monitor = Context<Default>.AllOf<PositionComponent>() // group => monitor
+				.OnAdded(entities => { foreach (var e in entities) { /* do something */ }}) // processor when trigger
+				.where(e => e.Has<ViewComponent>); // filter
+
+monitor.Execute(); // in each update
+```
+
+* ReactiveSystem: brand-new usage by Monitor, allow multi monitors 
+```
+public class ViewSystem : ReactiveSystem {
+	public ViewSystem() {
+		// use += to add more monitors to Execute
+		monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(this.Process);  
+	}
 ```
 
 * new ExecuteSystem: simplify IExecuteSystem for subclass
@@ -168,6 +185,7 @@ abstract void Execute(Entity entity) // override this for executing on each matc
 
 ## TODO
 
+* Bug fixs
 * Performance tweak
 * Clean document
 * More examples
