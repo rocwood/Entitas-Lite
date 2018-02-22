@@ -469,10 +469,6 @@ namespace Entitas {
 		}
 
 		public T GetUnique<T>() where T : IUniqueComponent {
-			return GetUniqueComponent<T>();
-		}
-
-		public T GetUniqueComponent<T>() where T : IUniqueComponent {
 			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
 
 			IComponent component = GetUniqueComponent(componentIndex);
@@ -482,12 +478,54 @@ namespace Entitas {
 			return (T)component;
 		}
 
-		public IComponent GetUniqueComponent(int componentIndex) {
+		private IComponent GetUniqueComponent(int componentIndex) {
 			Entity entity = GetSingleEntity(componentIndex);
 			if (entity == null)
 				return null;
 			
 			return entity.GetComponent(componentIndex);
+		}
+
+		public T AddUnique<T>(bool useExisted = true) where T : IUniqueComponent, new()
+		{
+			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
+
+			Entity entity = GetSingleEntity(componentIndex);
+			if (entity != null) {
+				if (!useExisted)
+					throw new EntityAlreadyHasComponentException(
+					   componentIndex, "Cannot add component '" +
+					   _contextInfo.componentNames[componentIndex] + "' to " + entity + "!",
+					   "You should check if an entity already has the component."
+					);
+				return (T)ModifyUniqueComponent(componentIndex);
+			}
+
+			entity = CreateEntity();
+			T component = entity.CreateComponent<T>(componentIndex);
+			entity.AddComponent(componentIndex, component);
+
+			return component;
+		}
+
+		public T ModifyUnique<T>() where T : IUniqueComponent {
+			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
+
+			IComponent component = ModifyUniqueComponent(componentIndex);
+			if (component == null)
+				return default(T);
+
+			return (T)component;
+		}
+
+		private IComponent ModifyUniqueComponent(int componentIndex) {
+			Entity entity = GetSingleEntity(componentIndex);
+			if (entity == null)
+				return null;
+
+			IComponent component = entity.GetComponent(componentIndex);
+			entity.SetModified(componentIndex);
+			return component;
 		}
 	}
 }

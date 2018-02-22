@@ -143,6 +143,8 @@ var e1 = context.GetEntity(100);	// get entity with creationIndex==100
 public class UserComponent : IUniqueComponent {}	// mark this component unique in context
 var e2 = context.GetSingleEntity<UserComponent>();	// whill raise exception if not unique
 var user = context.GetUnique<UserComponent>();		// directly fetch unique component
+var user2 = context.ModifyUnique<UserComponent>();
+var user3 = context.AddUnique<UserComponent>();
 ```
 
 * Contexts: Auto register all context. Add name-Context lookup and a defaultContext for notitled Components.
@@ -185,7 +187,7 @@ abstract void Execute(Entity entity) // override this for executing on each matc
 
 ## TODO
 
-* Bug fixs
+* Bug fixes
 * Performance tweak
 * Clean document
 * More examples
