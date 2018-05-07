@@ -134,7 +134,7 @@ namespace Entitas {
             _components[index] = component;
             _componentsCache = null;
             _componentIndicesCache = null;
-            _toStringCache = null;
+            //_toStringCache = null;
             if (OnComponentAdded != null) {
                 OnComponentAdded(this, index, component);
             }
@@ -184,7 +184,7 @@ namespace Entitas {
         }
 
         void replaceComponent(int index, IComponent replacement) {
-            _toStringCache = null;
+            //_toStringCache = null;
             var previousComponent = _components[index];
             if (replacement != previousComponent) {
                 _components[index] = replacement;
@@ -301,7 +301,7 @@ namespace Entitas {
 
         /// Removes all components.
         public void RemoveAllComponents() {
-            _toStringCache = null;
+            //_toStringCache = null;
             for (int i = 0; i < _components.Length; i++) {
                 if (_components[i] != null) {
                     replaceComponent(i, null);
@@ -351,7 +351,7 @@ namespace Entitas {
         /// release it manually at some point.
         public void Retain(object owner) {
             _aerc.Retain(owner);
-            _toStringCache = null;
+            //_toStringCache = null;
         }
 
         /// Releases the entity. An owner can only release an entity
@@ -362,7 +362,7 @@ namespace Entitas {
         /// release it manually at some point.
         public void Release(object owner) {
             _aerc.Release(owner);
-            _toStringCache = null;
+            //_toStringCache = null;
 
             if (_aerc.retainCount == 0) {
                 if (OnEntityReleased != null) {
@@ -401,51 +401,22 @@ namespace Entitas {
 
         /// Returns a cached string to describe the entity
         /// with the following format:
-        /// Entity_{creationIndex}_{name}_(*{retainCount})({list of components})
+        /// Entity_{creationIndex}_{name}
         public override string ToString() {
             if (_toStringCache == null) {
-                if (_toStringBuilder == null) {
+                if (_toStringBuilder == null)
                     _toStringBuilder = new StringBuilder();
-                }
+
                 _toStringBuilder.Length = 0;
 				_toStringBuilder
-					.Append("Entity_")
-					.Append(_creationIndex);
+					.Append("Entity(")
+					.Append(_creationIndex)
+					.Append(") ");
 
-				if (!string.IsNullOrEmpty(_name)) {
-					_toStringBuilder
-						.Append("_")
-						.Append(_name)
-						.Append("_");
-				}
+				if (!string.IsNullOrEmpty(_name))
+					_toStringBuilder.Append(_name);
 
-				_toStringBuilder
-                    .Append("(*")
-                    .Append(retainCount)
-                    .Append(")")
-                    .Append("(");
-
-                const string separator = ", ";
-                var components = GetComponents();
-                var lastSeparator = components.Length - 1;
-                for (int i = 0; i < components.Length; i++) {
-                    var component = components[i];
-                    var type = component.GetType();
-                    var implementsToString = type.GetMethod("ToString")
-                                                 .DeclaringType.ImplementsInterface<IComponent>();
-                    _toStringBuilder.Append(
-                        implementsToString
-                            ? component.ToString()
-                            : type.ToCompilableString().RemoveComponentSuffix()
-                    );
-
-                    if (i < lastSeparator) {
-                        _toStringBuilder.Append(separator);
-                    }
-                }
-
-                _toStringBuilder.Append(")");
-                _toStringCache = _toStringBuilder.ToString();
+				_toStringCache = _toStringBuilder.ToString();
             }
 
             return _toStringCache;
