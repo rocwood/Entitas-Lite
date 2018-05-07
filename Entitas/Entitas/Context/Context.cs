@@ -461,7 +461,7 @@ namespace Entitas {
 			IGroup group = _groupForSingle[componentIndex];
 
 			if (group == null) {
-				group = GetGroup(Matcher.AllOf(componentIndex));
+				group = GetGroup(Matcher.AllOf(componentIndex).SetComponentNames(this.contextInfo.componentNames));
 				_groupForSingle[componentIndex] = group;
 			}
 
@@ -501,7 +501,7 @@ namespace Entitas {
 				return (T)ModifyUniqueComponent(componentIndex);
 			}
 
-			entity = CreateEntity();
+			entity = CreateEntity(typeof(T).Name);
 			T component = entity.CreateComponent<T>(componentIndex);
 			entity.AddComponent(componentIndex, component);
 

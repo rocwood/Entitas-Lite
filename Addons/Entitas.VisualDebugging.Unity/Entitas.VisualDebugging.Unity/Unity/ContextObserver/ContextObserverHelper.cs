@@ -28,5 +28,20 @@ namespace Entitas.VisualDebugging.Unity
 			var observer = new ContextObserver(c);
 			Object.DontDestroyOnLoad(observer.gameObject);
 		}
+
+		public static void ClearAll()
+		{
+			if (!Application.isPlaying || !Application.isEditor)
+				return;
+
+			var behaviours = GameObject.FindObjectsOfType<ContextObserverBehaviour>();
+			if (behaviours != null && behaviours.Length > 0)
+			{
+				foreach (var behaviour in behaviours)
+				{
+					GameObject.Destroy(behaviour);
+				}
+			}
+		}
 	}
 }
