@@ -58,4 +58,7 @@
     <None Include="Entitas.Unity.Editor\Editor\Images\EntitasHeader.png.meta" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /D /I /R /Y /F $(TargetPath) $(SolutionDir)\Build\Deploy\Entitas-Lite\Editor</PostBuildEvent>
+  </PropertyGroup>
 </Project>

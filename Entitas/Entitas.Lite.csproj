@@ -133,4 +133,7 @@
       <LogicalName>version</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /D /I /R /Y /F $(TargetPath) $(SolutionDir)\Build\Deploy\Entitas-Lite</PostBuildEvent>
+  </PropertyGroup>
 </Project>
