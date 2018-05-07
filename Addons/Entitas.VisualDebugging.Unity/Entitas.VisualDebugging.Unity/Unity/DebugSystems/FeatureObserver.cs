@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Entitas.VisualDebugging.Unity
 {
@@ -19,6 +19,21 @@ namespace Entitas.VisualDebugging.Unity
 				return new Feature(name);
 
 			return new FeatureWithObserver(name);
+		}
+
+		public static void ClearAll()
+		{
+			if (!Application.isPlaying || !Application.isEditor)
+				return;
+
+			var behaviours = GameObject.FindObjectsOfType<DebugSystemsBehaviour>();
+			if (behaviours != null && behaviours.Length > 0)
+			{
+				foreach (var behaviour in behaviours)
+				{
+					GameObject.Destroy(behaviour);
+				}
+			}
 		}
 	}
 }

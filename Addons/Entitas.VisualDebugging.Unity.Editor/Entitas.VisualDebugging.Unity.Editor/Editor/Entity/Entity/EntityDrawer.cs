@@ -22,7 +22,8 @@ namespace Entitas.VisualDebugging.Unity.Editor {
 
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Retained by (" + entity.retainCount + ")", EditorStyles.boldLabel);
+			EditorGUILayout.IntField("CreationIndex", entity.creationIndex);
+			EditorGUILayout.LabelField("Retained by (" + entity.retainCount + ")", EditorStyles.boldLabel);
 
             var safeAerc = entity.aerc as SafeAERC;
             if (safeAerc != null) {
@@ -166,34 +167,29 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                     EditorGUILayout.EndHorizontal();
 
                     if (unfoldedComponents[index]) {
-                        var newComponent = entity.CreateComponent(index, componentType);
-                        component.CopyPublicMemberValues(newComponent);
-
                         var changed = false;
                         var componentDrawer = getComponentDrawer(componentType);
                         if (componentDrawer != null) {
                             EditorGUI.BeginChangeCheck();
                             {
-                                componentDrawer.DrawComponent(newComponent);
+                                componentDrawer.DrawComponent(component);
                             }
                             changed = EditorGUI.EndChangeCheck();
                         } else {
                             foreach (var info in memberInfos) {
                                 if (EntitasEditorLayout.MatchesSearchString(info.name.ToLower(), componentMemberSearch[index].ToLower())) {
-                                    var memberValue = info.GetValue(newComponent);
+                                    var memberValue = info.GetValue(component);
                                     var memberType = memberValue == null ? info.type : memberValue.GetType();
-                                    if (DrawObjectMember(memberType, info.name, memberValue, newComponent, info.SetValue)) {
+                                    if (DrawObjectMember(memberType, info.name, memberValue, component, info.SetValue)) {
                                         changed = true;
                                     }
                                 }
                             }
                         }
 
-                        if (changed) {
-                            entity.ReplaceComponent(index, newComponent);
-                        } else {
-                            entity.GetComponentPool(index).Push(newComponent);
-                        }
+						if (changed) {
+							entity.ReplaceComponent(index, component);
+						}
                     }
                 }
                 EntitasEditorLayout.EndVerticalBox();

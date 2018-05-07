@@ -32,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entitas\Collector\CollectorExtension.cs" />
+    <Compile Include="Entitas\Matcher\MatcherExtension.cs" />
     <Compile Include="Entitas\Monitor\IMonitor.cs" />
     <Compile Include="Entitas\Monitor\Monitor.cs" />
     <Compile Include="Entitas\Context\ComponentIndex.cs" />

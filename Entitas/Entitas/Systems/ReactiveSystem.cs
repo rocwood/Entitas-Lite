@@ -21,7 +21,7 @@ namespace Entitas {
         }
 
 		/// Use += operator only, but not real assignment
-		protected MonitorList monitors { get => _monitors; set { } }
+		protected MonitorList monitors { get { return _monitors; } set { } }
 
 		protected void Add(IMonitor monitor) {
 			_monitors.Add(monitor);

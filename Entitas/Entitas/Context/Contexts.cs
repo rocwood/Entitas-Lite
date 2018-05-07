@@ -22,6 +22,11 @@ namespace Entitas
 			}
 		}
 
+		public static void DestroyInstance()
+		{
+			_sharedInstance = null;
+		}
+
 		private Dictionary<string, Context> _contextLookup;
 		private Context[] _contextList;
 		private Context _defaultContext;

@@ -218,13 +218,8 @@ namespace Entitas {
         /// The prefered way is to use the
         /// generated methods from the code generator.
         public IComponent GetComponent(int index) {
-            if (!HasComponent(index)) {
-                throw new EntityDoesNotHaveComponentException(
-                    index, "Cannot get component '" +
-                    _contextInfo.componentNames[index] + "' from " + this + "!",
-                    "You should check if an entity has the component " +
-                    "before getting it."
-                );
+            if (index < 0) {
+                return null;
             }
 
             return _components[index];
@@ -272,6 +267,10 @@ namespace Entitas {
         /// Determines whether this entity has a component
         /// at the specified index.
         public bool HasComponent(int index) {
+            if (index < 0) {
+                return false;
+            }
+
             return _components[index] != null;
         }
 
