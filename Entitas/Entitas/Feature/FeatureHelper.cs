@@ -19,9 +19,23 @@ namespace Entitas
 		{
 			public ISystem system;
 			public int priority;
+			public string fullName;
 
-			public SystemProxy(ISystem s, int prior) { system = s; priority = prior; }
-			public int CompareTo(SystemProxy other) { return other.priority - priority; } // in descending order
+			public SystemProxy(ISystem s, int prior)
+			{
+				system = s;
+				priority = prior;
+				fullName = s.GetType().FullName;
+			}
+
+			public int CompareTo(SystemProxy other)
+			{
+				int priorDiff = other.priority - priority;  // in descending order
+				if (priorDiff != 0)
+					return priorDiff;
+
+				return string.CompareOrdinal(fullName, other.fullName);
+			} 
 		}
 
 		public static void CollectSystems(string name, Systems feature)

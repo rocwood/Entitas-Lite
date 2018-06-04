@@ -67,8 +67,11 @@ namespace Entitas
 			foreach (var cc in comps)
 			{
 				var name = cc.Key;
-				var list = cc.Value.ToArray();
-				var c = new Context(list.Length, startCreationIndex, new ContextInfo(name, list), GetAERC());
+				var list = cc.Value;
+
+				list.Sort((x, y) => string.CompareOrdinal(x.FullName, y.FullName));
+
+				var c = new Context(list.Count, startCreationIndex, new ContextInfo(name, list.ToArray()), GetAERC());
 
 				_contextLookup[name] = c;
 				contextList.Add(c);
