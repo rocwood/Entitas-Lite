@@ -202,7 +202,12 @@ namespace Entitas {
                     }
                 }
 
-                GetComponentPool(index).Push(previousComponent);
+				// Reset before return to pool
+				var resetablePrevComponent = previousComponent as IResetable;
+				if (resetablePrevComponent != null)
+					resetablePrevComponent.Reset();
+
+				GetComponentPool(index).Push(previousComponent);
 
             } else {
                 if (OnComponentReplaced != null) {
