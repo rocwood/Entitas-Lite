@@ -9,18 +9,20 @@ using UnityEngine;
 
 namespace Example1
 {
-
+	[Default]
 	public class PositionComponent : IComponent
 	{
 		public int x;
 		public int y;
 	}
 
+	// if no context declaration, it comes into Default context
 	public class VelocityComponent : IComponent
 	{
 		public int x;
 		public int y;
 
+		// don't be afraid of writing helper accessor
 		public void SetValue(int nx, int ny)
 		{
 			x = nx;
@@ -28,40 +30,39 @@ namespace Example1
 		}
 	}
 
+	// if no feature-set declaration, it comes into UnnamedFeature
 	public class MovementSystem : IExecuteSystem
 	{
 		public void Execute()
 		{
-			var context = Contexts.Default;
+			// new API for getting group with all matched entities from context
+			var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
 
-			var entities = context.GetEntities(Match<DefaultContext>.AllOf<PositionComponent, VelocityComponent>());
 			foreach (var e in entities)
 			{
-				var pos = e.GetComponent<PositionComponent>();
-				var vel = e.GetComponent<VelocityComponent>();
+				var vel = e.Get<VelocityComponent>();
+				var pos = e.Modify<PositionComponent>(); // new API for trigger Monitor/ReactiveSystem
 
 				pos.x += vel.x;
 				pos.y += vel.y;
-
-				e.MarkUpdated<PositionComponent>();
 			}
 		}
 	}
 
-
 	// Sample view just display Entity's Position if changed
 	public class ViewSystem : ReactiveSystem
 	{
-		public ViewSystem() 
-			: base(Contexts.Default.CreateCollector(MatchDefault.AllOf<PositionComponent>()))
+		public ViewSystem()
 		{
+			// new API, add monitor that watch Position changed and call Process 
+			monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
 		}
-	
-		protected override void Execute(List<Entity> entities)
+
+		protected void Process(List<Entity> entities)
 		{
 			foreach (var e in entities)
 			{
-				var pos = e.GetComponent<PositionComponent>();
+				var pos = e.Get<PositionComponent>();
 #if CONSOLE_APP
 				Console.WriteLine(
 #else
@@ -84,15 +85,23 @@ namespace Example1
 		{
 			var contexts = Contexts.sharedInstance;
 
+#if UNITY_EDITOR
+			ContextObserverHelper.ObserveAll(contexts);
+#endif
+
 			// create random entity
 			var rand = new System.Random();
 			var context = Contexts.Default;
 			var e = context.CreateEntity();
-				e.AddComponent<PositionComponent>();
-				e.AddComponent<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+				e.Add<PositionComponent>();
+				e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
 
-			// init systems
-			_feature = new Feature();
+#if UNITY_EDITOR
+			_feature = FeatureObserverHelper.CreateFeature(null);
+#else
+			// init systems, auto collect matched systems, no manual Systems.Add(ISystem) required
+			_feature = new Feature(null);
+#endif
 			_feature.Initialize();
 		}
 
