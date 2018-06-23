@@ -37,7 +37,7 @@
     <Compile Include="src\Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
+    <ProjectReference Include="..\..\Sources\Entitas.Lite\Entitas.Lite.csproj">
       <Project>{a0a11cc3-8b1e-4345-a5fa-01fc60e581d8}</Project>
       <Name>Entitas.Lite</Name>
     </ProjectReference>

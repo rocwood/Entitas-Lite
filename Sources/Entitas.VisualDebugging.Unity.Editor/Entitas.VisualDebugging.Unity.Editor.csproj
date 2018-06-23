@@ -29,11 +29,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\Libraries\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>..\Libraries\UnityEditor.dll</HintPath>
+      <HintPath>..\..\Libraries\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Libraries\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -85,7 +85,7 @@
       <Project>{70222463-4E60-4862-8C18-1EBA6CA63353}</Project>
       <Name>Entitas.VisualDebugging.Unity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
+    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj">
       <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
       <Name>Entitas.Lite</Name>
     </ProjectReference>

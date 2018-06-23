@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{70222463-4E60-4862-8C18-1EBA6CA63353}</ProjectGuid>
+    <ProjectGuid>{9AF72B25-85B0-4FDC-85C3-660926C82438}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Entitas.VisualDebugging.Unity</RootNamespace>
-    <AssemblyName>Entitas.VisualDebugging.Unity</AssemblyName>
+    <RootNamespace>Entitas.Unity.Editor</RootNamespace>
+    <AssemblyName>Entitas.Unity.Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ReleaseVersion>1.0.0</ReleaseVersion>
   </PropertyGroup>
@@ -29,32 +29,36 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="UnityEditor">
+      <HintPath>..\..\Libraries\UnityEditor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\Libraries\UnityEngine.dll</HintPath>
+      <HintPath>..\..\Libraries\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserver.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverExtension.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverHelper.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystems.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystemsBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\FeatureObserver.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\SystemInfo.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\DontDrawComponentAttribute.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\EntityBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\GameObjectDestroyExtension.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\EntitasPreferencesDrawer.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\AbstractPreferencesDrawer.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\EntitasStyles.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\IEntitasPreferencesDrawer.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\EditorWindow.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\GUI.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\GUI\Layout\Layout.cs" />
+    <Compile Include="Entitas.Unity.Editor\Editor\ScriptingDefineSymbols.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
+    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj">
       <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
       <Name>Entitas.Lite</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Entitas.Unity.Editor\Editor\Images\EntitasHeader.png" />
+    <None Include="Entitas.Unity.Editor\Editor\Images\EntitasHeader.png.meta" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /D /I /R /Y /F $(TargetPath) $(SolutionDir)\Build\Deploy\Entitas-Lite</PostBuildEvent>
+    <PostBuildEvent>xcopy /D /I /R /Y /F $(TargetPath) $(SolutionDir)\Build\Deploy\Entitas-Lite\Editor</PostBuildEvent>
   </PropertyGroup>
 </Project>

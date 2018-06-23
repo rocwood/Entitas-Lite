@@ -30,7 +30,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Libraries\UnityEngine.dll</HintPath>
+      <HintPath>..\..\Libraries\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup />
@@ -38,7 +38,7 @@
     <Compile Include="Entitas.Unity\Unity\EntityLink.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Entitas\Entitas.Lite.csproj">
+    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj">
       <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
       <Name>Entitas.Lite</Name>
     </ProjectReference>
