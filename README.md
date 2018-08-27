@@ -9,9 +9,6 @@ Download and extract "Build/deploy/Entitas-Lite" folder into your Unity Project/
 Just write your own Components and Systems, then a GameController class for game entry.<br/>
 **No CodeGenerator** required! Have fun!
 
-Get Entitas-Lite  : https://github.com/rocwood/Entitas-Lite
-
-
 ## Example 1
 
 ```csharp
