@@ -2,19 +2,22 @@
 
 namespace Entitas {
 
-    public class ContextInfo {
+	public class ContextInfo {
 
-        public readonly string name;
-        public readonly string[] componentNames;
-        public readonly Type[] componentTypes;
+		public readonly string name;
+		public readonly string[] componentNames;
+		public readonly Type[] componentTypes;
 
-        public ContextInfo(string name, string[] componentNames, Type[] componentTypes) {
-            this.name = name;
-            this.componentNames = componentNames;
-            this.componentTypes = componentTypes;
-        }
+		public readonly bool isDefault = false;
 
-		public ContextInfo(string name, Type[] componentTypes) {
+		public ContextInfo(string name, string[] componentNames, Type[] componentTypes, bool isDefault = false) {
+			this.name = name;
+			this.componentNames = componentNames;
+			this.componentTypes = componentTypes;
+			this.isDefault = isDefault;
+		}
+
+		public ContextInfo(string name, Type[] componentTypes, bool isDefault = false) {
 			int count = componentTypes.Length;
 			string[] componentNames = new string[count];
 
@@ -25,6 +28,7 @@ namespace Entitas {
 			this.name = name;
 			this.componentNames = componentNames;
 			this.componentTypes = componentTypes;
+			this.isDefault = isDefault;
 		}
 
 		internal int Find(Type type) {

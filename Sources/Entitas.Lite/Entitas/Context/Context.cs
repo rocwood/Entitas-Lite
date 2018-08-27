@@ -176,8 +176,7 @@ namespace Entitas {
 			entity.OnEntityReleased += _cachedEntityReleased;
 			entity.OnDestroyEntity += _cachedDestroyEntity;
 
-			if (OnEntityCreated != null)
-			{
+			if (OnEntityCreated != null) {
 				OnEntityCreated(this, entity);
 			}
 

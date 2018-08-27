@@ -24,22 +24,38 @@ namespace Entitas
 			if (c == null)
 				return -1;
 
-			int val = -1;
-			if (!_cacheLookup.TryGetValue(c, out val))
+			if (c.isDefault)
 			{
-				val = c.Find<T>();
-				if (val < 0)
-					throw new ComponentIsNotInContextException(typeof(T), c);
+				// Fast lookup in default context
+				if (_cachedDefaultIndex < 0)
+				{
+					_cachedDefaultIndex = c.Find<T>();
+					if (_cachedDefaultIndex < 0)
+						throw new ComponentIsNotInContextException(typeof(T), c);
+				}
 
-				_cacheLookup[c] = val;
+				return _cachedDefaultIndex;
 			}
+			else
+			{
+				int val = -1;
+				if (!_cachedLookup.TryGetValue(c, out val))
+				{
+					val = c.Find<T>();
+					if (val < 0)
+						throw new ComponentIsNotInContextException(typeof(T), c);
 
-			return val;
+					_cachedLookup[c] = val;
+				}
+
+				return val;
+			}
 		}
 
 		static ComponentIndex() { }
 
-		private static Dictionary<ContextInfo, int> _cacheLookup = new Dictionary<ContextInfo, int>();
+		private static int _cachedDefaultIndex = -1;
+		private static Dictionary<ContextInfo, int> _cachedLookup = new Dictionary<ContextInfo, int>();
 	}
 
 	/// Generic and fastest ComponentIndex cache with Context + ComponentType, 
@@ -49,14 +65,14 @@ namespace Entitas
 		{
 			get
 			{
-				if (_cacheValue == -1)
-					_cacheValue = ComponentIndex<T>.FindIn<C>();
+				if (_cachedIndex < 0)
+					_cachedIndex = ComponentIndex<T>.FindIn<C>();
 
-				return _cacheValue;
+				return _cachedIndex;
 			}
 		}
 
-		private static int _cacheValue = -1;
+		private static int _cachedIndex = -1;
 	}
 
 	

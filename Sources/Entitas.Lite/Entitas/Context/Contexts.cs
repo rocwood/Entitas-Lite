@@ -68,10 +68,11 @@ namespace Entitas
 			{
 				var name = cc.Key;
 				var list = cc.Value;
+				var isDefault = name == Entitas.Default.NAME;
 
 				list.Sort((x, y) => string.CompareOrdinal(x.FullName, y.FullName));
 
-				var c = new Context(list.Count, startCreationIndex, new ContextInfo(name, list.ToArray()), GetAERC());
+				var c = new Context(list.Count, startCreationIndex, new ContextInfo(name, list.ToArray(), isDefault), GetAERC());
 
 				_contextLookup[name] = c;
 				contextList.Add(c);

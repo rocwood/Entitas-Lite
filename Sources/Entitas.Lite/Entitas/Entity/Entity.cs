@@ -47,7 +47,7 @@ namespace Entitas {
         public bool isEnabled { get { return _isEnabled; } }
 		
 		/// Optional name
-		public String name { get { return _name; } set { _name = value; } }
+		public String name { get { return _name; } set { _name = value; _toStringCache = null; } }
 
         /// componentPools is set by the context which created the entity and
         /// is used to reuse removed components.
@@ -82,7 +82,7 @@ namespace Entitas {
         IComponent[] _componentsCache;
         int[] _componentIndicesCache;
         string _toStringCache;
-        StringBuilder _toStringBuilder;
+        //StringBuilder _toStringBuilder;
 
         public void Initialize(int creationIndex, int totalComponents, Stack<IComponent>[] componentPools, ContextInfo contextInfo = null, IAERC aerc = null) {
             Reactivate(creationIndex);
@@ -191,9 +191,7 @@ namespace Entitas {
                 _componentsCache = null;
                 if (replacement != null) {
                     if (OnComponentReplaced != null) {
-                        OnComponentReplaced(
-                            this, index, previousComponent, replacement
-                        );
+                        OnComponentReplaced(this, index, previousComponent, replacement);
                     }
                 } else {
                     _componentIndicesCache = null;
@@ -204,16 +202,15 @@ namespace Entitas {
 
 				// Reset before return to pool
 				var resetablePrevComponent = previousComponent as IResetable;
-				if (resetablePrevComponent != null)
+				if (resetablePrevComponent != null) {
 					resetablePrevComponent.Reset();
+				}
 
 				GetComponentPool(index).Push(previousComponent);
 
             } else {
                 if (OnComponentReplaced != null) {
-                    OnComponentReplaced(
-                        this, index, previousComponent, replacement
-                    );
+                    OnComponentReplaced(this, index, previousComponent, replacement);
                 }
             }
         }
@@ -391,8 +388,11 @@ namespace Entitas {
         public void InternalDestroy() {
 			_isEnabled = false;
 			_name = null;
+			_toStringCache = null;
+
 			RemoveAllComponents();
-            OnComponentAdded = null;
+
+			OnComponentAdded = null;
             OnComponentReplaced = null;
             OnComponentRemoved = null;
             OnDestroyEntity = null;
@@ -405,22 +405,10 @@ namespace Entitas {
 
         /// Returns a cached string to describe the entity
         /// with the following format:
-        /// Entity_{creationIndex}_{name}
+        /// Entity({creationIndex}) {name}
         public override string ToString() {
             if (_toStringCache == null) {
-                if (_toStringBuilder == null)
-                    _toStringBuilder = new StringBuilder();
-
-                _toStringBuilder.Length = 0;
-				_toStringBuilder
-					.Append("Entity(")
-					.Append(_creationIndex)
-					.Append(") ");
-
-				if (!string.IsNullOrEmpty(_name))
-					_toStringBuilder.Append(_name);
-
-				_toStringCache = _toStringBuilder.ToString();
+				_toStringCache = string.Format("Entity({0}) {1}", _creationIndex, _name);
             }
 
             return _toStringCache;
