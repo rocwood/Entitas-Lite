@@ -120,7 +120,8 @@ However, another generic helpers were added for easy hand-coding.
 * Feature: Auto add matched Systems, no manual Systems.Add(ISystem) required
 
 * Scoping: Subclassing from ContextAttribute for Components, and FeatureAttribute for Systems.
-```
+
+```csharp
 public class Game : ContextAttribute {}
 public class MyFeature : FeatureAttribute { public MyFeature(int prior = 0) :base(prior) {} }
 
@@ -129,7 +130,8 @@ public class MyFeature : FeatureAttribute { public MyFeature(int prior = 0) :bas
 ```
 
 * Entity: Generic API for Add/Replace/Get/RemoveComponents. Forget component-index!
-```
+
+```csharp
 e.Add<PositionComponent>();	// equals to e.AddComponent<PositionComponent>();
 e.Remove<PositionComponent>();	// equals to e.RemoveComponent<PositionComponent>();
 var vel = e.Get<VelocityComponent>();
@@ -137,7 +139,8 @@ var pos = e.Modify<PositionComponent>();  // get component for modification, wil
 ```
 
 * Context: Auto register all components with the same ContextAttribute. 
-```
+
+```csharp
 var e1 = context.GetEntity(100);	// get entity with creationIndex==100
 
 public class UserComponent : IUniqueComponent {}	// mark this component unique in context
@@ -148,20 +151,23 @@ var user3 = context.AddUnique<UserComponent>();
 ```
 
 * Contexts: Auto register all context. Add name-Context lookup and a defaultContext for notitled Components.
-```
+
+```csharp
 Context c = Contexts.Default;  // = Contexts.sharedInstance.defaultContext;
 Context game = Contexts.Get("Game");  // = Contexts.sharedInstance.GetContext("Game");
 Context input = Contexts.Get<Input>(); // = Contexts.sharedInstance.GetContext<Input>();
 ```
 
 * Matcher: Generic templates for easy Matcher creation
-```
+
+```csharp
 var matcher = Match<Game>.AllOf<PositionComponent, VelocityComponent>();
 var group = Context<Game>.AllOf<PositionComponent, VelocityComponent>(); // easy combin context.GetGroup(matcher)
 ```
 
 * Monitor/Collector: Monitor combins collector/filter/processor for Reactive-programming
-```
+
+```csharp
 var monitor = Context<Default>.AllOf<PositionComponent>() // group => monitor
 		.OnAdded(entities => { foreach (var e in entities) { /* do something */ }})
 		.where(e => e.Has<ViewComponent>); // filter
@@ -170,16 +176,19 @@ monitor.Execute(); // in each update
 ```
 
 * ReactiveSystem: brand-new usage by Monitor, allow multi monitors 
-```
+
+```csharp
 public class ViewSystem : ReactiveSystem {
 	public ViewSystem() {
 		// use += to add more monitors to Execute
 		monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(this.Process);  
 	}
+}
 ```
 
 * new ExecuteSystem: simplify IExecuteSystem for subclass
-```
+
+```csharp
 constructor ExecuteSystem(Context context, IMatcher<Entity> matcher) // requre both context and matcher
 abstract void Execute(Entity entity) // override this for executing on each matched entity
 ```
