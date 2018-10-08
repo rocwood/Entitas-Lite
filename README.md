@@ -1,7 +1,7 @@
 # Entitas-Lite
 
 Entitas-Lite is a **No-CodeGenerator** branch of Entitas.<br/>
-It's suitable for large projects and teams perfer ECS without code-generation.<br/> 
+It's suitable for large projects and teams prefer ECS without code-generation.<br/> 
 Some core of Entitas was rewritten to provide easy interface for hand-coding.
 
 ## Getting Start
