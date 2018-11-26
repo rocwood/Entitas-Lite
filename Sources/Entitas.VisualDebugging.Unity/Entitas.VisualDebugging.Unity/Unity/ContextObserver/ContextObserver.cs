@@ -44,6 +44,7 @@ namespace Entitas.VisualDebugging.Unity {
         public override string ToString() {
             _toStringBuilder.Length = 0;
             _toStringBuilder
+				.Append("[Context] ")
                 .Append(_context.contextInfo.name).Append(" (")
                 .Append(_context.count).Append(" entities, ")
                 .Append(_context.reusableEntitiesCount).Append(" reusable, ");

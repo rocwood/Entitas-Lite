@@ -26,12 +26,12 @@ namespace Entitas.VisualDebugging.Unity
 			if (!Application.isPlaying || !Application.isEditor)
 				return;
 
-			var behaviours = GameObject.FindObjectsOfType<DebugSystemsBehaviour>();
+			var behaviours = Object.FindObjectsOfType<DebugSystemsBehaviour>();
 			if (behaviours != null && behaviours.Length > 0)
 			{
 				foreach (var behaviour in behaviours)
 				{
-					GameObject.Destroy(behaviour);
+					Object.Destroy(behaviour.gameObject);
 				}
 			}
 		}

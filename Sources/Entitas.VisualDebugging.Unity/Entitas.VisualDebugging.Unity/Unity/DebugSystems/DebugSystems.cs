@@ -116,7 +116,7 @@ namespace Entitas.VisualDebugging.Unity {
 
         protected void initialize(string name) {
             _name = name;
-            _gameObject = new GameObject(name);
+            _gameObject = new GameObject("[Systems] " + name);
             _gameObject.AddComponent<DebugSystemsBehaviour>().Init(this);
 
             _systemInfo = new SystemInfo(this);
