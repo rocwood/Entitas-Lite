@@ -8,7 +8,6 @@
     <RootNamespace>Entitas.Unity.Editor</RootNamespace>
     <AssemblyName>Entitas.Unity.Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ReleaseVersion>1.0.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,7 +57,7 @@
     <None Include="Entitas.Unity.Editor\Editor\Images\EntitasHeader.png.meta" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /D /I /R /Y /F $(TargetPath) $(SolutionDir)\Build\Deploy\Entitas-Lite\Editor</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\Build\Deploy\Entitas-Lite\Editor" />
+  </Target>  
 </Project>
