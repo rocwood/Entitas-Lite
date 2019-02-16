@@ -1,32 +1,35 @@
-﻿using System;
+using System;
 using Entitas.Utils;
 
 namespace Entitas
 {
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-	public abstract class ContextAttribute : Attribute
-	{
+	public abstract class ContextAttribute : Attribute {
 		public readonly string name;
 
-		protected ContextAttribute()
-		{
-			name = RemoveSuffix(GetType().Name);
+		protected ContextAttribute() {
+			name = GetName(this);
 		}
 
-		public static string GetName<C>() where C : ContextAttribute
-		{
-			return RemoveSuffix(typeof(C).Name);
+		public static string GetName<C>() where C : ContextAttribute {
+			return ContextAttributeNameCache<C>.Name;
 		}
 
-		protected static string RemoveSuffix(string name)
-		{
-			return name.RemoveSuffix("Context");
+		private static string GetName(ContextAttribute c) {
+			return GetName(c.GetType());
+		}
+
+		private static string GetName(Type type) {
+			return type.Name.RemoveSuffix("Attribute")
+							.RemoveSuffix("Context");
+		}
+
+		private static class ContextAttributeNameCache<C> where C: ContextAttribute {
+			public static readonly string Name = GetName(typeof(C));
+			static ContextAttributeNameCache() {}
 		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-	public sealed class Default : ContextAttribute
-	{
-		public const string NAME = "Default";
-	}
+	public sealed class Default : ContextAttribute {}
 }
