@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Entitas.Utils;
 using UnityEngine;
 
 namespace Entitas.VisualDebugging.Unity {
@@ -14,6 +15,8 @@ namespace Entitas.VisualDebugging.Unity {
         readonly List<IGroup> _groups;
         readonly GameObject _gameObject;
 
+        readonly ObjectPool<EntityBehaviour> _pool;
+
         StringBuilder _toStringBuilder = new StringBuilder();
 
         public ContextObserver(IContext context) {
@@ -21,6 +24,8 @@ namespace Entitas.VisualDebugging.Unity {
             _groups = new List<IGroup>();
             _gameObject = new GameObject();
             _gameObject.AddComponent<ContextObserverBehaviour>().Init(this);
+
+            _pool = new ObjectPool<EntityBehaviour>(CreateEntityBehaviour);
 
             _context.OnEntityCreated += onEntityCreated;
             _context.OnGroupCreated += onGroupCreated;
@@ -32,12 +37,11 @@ namespace Entitas.VisualDebugging.Unity {
         }
 
         void onEntityCreated(IContext context, IEntity entity) {
-            var entityBehaviour = new GameObject().AddComponent<EntityBehaviour>();
-            entityBehaviour.Init(context, entity);
-            entityBehaviour.transform.SetParent(_gameObject.transform, false);
-        }
+            var entityBehaviour = _pool.Get();
+            entityBehaviour.Init(context, entity, _pool);
+		}
 
-        void onGroupCreated(IContext context, IGroup group) {
+		void onGroupCreated(IContext context, IGroup group) {
             _groups.Add(group);
         }
 
@@ -62,5 +66,11 @@ namespace Entitas.VisualDebugging.Unity {
             _gameObject.name = str;
             return str;
         }
-    }
+
+        EntityBehaviour CreateEntityBehaviour() {
+            var entityBehaviour = new GameObject().AddComponent<EntityBehaviour>();
+            entityBehaviour.transform.SetParent(_gameObject.transform, false);
+            return entityBehaviour;
+        }
+	}
 }

@@ -1,3 +1,4 @@
+using Entitas.Utils;
 using UnityEngine;
 
 namespace Entitas.VisualDebugging.Unity {
@@ -12,15 +13,30 @@ namespace Entitas.VisualDebugging.Unity {
         IEntity _entity;
         string _cachedName;
 
-        public void Init(IContext context, IEntity entity) {
+        ObjectPool<EntityBehaviour> _pool;
+
+        public void Init(IContext context, IEntity entity, ObjectPool<EntityBehaviour> pool) {
+            _pool = pool;
             _context = context;
             _entity = entity;
             _entity.OnEntityReleased += onEntityReleased;
+
+            gameObject.SetActive(true);
             Update();
         }
 
         void onEntityReleased(IEntity e) {
-            gameObject.DestroyGameObject();
+            if (_entity != null)
+                _entity.OnEntityReleased -= onEntityReleased;
+
+            gameObject.SetActive(false);
+
+            _context = null;
+            _entity = null;
+            name = _cachedName = string.Empty;
+
+            _pool.Push(this);
+            _pool = null;
         }
 
         void Update() {
@@ -30,9 +46,8 @@ namespace Entitas.VisualDebugging.Unity {
         }
 
         void OnDestroy() {
-            if (_entity != null) {
+            if (_entity != null)
                 _entity.OnEntityReleased -= onEntityReleased;
-            }
         }
     }
 }
