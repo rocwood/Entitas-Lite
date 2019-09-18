@@ -29,7 +29,7 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                 var localIndex = i;
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EntityDrawer.DrawObjectMember(elementType, memberName + "[" + localIndex + "]", list[localIndex],
+                    EntityDrawer.DrawObjectMember(elementType, "[" + localIndex + "]", list[localIndex],
                                                   target, (newComponent, newValue) => list[localIndex] = newValue);
 
                     var action = drawEditActions(list, elementType, localIndex);
