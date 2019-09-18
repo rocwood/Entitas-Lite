@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entitas\Collector\CollectorExtension.cs" />
+    <Compile Include="Entitas\Context\ContextFactory.cs" />
     <Compile Include="Entitas\IResetable.cs" />
     <Compile Include="Entitas\Matcher\MatcherExtension.cs" />
     <Compile Include="Entitas\Monitor\IMonitor.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="Entitas\Entity\Entity.cs" />
     <Compile Include="Entitas\Group\Group.cs" />
     <Compile Include="Entitas\Context\Context.cs" />
-    <Compile Include="Entitas\Context\ContextAttribute.cs" />
     <Compile Include="Entitas\Feature\FeatureAttribute.cs" />
     <Compile Include="Entitas\Monitor\MonitorList.cs" />
     <Compile Include="Entitas\Systems\ExecuteSystem.cs" />
@@ -92,7 +92,6 @@
     <Compile Include="Entitas\Context\IContext.cs" />
     <Compile Include="Entitas\Entity\IAERC.cs" />
     <Compile Include="Entitas\IComponent.cs" />
-    <Compile Include="Entitas\Context\IContexts.cs" />
     <Compile Include="Entitas\Entity\IEntity.cs" />
     <Compile Include="Entitas\EntityIndex\IEntityIndex.cs" />
     <Compile Include="Entitas\Group\IGroup.cs" />

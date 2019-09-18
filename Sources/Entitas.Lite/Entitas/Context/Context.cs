@@ -9,9 +9,8 @@ namespace Entitas {
 	/// You can create and destroy entities and get groups of entities.
 	/// The prefered way to create a context is to use the generated methods
 	/// from the code generator, e.g. var context = new GameContext();
-	public class Context : IContext
+	public partial class Context : IContext
 	{
-
 		/// Occurs when an entity gets created.
 		public event ContextEntityChanged OnEntityCreated;
 
@@ -82,15 +81,6 @@ namespace Entitas {
 		public Context(int totalComponents) : this(totalComponents, 0, null, null)
 		{
 		}
-
-		// TODO Obsolete since 0.41.0, April 2017
-		[Obsolete("Migration Support for 0.41.0. Please use new Context(totalComponents, startCreationIndex, contextInfo, aercFactory)")]
-		public Context(int totalComponents, int startCreationIndex, ContextInfo contextInfo)
-			: this(totalComponents,
-				   startCreationIndex,
-				   contextInfo,
-				   (entity) => new SafeAERC(entity))
-		{ }
 
 		/// The prefered way to create a context is to use the generated methods
 		/// from the code generator, e.g. var context = new GameContext();
@@ -453,7 +443,7 @@ namespace Entitas {
 
 		/// return unique entity with specified component
 		public Entity GetSingleEntity<T>() where T : IUniqueComponent {
-			return GetSingleEntity(ComponentIndex<T>.FindIn(this.contextInfo));
+			return GetSingleEntity(ComponentIndex<T>.value);
 		}
 
 		public Entity GetSingleEntity(int componentIndex) {
@@ -468,7 +458,7 @@ namespace Entitas {
 		}
 
 		public T GetUnique<T>() where T : IUniqueComponent {
-			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
+			int componentIndex = ComponentIndex<T>.value;
 
 			IComponent component = GetUniqueComponent(componentIndex);
 			if (component == null)
@@ -487,7 +477,7 @@ namespace Entitas {
 
 		public T AddUnique<T>(bool useExisted = true) where T : IUniqueComponent, new()
 		{
-			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
+			int componentIndex = ComponentIndex<T>.value;
 
 			Entity entity = GetSingleEntity(componentIndex);
 			if (entity != null) {
@@ -508,7 +498,7 @@ namespace Entitas {
 		}
 
 		public T ModifyUnique<T>() where T : IUniqueComponent {
-			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
+			int componentIndex = ComponentIndex<T>.value;
 
 			IComponent component = ModifyUniqueComponent(componentIndex);
 			if (component == null)

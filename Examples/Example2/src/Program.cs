@@ -11,7 +11,7 @@ namespace Example1
 {
 	public class InputComponent : IUniqueComponent
 	{
-		public bool spaceKey;		
+		public bool spaceKey;
 	}
 
 	public class CollectInputSystem : IExecuteSystem
@@ -47,14 +47,14 @@ namespace Example1
 	{
 		public ProcessInputSystem()
 		{
-			monitors += Context<Default>.AllOf<InputComponent>().OnAdded(Process);
+			monitors += Contexts.Default.AllOf<InputComponent>().OnAdded(Process);
 		}
 
 		protected void Process(List<Entity> entities)
 		{
 			var e = entities[0];
 			var input = e.Get<InputComponent>();
-		
+
 #if CONSOLE_APP
 			Console.WriteLine(
 #else
@@ -76,10 +76,8 @@ namespace Example1
 
 		public void Start()
 		{
-			var contexts = Contexts.sharedInstance;
-
 #if UNITY_EDITOR
-			ContextObserverHelper.ObserveAll(contexts);
+			ContextObserverHelper.Observe(Contexts.Default);
 #endif
 
 #if UNITY_EDITOR

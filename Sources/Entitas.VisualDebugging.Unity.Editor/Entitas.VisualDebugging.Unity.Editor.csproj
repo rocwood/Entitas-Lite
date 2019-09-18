@@ -40,7 +40,6 @@
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\DebugSystems\DebugSystemsInspector.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\DebugSystems\SystemsMonitor.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\EntitasHierarchyIcon.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\EntitasStats.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\Entity\DefaultInstanceCreator\DefaultArrayCreator.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\Entity\DefaultInstanceCreator\DefaultStringCreator.cs" />
     <Compile Include="Entitas.VisualDebugging.Unity.Editor\Editor\Entity\DefaultInstanceCreator\IDefaultInstanceCreator.cs" />

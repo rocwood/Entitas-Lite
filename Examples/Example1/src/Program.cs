@@ -9,14 +9,12 @@ using UnityEngine;
 
 namespace Example1
 {
-	[Default]
 	public class PositionComponent : IComponent
 	{
 		public int x;
 		public int y;
 	}
 
-	// if no context declaration, it comes into Default context
 	public class VelocityComponent : IComponent
 	{
 		public int x;
@@ -36,7 +34,7 @@ namespace Example1
 		public void Execute()
 		{
 			// new API for getting group with all matched entities from context
-			var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
+			var entities = Contexts.Default.AllOf<PositionComponent, VelocityComponent>().GetEntities();
 
 			foreach (var e in entities)
 			{
@@ -55,7 +53,7 @@ namespace Example1
 		public ViewSystem()
 		{
 			// new API, add monitor that watch Position changed and call Process 
-			monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
+			monitors += Contexts.Default.AllOf<PositionComponent>().OnAdded(Process);
 		}
 
 		protected void Process(List<Entity> entities)
@@ -83,18 +81,16 @@ namespace Example1
 
 		public void Start()
 		{
-			var contexts = Contexts.sharedInstance;
-
 #if UNITY_EDITOR
-			ContextObserverHelper.ObserveAll(contexts);
+			ContextObserverHelper.ObserveAll(Contexts.Default);
 #endif
 
 			// create random entity
 			var rand = new System.Random();
 			var context = Contexts.Default;
 			var e = context.CreateEntity();
-				e.Add<PositionComponent>();
-				e.Add<VelocityComponent>().SetValue(rand.Next()%10, rand.Next()%10);
+			e.Add<PositionComponent>();
+			e.Add<VelocityComponent>().SetValue(rand.Next() % 10, rand.Next() % 10);
 
 #if UNITY_EDITOR
 			_feature = FeatureObserverHelper.CreateFeature(null);

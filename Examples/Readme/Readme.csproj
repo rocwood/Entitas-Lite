@@ -34,9 +34,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Readme\Attributes.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Readme\ReadmeSnippets.cs" />
     <Compile Include="Readme\Components\AssetComponent.cs" />
