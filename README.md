@@ -12,14 +12,13 @@ Just write your own Components and Systems, then a GameController class for game
 ## Example 1
 
 ```csharp
-[Default]
 public class PositionComponent : IComponent
 {
 	public int x;
 	public int y;
 }
 
-// if no context declaration, it comes into Default context
+//[Default] ContextAttribute is REMOVED!
 public class VelocityComponent : IComponent
 {
 	public int x;
@@ -39,7 +38,7 @@ public class MovementSystem : IExecuteSystem
 	public void Execute()
 	{
 		// new API for getting group with all matched entities from context
-		var entities = Context<Default>.AllOf<PositionComponent, VelocityComponent>().GetEntities();
+		var entities = Contexts.Default.AllOf<PositionComponent, VelocityComponent>().GetEntities();
 
 		foreach (var e in entities)
 		{
@@ -58,7 +57,7 @@ public class ViewSystem : ReactiveSystem
 	public ViewSystem()
 	{
 		// new API, add monitor that watch Position changed and call Process 
-		monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(Process);
+		monitors += Contexts.Default.AllOf<PositionComponent>().OnAdded(Process);
 	}
 
 	protected void Process(List<Entity> entities)
@@ -77,10 +76,8 @@ public class GameController : MonoBehaviour
 
 	public void Start()
 	{
-		var contexts = Contexts.sharedInstance;
-
 #if UNITY_EDITOR
-		ContextObserverHelper.ObserveAll(contexts);
+		ContextObserverHelper.ObserveAll(Contexts.Default);
 #endif
 
 		// create random entity
@@ -116,13 +113,11 @@ However, another generic helpers were added for easy hand-coding.
 
 * Feature: Auto add matched Systems, no manual Systems.Add(ISystem) required
 
-* Scoping: Subclassing from ContextAttribute for Components, and FeatureAttribute for Systems.
+* Scoping: Subclassing from FeatureAttribute for Systems. ContextAttribute is REMOVED!
 
 ```csharp
-public class Game : ContextAttribute {}
 public class MyFeature : FeatureAttribute { public MyFeature(int prior = 0) :base(prior) {} }
 
-[Game] public class MyComponent : IComponent {}
 [MyFeature] public class MySystem : IExecuteSystem {}
 ```
 
@@ -152,20 +147,19 @@ var user3 = context.AddUnique<UserComponent>();
 ```csharp
 Context c = Contexts.Default;  // = Contexts.sharedInstance.defaultContext;
 Context game = Contexts.Get("Game");  // = Contexts.sharedInstance.GetContext("Game");
-Context input = Contexts.Get<Input>(); // = Contexts.sharedInstance.GetContext<Input>();
 ```
 
 * Matcher: Generic templates for easy Matcher creation
 
 ```csharp
-var matcher = Match<Game>.AllOf<PositionComponent, VelocityComponent>();
-var group = Context<Game>.AllOf<PositionComponent, VelocityComponent>(); // easy combin context.GetGroup(matcher)
+var matcher = Match.AllOf<PositionComponent, VelocityComponent>();
+var group = Contexts.Get("Game").AllOf<PositionComponent, VelocityComponent>(); // easy combin context.GetGroup(matcher)
 ```
 
 * Monitor/Collector: Monitor combins collector/filter/processor for Reactive-programming
 
 ```csharp
-var monitor = Context<Default>.AllOf<PositionComponent>() // group => monitor
+var monitor = Contexts.Default.AllOf<PositionComponent>() // group => monitor
 		.OnAdded(entities => { foreach (var e in entities) { /* do something */ }})
 		.where(e => e.Has<ViewComponent>); // filter
 
@@ -178,7 +172,7 @@ monitor.Execute(); // in each update
 public class ViewSystem : ReactiveSystem {
 	public ViewSystem() {
 		// use += to add more monitors to Execute
-		monitors += Context<Default>.AllOf<PositionComponent>().OnAdded(this.Process);  
+		monitors += Contexts.Default.AllOf<PositionComponent>().OnAdded(this.Process);  
 	}
 }
 ```

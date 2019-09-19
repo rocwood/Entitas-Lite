@@ -7,7 +7,7 @@ using System.Threading;
 using UnityEngine;
 #endif
 
-namespace Example1
+namespace Example
 {
 	public class InputComponent : IUniqueComponent
 	{

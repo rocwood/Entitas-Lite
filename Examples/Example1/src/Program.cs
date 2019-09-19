@@ -7,7 +7,7 @@ using System.Threading;
 using UnityEngine;
 #endif
 
-namespace Example1
+namespace Example
 {
 	public class PositionComponent : IComponent
 	{
@@ -15,6 +15,7 @@ namespace Example1
 		public int y;
 	}
 
+	//[Default] context attributes REMOVED !
 	public class VelocityComponent : IComponent
 	{
 		public int x;
