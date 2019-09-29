@@ -3,7 +3,7 @@ namespace Entitas
 	/// <summary>
 	/// Interface for components with owner entity's ID
 	/// </summary>
-	public interface IComponentWithEntityID
+	public interface IComponentWithEntityID : IComponent
 	{
 		int EntityID { get; }
 	}
