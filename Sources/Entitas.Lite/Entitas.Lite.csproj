@@ -5,4 +5,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Release' ">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\Build\Deploy\Entitas-Lite" />
   </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.0.0" />
+  </ItemGroup>
 </Project>
