@@ -1,4 +1,4 @@
-﻿
+
 namespace Entitas
 {
 	/// using ComponentIndex<T> to Component->Index mapping
@@ -96,7 +96,7 @@ namespace Entitas
 
 		public IComponent ModifyComponent(int index)
 		{
-			IComponent component = GetComponent(index);
+			var component = GetComponent(index);
 			FireModifiedEvent(index, component);
 			return component;
 		}
@@ -115,6 +115,11 @@ namespace Entitas
 
 		private void FireModifiedEvent(int index, IComponent component)
 		{
+			// Set modified flag
+			var modifiable = component as IModifiable;
+			if (modifiable != null)
+				modifiable.modified = true;
+
 			if (OnComponentReplaced != null)
 				OnComponentReplaced(this, index, component, component);
 		}
