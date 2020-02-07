@@ -1,9 +1,9 @@
 using NUnit.Framework;
-using Entitas;
 
 namespace Entitas.Test
 {
-	class TestCheckEmptyComponent
+	[TestFixture]
+	public class TestZeroSizeComponent
 	{
 		[SetUp]
 		public void Setup()
@@ -13,13 +13,13 @@ namespace Entitas.Test
 		[Test]
 		public void Test1()
 		{
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Position>());
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Player>());
-			Assert.IsTrue(CheckEmptyComponent.IsEmpty<Movable>());
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Dummy>());
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Dummy3>());
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Dummy4>());
-			Assert.IsFalse(CheckEmptyComponent.IsEmpty<Dummy5>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Position>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Player>());
+			Assert.IsTrue(ComponentChecker.IsZeroSize<Movable>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy3>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy4>());
+			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy5>());
 		}
 
 		class Position : IComponent
@@ -38,8 +38,9 @@ namespace Entitas.Test
 		{
 		}
 
-		class Dummy : ComponentWithEntityID
+		class Dummy : IComponent, IEntityIdRef
 		{
+			public int entityId { get; set; }
 		}
 
 		class Dummy2 : IComponent

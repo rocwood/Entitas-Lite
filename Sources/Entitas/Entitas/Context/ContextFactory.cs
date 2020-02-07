@@ -56,8 +56,8 @@ namespace Entitas
 			var types = AppDomain.CurrentDomain
 						.GetAssemblies()
 						.SelectMany(s => s.GetTypes())
-						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract
-							&& compType.IsAssignableFrom(p)).ToArray();
+						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && compType.IsAssignableFrom(p))
+						.ToArray();
 
 			Array.Sort(types, (x, y) => string.CompareOrdinal(x.FullName, y.FullName));
 

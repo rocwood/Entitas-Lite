@@ -1,53 +1,102 @@
+using System;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Entitas
 {
-	/// <summary>
-	/// Component's Pool
-	/// </summary>
-	public class ComponentPool<T> : ObjectPool<T> where T:class, IComponent, new()
+	public interface IComponentPool
 	{
-		private readonly ObjectPool<T> _pool;
+		IComponent Get();
+		void Return(IComponent obj);
+	}
 
-		public ComponentPool(int maxRetained = 0, IPooledObjectPolicy<T> policy = null)
+	/// <summary>
+	/// Common component's pool
+	/// </summary>
+	class ComponentPool : IComponentPool
+	{
+		private readonly ObjectPool<IComponent> _pool;
+	
+		public ComponentPool(Type objType, int maxRetained = 0)
 		{
-			_pool = ComponentPoolProvider.Create<T>(maxRetained, policy);
+			var provider = new DefaultObjectPoolProvider();
+			if (maxRetained > 0)
+				provider.MaximumRetained = maxRetained;
+
+			var policy = new ComponentPolicy(objType);
+
+			_pool = provider.Create(policy);
 		}
 
-		public override T Get()
+		public IComponent Get()
 		{
 			return _pool.Get();
 		}
 
-		public override void Return(T obj)
+		public void Return(IComponent obj)
 		{
 			if (obj != null)
 				_pool.Return(obj);
 		}
+
+		class ComponentPolicy : IPooledObjectPolicy<IComponent>
+		{
+			private readonly Type _objType;
+
+			public ComponentPolicy(Type objType)
+			{
+				_objType = objType;
+			}
+
+			public IComponent Create()
+			{
+				return (IComponent)Activator.CreateInstance(_objType);
+			}
+
+			public bool Return(IComponent obj)
+			{
+				if (obj == null)
+					return false;
+
+				// Reset component status before returning to pool
+				if (obj is IEntityIdRef entityIdRef)
+					entityIdRef.entityId = 0;
+				if (obj is IResetable resetable)
+					resetable.Reset();
+				if (obj is IDisposable disposable)
+					disposable.Dispose();
+				
+				return true;
+			}
+		}
 	}
 
-	static class ComponentPoolProvider
+	/// <summary>
+	/// Unique instance pool for zero-size components
+	/// </summary>
+	class ZeroSizeComponentPool : IComponentPool
 	{
-		/// Use unique instance for empty components
-		class OneInstancePool<T> : ObjectPool<T> where T : class, IComponent, new()
-		{
-			private T _instance = new T();
+		private readonly IComponent _instance;
 
-			public override T Get() => _instance;
-			public override void Return(T obj) {}
+		public ZeroSizeComponentPool(Type objType)
+		{
+			_instance = (IComponent)Activator.CreateInstance(objType);
 		}
 
-		public static ObjectPool<T> Create<T>(int maxRetained = 0, IPooledObjectPolicy<T> policy = null) where T:class, IComponent, new()
+		public IComponent Get() => _instance;
+		public void Return(IComponent obj) { }
+	}
+
+	internal static class ComponentPoolFactory
+	{
+		public static IComponentPool Create(Type objType, int maxRetained = 0)
 		{
-			if (CheckEmptyComponent.IsEmpty<T>())
-				return new OneInstancePool<T>();
+			if (!objType.IsAssignableFrom(typeof(IComponent)))
+				throw new ArgumentException($"{objType.FullName} isn't IComponent");
 
-			var provider = new DefaultObjectPoolProvider();
-
-			if (maxRetained > 0)
-				provider.MaximumRetained = maxRetained;
-
-			return provider.Create(policy ?? new DefaultPooledObjectPolicy<T>());
+			if (ComponentChecker.IsZeroSize(objType))
+				return new ZeroSizeComponentPool(objType);
+			else
+				return new ComponentPool(objType, maxRetained);
 		}
 	}
 }

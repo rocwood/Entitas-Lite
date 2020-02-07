@@ -1,12 +1,28 @@
 namespace Entitas
 {
-	/// <summary>
-	/// Implement IComponent to provide a component which can be added to entity.
-	/// </summary>
-	public interface IComponent { }
+	/// Implement this interface if you want to create a component which
+	/// you can add to an entity.
+	public interface IComponent
+	{
+	}
 
-	/// <summary>
-	/// Components implement IUnique must not created more then once
-	/// </summary>
-	public interface IUnique { }
+	public interface IUnique
+	{
+	}
+
+	public interface IEntityIdRef
+	{
+		int entityId { get; set; }
+	}
+
+	public interface IResetable
+	{
+		void Reset();
+	}
+
+	public interface IModifiable
+	{
+		bool modified { get; set; }
+	}
 }
+
