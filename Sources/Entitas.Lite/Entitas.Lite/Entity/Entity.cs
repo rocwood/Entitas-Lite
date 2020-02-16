@@ -293,32 +293,17 @@ namespace Entitas
 			return GetComponent(index) != null;
 		}
 
-		/*
-		/// Determines whether this entity has components at all the specified indices.
-		public bool HasComponents(int[] indices)
+		/// Determines whether this entity has components at all the specified mask.
+		public bool HasAllComponents(BitArray mask)
 		{
-			for (int i = 0; i < indices.Length; i++)
-			{
-				if (GetComponent(indices[i]) == null)
-					return false;
-			}
-
-			return true;
+			return _componentsMask.HasAllOf(mask);
 		}
 
-		/// Determines whether this entity has a component at any of the specified indices.
-		public bool HasAnyComponent(int[] indices)
+		/// Determines whether this entity has a component at any of the specified mask.
+		public bool HasAnyComponent(BitArray mask)
 		{
-			for (int i = 0; i < indices.Length; i++)
-			{
-				if (GetComponent(indices[i]) != null)
-					return true;
-			}
-
-			return false;
+			return _componentsMask.HasAnyOf(mask);
 		}
-		*/
-
 
 		/*
         /// Returns the componentPool for the specified component index.

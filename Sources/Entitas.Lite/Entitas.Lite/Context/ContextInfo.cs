@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Entitas
 {
@@ -30,7 +30,7 @@ namespace Entitas
 			this.componentTypes = componentTypes;
 		}
 
-		public int Count => componentTypes.Length;
+		public int GetComponentCount() => componentTypes.Length;
 
 		internal int GetComponentIndex<T>() where T : IComponent => GetComponentIndex(typeof(T));
 		internal int GetComponentIndex(Type type) => Array.IndexOf(componentTypes, type);
