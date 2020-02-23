@@ -22,7 +22,7 @@ namespace Entitas
 			if (maxRetained > 0)
 				provider.MaximumRetained = maxRetained;
 
-			var policy = new ComponentPolicy(objType);
+			var policy = new PoolPolicy(objType);
 
 			_pool = provider.Create(policy);
 		}
@@ -38,11 +38,11 @@ namespace Entitas
 				_pool.Return(obj);
 		}
 
-		class ComponentPolicy : IPooledObjectPolicy<IComponent>
+		class PoolPolicy : IPooledObjectPolicy<IComponent>
 		{
 			private readonly Type _objType;
 
-			public ComponentPolicy(Type objType)
+			public PoolPolicy(Type objType)
 			{
 				_objType = objType;
 			}
@@ -60,6 +60,8 @@ namespace Entitas
 				// Reset component status before returning to pool
 				if (obj is IEntityIdRef entityIdRef)
 					entityIdRef.entityId = 0;
+				if (obj is IModifiable modifiable)
+					modifiable.Accept();
 				if (obj is IResetable resetable)
 					resetable.Reset();
 				if (obj is IDisposable disposable)

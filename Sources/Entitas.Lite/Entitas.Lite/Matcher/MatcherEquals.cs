@@ -1,3 +1,5 @@
+using Entitas.Utils;
+
 namespace Entitas
 {
 	public partial class Matcher

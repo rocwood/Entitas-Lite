@@ -1,3 +1,5 @@
+using Entitas.Utils;
+
 namespace Entitas
 {
 	public partial class Matcher
@@ -9,7 +11,7 @@ namespace Entitas
 				if (_combineMask == null)
 				{
 					_combineMask = CreateMask();
-					_combineMask.CopyFrom(_allOfMask);
+					_combineMask.Union(_allOfMask);
 					_combineMask.Union(_anyOfMask);
 					_combineMask.Union(_noneOfMask);
 				}
@@ -27,36 +29,33 @@ namespace Entitas
 		BitArray _anyOfMask;
 		BitArray _noneOfMask;
 
-		public Matcher AllOf(params int[] indices)
-		{
-			_allOfMask = CreateMask(indices);
+		public Matcher AllOf(params int[] indices) => AllOf(CreateMask(indices));
+		public Matcher AnyOf(params int[] indices) => AnyOf(CreateMask(indices));
+		public Matcher NoneOf(params int[] indices) => NoneOf(CreateMask(indices));
+		private BitArray CreateMask(int[] indices = null) => new BitArray(ContextProvider.GetComponentCount(), indices);
 
+		public Matcher AllOf(BitArray mask)
+		{
+			_allOfMask = mask;
 			_combineMask = null;
 			_isHashCached = false;
 			return this;
 		}
 
-		public Matcher AnyOf(params int[] indices)
+		public Matcher AnyOf(BitArray mask)
 		{
-			_anyOfMask = CreateMask(indices);
-
+			_anyOfMask = mask;
 			_combineMask = null;
 			_isHashCached = false;
 			return this;
 		}
 
-		public Matcher NoneOf(params int[] indices)
+		public Matcher NoneOf(BitArray mask)
 		{
-			_noneOfMask = CreateMask(indices);
-
+			_noneOfMask = mask;
 			_combineMask = null;
 			_isHashCached = false;
 			return this;
-		}
-
-		private BitArray CreateMask(int[] indices = null)
-		{
-			return new BitArray(ContextProvider.GetComponentCount(), indices);
 		}
 
 		public bool Matches(Entity entity)

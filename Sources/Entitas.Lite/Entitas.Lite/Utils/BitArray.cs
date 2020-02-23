@@ -1,6 +1,6 @@
 using System;
 
-namespace Entitas
+namespace Entitas.Utils
 {
 	/// <summary>
 	/// Compact bool array, for quick components matching 
