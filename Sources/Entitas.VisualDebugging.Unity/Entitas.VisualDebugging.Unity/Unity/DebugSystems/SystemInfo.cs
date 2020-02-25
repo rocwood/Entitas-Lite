@@ -88,9 +88,12 @@ namespace Entitas.VisualDebugging.Unity {
                 _systemName = debugSystem.name;
             } else {
                 var systemType = system.GetType();
-                _systemName = systemType.Name.EndsWith(SYSTEM_SUFFIX, StringComparison.Ordinal)
+				_systemName = systemType.Name;
+				/* 
+					systemType.Name.EndsWith(SYSTEM_SUFFIX, StringComparison.Ordinal)
                     ? systemType.Name.Substring(0, systemType.Name.Length - SYSTEM_SUFFIX.Length)
                     : systemType.Name;
+				*/
             }
 
             isActive = true;
