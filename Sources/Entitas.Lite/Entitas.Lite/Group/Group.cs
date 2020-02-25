@@ -45,7 +45,7 @@ namespace Entitas
 		/// This is used by the context to manage the group.
 		internal void HandleEntity(Entity entity)
 		{
-			if (_matcher.Matches(entity))
+			if (entity.isEnabled && _matcher.Matches(entity))
 				addEntitySilently(entity);
 			else
 				removeEntitySilently(entity);

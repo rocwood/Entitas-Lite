@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Entitas.Utils;
 
 namespace Entitas {
@@ -58,7 +59,7 @@ namespace Entitas {
 		private readonly IComponentPool[] _componentPools;
 		private readonly ContextInfo _contextInfo;
 
-		private readonly Dictionary<int, Entity> _entities = new Dictionary<int, Entity>();
+		private readonly ConcurrentDictionary<int, Entity> _entities = new ConcurrentDictionary<int, Entity>();
 		private readonly ConcurrentDictionary<Entity, byte> _changedEntities = new ConcurrentDictionary<Entity, byte>();
 		private readonly EntityPool _entityPool = new EntityPool(256);
 
@@ -120,13 +121,13 @@ namespace Entitas {
 		/// internal ObjectPool for entities.
 		public Entity CreateEntity(string name = null)
 		{
-			_creationIndex++;
+			Interlocked.Increment(ref _creationIndex);
 
 			var entity = _entityPool.Get();
 			entity.Initialize(_contextInfo, _componentPools);
 			entity.Start(_creationIndex, name);
 
-			_entities.Add(entity.id, entity);
+			_entities.TryAdd(entity.id, entity); //TODO
 			_entitiesCache = null;
 
 			entity.OnComponentAdded += _cachedEntityChanged;
@@ -147,7 +148,7 @@ namespace Entitas {
 			if (!Contains(entity))
 				return;
 
-			_entities.Remove(entity.id);
+			_entities.TryRemove(entity.id, out var item);
 			_entitiesCache = null;
 
 			//OnEntityWillBeDestroyed?.Invoke(this, entity);
@@ -155,7 +156,7 @@ namespace Entitas {
 			//OnEntityDestroyed?.Invoke(this, entity);
 
 			// Add to changed list
-			_changedEntities.Add(entity);
+			_changedEntities.TryAdd(entity, 0);
 		}
 
 		/// Destroys all entities in the context.
@@ -192,10 +193,7 @@ namespace Entitas {
 		public Entity[] GetEntities()
 		{
 			if (_entitiesCache == null)
-			{
-				_entitiesCache = new Entity[_entities.Count];
-				_entities.Values.CopyTo(_entitiesCache, 0);
-			}
+				_entitiesCache = _entities.Values.ToArray();
 
 			return _entitiesCache;
 		}
@@ -279,6 +277,7 @@ namespace Entitas {
 			return _contextInfo.name;
 		}
 
+		/*
 		void updateGroupsComponentAddedOrRemoved(IEntity entity, int index, IComponent component)
 		{
 			var groups = _groupsForIndex[index];
@@ -307,29 +306,30 @@ namespace Entitas {
 				_groupChangedListPool.Push(events);
 			}
 		}
+		*/
 
 		/// <summary>
-		/// Update all removed/changed entities
+		/// Update all removed/changed entities, not thread-safe
 		/// </summary>
 		public void Poll()
 		{
-			while (_changedEntities.TryTake(out var entity))
+			// Take all changed entities
+			var changedEntities = _changedEntities.Keys;
+			_changedEntities.Clear();
+
+			foreach (var entity in changedEntities)
 			{
 				if (entity == null)
 					continue;
 
 				// Update group content
-				DoUpdateGroups(entity);
+				foreach (var kv in _groups)
+					kv.Value?.HandleEntity(entity);
 
 				// Return removed entity to pool
 				if (!entity.isEnabled)
 					_entityPool.Return(entity);
 			}
-		}
-
-		private void DoUpdateGroups(Entity entity)
-		{
-
 		}
 
 		/*
