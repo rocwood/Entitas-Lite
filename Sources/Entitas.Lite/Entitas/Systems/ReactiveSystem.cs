@@ -59,7 +59,7 @@ namespace Entitas {
 
         /// Will call Execute(entities) with changed entities
         /// if there are any. Otherwise it will not call Execute(entities).
-        public void Execute() {
+        public virtual void Execute() {
             for (int i = 0; i < _monitors.Count; i++) {
 				_monitors[i].Execute();
             }

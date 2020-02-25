@@ -192,9 +192,7 @@ namespace Entitas {
 
 		/// Destroys the entity, removes all its components and pushs it back
 		/// to the internal ObjectPool for entities.
-		// TODO Obsolete since 0.42.0, April 2017
-		[Obsolete("Please use entity.Destroy()")]
-		public void DestroyEntity(Entity entity)
+		private void DestroyEntity(Entity entity)
 		{
 			var removed = _entities.Remove(entity);
 			if (!removed)

@@ -32,10 +32,6 @@ namespace Entitas {
 
 		Entity CreateEntity();
 
-		// TODO Obsolete since 0.42.0, April 2017
-		[Obsolete("Please use entity.Destroy()")]
-		void DestroyEntity(Entity entity);
-
 		bool HasEntity(Entity entity);
 		Entity[] GetEntities();
 
