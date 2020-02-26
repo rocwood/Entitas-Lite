@@ -85,6 +85,8 @@ namespace Entitas {
 		//EntityEvent _cachedEntityReleased;
 		EntityEvent _cachedDestroyEntity;
 
+		public static int maxRetainedComponentsInPool = 128;
+
 
 		internal Context(ContextInfo contextInfo)
 		{
@@ -96,7 +98,10 @@ namespace Entitas {
 			_groupsForIndex = new List<IGroup>[totalComponents];
 			_groupForSingle = new IGroup[totalComponents];
 			
-			_componentPools = new Stack<IComponent>[totalComponents];
+			_componentPools = new IComponentPool[totalComponents];
+
+			for (int i = 0; i < totalComponents; i++)
+				_componentPools[i] = ComponentPoolFactory.Create(contextInfo.componentTypes[i], maxRetainedComponentsInPool);
 
 
 			/*

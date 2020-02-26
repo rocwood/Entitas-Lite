@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Entitas.Utils;
 
 namespace Entitas
@@ -28,6 +29,27 @@ namespace Entitas
 			}
 
 			return _group.GetEntities();
+		}
+
+		public void ForEach(Action<Entity> body)
+		{
+			if (body == null)
+				return;
+
+			var entities = _group.GetEntities();
+
+			foreach (var entity in entities)
+				body.Invoke(entity);
+		}
+
+		public void ParallelForEach(Action<Entity> body)
+		{
+			if (body == null)
+				return;
+
+			var entities = _group.GetEntities();
+
+			Parallel.ForEach(entities, body);
 		}
 
 		public Collector AllOf(BitArray mask)

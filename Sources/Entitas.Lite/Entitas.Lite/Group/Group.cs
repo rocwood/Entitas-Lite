@@ -28,12 +28,12 @@ namespace Entitas
 		/// Returns the matcher which was used to create this group.
 		public Matcher matcher => _matcher;
 
-		readonly Matcher _matcher;
-		readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
+		private readonly Matcher _matcher;
+		private readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
 
-		Entity[] _entitiesCache;
-		Entity _singleEntityCache;
-		string _toStringCache;
+		private Entity[] _entitiesCache;
+		private Entity _singleEntityCache;
+		private string _toStringCache;
 
 		/// Use context.GetGroup(matcher) to get a group of entities which match
 		/// the specified matcher.
