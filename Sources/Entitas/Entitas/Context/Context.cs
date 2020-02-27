@@ -293,13 +293,13 @@ namespace Entitas {
 		}
 
 		/// Resets the creationIndex back to 0.
-		public void ResetCreationIndex()
+		internal void ResetCreationIndex()
 		{
 			_creationIndex = 0;
 		}
 
 		/// Clears the componentPool at the specified index.
-		public void ClearComponentPool(int index)
+		internal void ClearComponentPool(int index)
 		{
 			var componentPool = _componentPools[index];
 			if (componentPool != null)
@@ -309,7 +309,7 @@ namespace Entitas {
 		}
 
 		/// Clears all componentPools.
-		public void ClearComponentPools()
+		internal void ClearComponentPools()
 		{
 			for (int i = 0; i < _componentPools.Length; i++)
 			{
@@ -415,14 +415,14 @@ namespace Entitas {
 
 		/// return unique entity with specified component
 		public Entity GetSingleEntity<T>() where T : IComponent, IUnique {
-			return GetSingleEntity(ComponentIndex<T>.value);
+			return GetSingleEntity(ComponentIndex<T>.Get());
 		}
 
 		public Entity GetSingleEntity(int componentIndex) {
 			IGroup group = _groupForSingle[componentIndex];
 
 			if (group == null) {
-				group = GetGroup(Matcher.AllOf(componentIndex).SetComponentNames(this.contextInfo.componentNames));
+				group = GetGroup(Matcher.AllOf(componentIndex));
 				_groupForSingle[componentIndex] = group;
 			}
 
@@ -430,7 +430,7 @@ namespace Entitas {
 		}
 
 		public T GetUnique<T>() where T : IComponent, IUnique {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			IComponent component = GetUniqueComponent(componentIndex);
 			if (component == null)
@@ -448,7 +448,7 @@ namespace Entitas {
 		}
 
 		public T AddUnique<T>(bool useExisted = true) where T : IComponent, IUnique, new() {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			Entity entity = GetSingleEntity(componentIndex);
 			if (entity != null) {
@@ -469,7 +469,7 @@ namespace Entitas {
 		}
 
 		public T ModifyUnique<T>() where T : IComponent, IUnique {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			IComponent component = ModifyUniqueComponent(componentIndex);
 			if (component == null)

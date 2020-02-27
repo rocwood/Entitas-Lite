@@ -6,7 +6,7 @@
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\Build\Deploy\Entitas-Lite" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entitas.Lite\Utils\" />

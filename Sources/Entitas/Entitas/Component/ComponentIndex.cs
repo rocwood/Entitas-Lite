@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Entitas
 {
@@ -7,23 +7,18 @@ namespace Entitas
 	/// </summary>
 	public static class ComponentIndex<T> where T : IComponent
 	{
-		public static int value
+		public static int Get()
 		{
-			get
+			if (_cachedIndex < 0)
 			{
+				_cachedIndex = ContextProvider.GetComponentIndex<T>();
+
 				if (_cachedIndex < 0)
-				{
-					_cachedIndex = ContextFactory.GetComponentIndex<T>();
-
-					if (_cachedIndex < 0)
-						throw new ComponentIndexNotFoundException(typeof(T));
-				}
-
-				return _cachedIndex;
+					throw new ComponentIndexNotFoundException(typeof(T));
 			}
-		}
 
-		static ComponentIndex() { }
+			return _cachedIndex;
+		}
 
 		private static int _cachedIndex = -1;
 	}

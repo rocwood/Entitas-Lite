@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Entitas {
@@ -25,7 +25,6 @@ namespace Entitas {
         int creationIndex { get; }
         bool isEnabled { get; }
 
-        Stack<IComponent>[] componentPools { get; }
         ContextInfo contextInfo { get; }
         IAERC aerc { get; }
 
@@ -56,7 +55,6 @@ namespace Entitas {
         T CreateComponent<T>(int index) where T : new();
 
         void Destroy();
-        void InternalDestroy();
         void RemoveAllOnEntityReleasedHandlers();
     }
 }

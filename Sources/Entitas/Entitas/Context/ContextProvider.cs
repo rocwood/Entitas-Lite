@@ -1,52 +1,60 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace Entitas
 {
 	/// <summary>
-	/// A static context factory
+	/// A static context provider
 	/// </summary>
-	public static class ContextFactory
+	public static class ContextProvider
 	{
 		public static int startCreationIndex = 1;
 		public static bool useSafeAERC = true;
 
 		public static Context Create(string name)
 		{
-			if (_contextInfo == null)
-				_contextInfo = CollectAllComponents();
+			if (_baseContextInfo == null)
+				_baseContextInfo = CollectAllComponents();
 
-			var contextInfo = new ContextInfo(name, _contextInfo.componentNames, _contextInfo.componentTypes);
+			var contextInfo = new ContextInfo(name, _baseContextInfo.componentNames, _baseContextInfo.componentTypes);
 
-			return new Context(contextInfo.Count, startCreationIndex, contextInfo, GetAERC());
+			return new Context(contextInfo.GetComponentCount(), startCreationIndex, contextInfo, GetAERC());
+		}
+		
+		public static int GetComponentCount()
+		{
+			if (_baseContextInfo == null)
+				_baseContextInfo = CollectAllComponents();
+
+			return _baseContextInfo.GetComponentCount();
 		}
 
 		public static int GetComponentIndex<T>() where T : IComponent => GetComponentIndex(typeof(T));
 		public static int GetComponentIndex(Type type)
 		{
-			if (_contextInfo == null)
-				_contextInfo = CollectAllComponents();
+			if (_baseContextInfo == null)
+				_baseContextInfo = CollectAllComponents();
 
-			return _contextInfo.GetComponentIndex(type);
+			return _baseContextInfo.GetComponentIndex(type);
 		}
 
 		public static string[] GetComponentNames()
 		{
-			if (_contextInfo == null)
-				_contextInfo = CollectAllComponents();
+			if (_baseContextInfo == null)
+				_baseContextInfo = CollectAllComponents();
 
-			return _contextInfo.componentNames;
+			return _baseContextInfo.componentNames;
 		}
 
 		public static Type[] GetComponentTypes()
 		{
-			if (_contextInfo == null)
-				_contextInfo = CollectAllComponents();
+			if (_baseContextInfo == null)
+				_baseContextInfo = CollectAllComponents();
 
-			return _contextInfo.componentTypes;
+			return _baseContextInfo.componentTypes;
 		}
 
-		private static ContextInfo _contextInfo;
+		private static ContextInfo _baseContextInfo;
 
 		/// Collect all public IComponent class in current domain
 		private static ContextInfo CollectAllComponents()

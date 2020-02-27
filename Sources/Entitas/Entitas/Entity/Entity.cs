@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Entitas.Utils;
@@ -404,7 +404,7 @@ namespace Entitas {
 
         // This method is used internally. Don't call it yourself.
         // Use entity.Destroy();
-        public void InternalDestroy() {
+        internal void InternalDestroy() {
 			_isEnabled = false;
 			_name = null;
 			_toStringCache = null;

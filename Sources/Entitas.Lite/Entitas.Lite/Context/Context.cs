@@ -380,7 +380,7 @@ namespace Entitas {
 		/*
 		/// return unique entity with specified component
 		public Entity GetSingleEntity<T>() where T : IComponent, IUnique {
-			return GetSingleEntity(ComponentIndex<T>.value);
+			return GetSingleEntity(ComponentIndex<T>.Get());
 		}
 
 		public Entity GetSingleEntity(int componentIndex) {
@@ -395,7 +395,7 @@ namespace Entitas {
 		}
 
 		public T GetUnique<T>() where T : IComponent, IUnique {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			IComponent component = GetUniqueComponent(componentIndex);
 			if (component == null)
@@ -413,7 +413,7 @@ namespace Entitas {
 		}
 
 		public T AddUnique<T>(bool useExisted = true) where T : IComponent, IUnique, new() {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			Entity entity = GetSingleEntity(componentIndex);
 			if (entity != null) {
@@ -434,7 +434,7 @@ namespace Entitas {
 		}
 
 		public T ModifyUnique<T>() where T : IComponent, IUnique {
-			int componentIndex = ComponentIndex<T>.value;
+			int componentIndex = ComponentIndex<T>.Get();
 
 			IComponent component = ModifyUniqueComponent(componentIndex);
 			if (component == null)

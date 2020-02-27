@@ -1,4 +1,4 @@
-﻿namespace Entitas {
+namespace Entitas {
 
     public partial class Matcher : IAllOfMatcher {
 
@@ -15,9 +15,9 @@
         public int[] anyOfIndices { get { return _anyOfIndices; } }
         public int[] noneOfIndices { get { return _noneOfIndices; } }
 
-        public string[] componentNames { get; set; }
+		public string[] componentNames => ContextProvider.GetComponentNames();
 
-        int[] _indices;
+		int[] _indices;
         int[] _allOfIndices;
         int[] _anyOfIndices;
         int[] _noneOfIndices;

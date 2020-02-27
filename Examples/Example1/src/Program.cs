@@ -1,4 +1,4 @@
-﻿using Entitas;
+using Entitas;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,10 +9,12 @@ using UnityEngine;
 
 namespace Example
 {
-	public class PositionComponent : IComponent
+	public class PositionComponent : IComponent, IModifiable
 	{
 		public int x;
 		public int y;
+
+		public bool modified { get; set; }
 	}
 
 	//[Default] context attributes REMOVED !
@@ -49,25 +51,26 @@ namespace Example
 	}
 
 	// Sample view just display Entity's Position if changed
-	public class ViewSystem : ReactiveSystem
+	public class ViewSystem : IExecuteSystem
 	{
-		public ViewSystem()
+		public void Execute()
 		{
-			// new API, add monitor that watch Position changed and call Process 
-			monitors += Contexts.Default.AllOf<PositionComponent>().OnAdded(Process);
-		}
+			var entities = Contexts.Default.AllOf<PositionComponent>().GetEntities();
 
-		protected void Process(List<Entity> entities)
-		{
 			foreach (var e in entities)
 			{
 				var pos = e.Get<PositionComponent>();
+				if (pos.modified)
+				{
 #if CONSOLE_APP
-				Console.WriteLine(
+					Console.WriteLine(
 #else
-				Debug.Log(
+					Debug.Log(
 #endif
-					"Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
+						"Entity" + e.creationIndex + ": x=" + pos.x + " y=" + pos.y);
+
+					pos.Accept();
+				}
 			}
 		}
 	}

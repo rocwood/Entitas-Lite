@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Entitas {
@@ -16,7 +16,6 @@ namespace Entitas {
 
         int totalComponents { get; }
 
-        Stack<IComponent>[] componentPools { get; }
         ContextInfo contextInfo { get; }
 
         int count { get; }
@@ -25,9 +24,6 @@ namespace Entitas {
 
         void DestroyAllEntities();
 
-        void ResetCreationIndex();
-        void ClearComponentPool(int index);
-        void ClearComponentPools();
         void Reset();
 
 		Entity CreateEntity();

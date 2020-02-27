@@ -43,15 +43,14 @@ namespace Example
 		}
 	}
 
-	public class ProcessInputSystem : ReactiveSystem
+	public class ProcessInputSystem : IExecuteSystem
 	{
-		public ProcessInputSystem()
+		public void Execute()
 		{
-			monitors += Contexts.Default.AllOf<InputComponent>().OnAdded(Process);
-		}
+			var entities = Contexts.Default.AllOf<InputComponent>().GetEntities();
+			if (entities.Length <= 0)
+				return;
 
-		protected void Process(List<Entity> entities)
-		{
 			var e = entities[0];
 			var input = e.Get<InputComponent>();
 

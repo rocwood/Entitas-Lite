@@ -29,7 +29,7 @@ namespace Entitas
 
 			if (context == null)
 			{
-				context = ContextFactory.Create(name);
+				context = ContextProvider.Create(name);
 				_lookup[name] = context;
 			}
 

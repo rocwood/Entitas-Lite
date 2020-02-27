@@ -53,7 +53,7 @@ namespace Readme
 
 			// Returns all entities having MovableComponent and PositionComponent.
 			// Matchers are also generated for you.
-			var entities = context.GetEntities(Matcher.AllOf<MovableComponent, PositionComponent>());
+			var entities = context.AllOf<MovableComponent, PositionComponent>().GetEntities();
 			foreach (var e in entities)
 			{
 				// do something
@@ -62,47 +62,10 @@ namespace Readme
 
 		static void groupExample(Context context)
 		{
-			context.GetGroup(Matcher.AllOf<PositionComponent>()).GetEntities();
-
-			// ----------------------------
-
-			context.GetGroup(Matcher.AllOf<PositionComponent>()).OnEntityAdded += (group, entity, index, component) =>
+			context.AllOf<PositionComponent>().OnEntityAdded += (group, entity, index, component) =>
 			{
 				// Do something
 			};
-		}
-
-		static void collectorExample(Context context)
-		{
-			var group = context.GetGroup(Matcher.AllOf<PositionComponent>());
-			var collector = group.CreateCollector(GroupEvent.Added);
-
-			// ----------------------------
-			foreach (var e in collector.collectedEntities)
-			{
-				// do something
-			}
-			collector.ClearCollectedEntities();
-
-
-			// ----------------------------
-			collector.Deactivate();
-		}
-
-		static void monitorExample()
-		{
-			var group = Contexts.Get("Game").AllOf<PositionComponent>();
-			var monitor = group.OnAdded(
-				entities =>
-				{
-					foreach (var e in entities)
-					{
-						// do something
-					}
-				}
-			);
-
-			monitor.Execute();
 		}
 
 		static void positionComponent(Entity e, PositionComponent component, Vector3 position, Vector3 newPosition)
