@@ -251,6 +251,9 @@ namespace Entitas
 		/// You can only get a component at an index if it exists.
 		public IComponent GetComponent(int index)
 		{
+			if (index < 0)
+				return null;
+
 			return _components[index];
 		}
 

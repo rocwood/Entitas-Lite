@@ -152,7 +152,7 @@ namespace Entitas {
 			else
 			{
 				entity = (Entity)Activator.CreateInstance(typeof(Entity));
-				entity.Initialize(_creationIndex++, _totalComponents, _componentPools, _contextInfo, _aercFactory(entity));
+				entity.Initialize(_creationIndex++, _componentPools, _contextInfo, _aercFactory(entity));
 			}
 
 			_entities.Add(entity);
@@ -401,7 +401,7 @@ namespace Entitas {
 		}
 
 
-		/// returns entity matching the specified creationIndex
+		/// Returns entity matching the specified creationIndex
 		public Entity GetEntity(int creationIndex)
 		{
 			if (_entitiesLookup == null)
@@ -413,7 +413,7 @@ namespace Entitas {
 			return entity;
 		}
 
-		/// return unique entity with specified component
+		/// Returns unique entity with specified component
 		public Entity GetSingleEntity<T>() where T : IComponent, IUnique {
 			return GetSingleEntity(ComponentIndex<T>.Get());
 		}
@@ -483,9 +483,7 @@ namespace Entitas {
 			if (entity == null)
 				return null;
 
-			IComponent component = entity.GetComponent(componentIndex);
-			entity.SetModified(componentIndex);
-			return component;
+			return entity.ModifyComponent(componentIndex);
 		}
 	}
 }

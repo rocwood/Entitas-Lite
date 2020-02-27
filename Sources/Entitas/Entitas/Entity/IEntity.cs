@@ -28,14 +28,6 @@ namespace Entitas {
         ContextInfo contextInfo { get; }
         IAERC aerc { get; }
 
-        void Initialize(int creationIndex,
-                        int totalComponents,
-                        Stack<IComponent>[] componentPools,
-                        ContextInfo contextInfo = null,
-                        IAERC aerc = null);
-
-        void Reactivate(int creationIndex);
-
         void AddComponent(int index, IComponent component);
         void RemoveComponent(int index);
         void ReplaceComponent(int index, IComponent component);
