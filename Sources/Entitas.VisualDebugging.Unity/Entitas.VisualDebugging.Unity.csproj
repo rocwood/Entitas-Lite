@@ -9,7 +9,7 @@
     </Reference>  
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj" />
+    <ProjectReference Include="..\Entitas\Entitas.csproj" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Release' ">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\Build\Deploy\Entitas-Lite" />

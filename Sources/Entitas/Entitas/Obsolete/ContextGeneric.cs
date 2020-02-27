@@ -1,6 +1,8 @@
+using System;
 
 namespace Entitas
 {
+	[Obsolete("ContextAttribute is deprecated. Using Context.AllOf<T1,...>() and Context.AnyOf<T1, ...>() instead.")]
 	public static class Context<C> where C : ContextAttribute
 	{
 		public static Context Instance => Contexts.Get(ContextAttribute.GetName<C>());

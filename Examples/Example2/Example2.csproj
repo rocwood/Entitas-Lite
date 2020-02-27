@@ -6,6 +6,6 @@
     <StartupObject>Example.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\Entitas.Lite\Entitas.Lite.csproj" />
+    <ProjectReference Include="..\..\Sources\Entitas\Entitas.csproj" />
   </ItemGroup>  
 </Project>

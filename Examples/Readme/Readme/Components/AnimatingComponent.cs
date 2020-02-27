@@ -1,3 +1,3 @@
-﻿using Entitas;
+using Entitas;
 
-public sealed class AnimatingComponent : IUniqueComponent {}
+public sealed class AnimatingComponent : IComponent, IUnique { }

@@ -11,7 +11,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj" />
+    <ProjectReference Include="..\Entitas\Entitas.csproj" />
     <ProjectReference Include="..\Entitas.Unity\Entitas.Unity.csproj" />
     <ProjectReference Include="..\Entitas.Unity.Editor\Entitas.Unity.Editor.csproj" />
     <ProjectReference Include="..\Entitas.VisualDebugging.Unity\Entitas.VisualDebugging.Unity.csproj" />

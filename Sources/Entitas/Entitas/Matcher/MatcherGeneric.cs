@@ -1,6 +1,7 @@
 
 namespace Entitas
 {
+	/*
 	public partial class Matcher
 	{
 		public static IAllOfMatcher AllOf<T1>() where T1 : IComponent
@@ -29,6 +30,7 @@ namespace Entitas
 		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
 		{ return MatcherImpl<T1, T2, T3, T4, T5, T6>.Any(); }
 	}
+	*/
 
 	class MatcherImplBase
 	{

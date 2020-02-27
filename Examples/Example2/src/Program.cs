@@ -1,4 +1,4 @@
-﻿using Entitas;
+using Entitas;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Example
 {
-	public class InputComponent : IUniqueComponent
+	public class InputComponent : IComponent, IUnique
 	{
 		public bool spaceKey;
 	}

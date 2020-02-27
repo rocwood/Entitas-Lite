@@ -2,6 +2,7 @@ using System;
 
 namespace Entitas
 {
+	/*
 	[Obsolete("ContextAttribute is deprecated. Using Matcher.AllOf<T1,...>() and Matcher.AnyOf<T1, ...>() instead.")]
 	public static class Matcher<C> where C : ContextAttribute
 	{
@@ -31,4 +32,5 @@ namespace Entitas
 		public static IAnyOfMatcher AnyOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
 		{ return MatcherImpl<T1, T2, T3, T4, T5, T6>.Any(); }
 	}
+	*/
 }
