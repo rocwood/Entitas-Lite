@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Entitas.Utils;
@@ -60,7 +60,6 @@ namespace Entitas {
 		readonly Stack<Entity> _reusableEntities = new Stack<Entity>();
 		readonly HashSet<Entity> _retainedEntities = new HashSet<Entity>(EntityEqualityComparer.comparer);
 
-		readonly Dictionary<string, IEntityIndex> _entityIndices;
 		readonly Dictionary<IMatcher, IGroup> _groups = new Dictionary<IMatcher, IGroup>();
 		readonly List<IGroup>[] _groupsForIndex;
 		readonly IGroup[] _groupForSingle;
@@ -109,7 +108,6 @@ namespace Entitas {
 			_groupsForIndex = new List<IGroup>[totalComponents];
 			_groupForSingle = new IGroup[totalComponents];
 			_componentPools = new Stack<IComponent>[totalComponents];
-			_entityIndices = new Dictionary<string, IEntityIndex>();
 
 			_groupChangedListPool = new ObjectPool<List<GroupChanged>>(
 										() => new List<GroupChanged>(),
@@ -292,30 +290,6 @@ namespace Entitas {
 			}
 
 			return group;
-		}
-
-		/// Adds the IEntityIndex for the specified name.
-		/// There can only be one IEntityIndex per name.
-		public void AddEntityIndex(IEntityIndex entityIndex)
-		{
-			if (_entityIndices.ContainsKey(entityIndex.name))
-			{
-				throw new ContextEntityIndexDoesAlreadyExistException(this, entityIndex.name);
-			}
-
-			_entityIndices.Add(entityIndex.name, entityIndex);
-		}
-
-		/// Gets the IEntityIndex for the specified name.
-		public IEntityIndex GetEntityIndex(string name)
-		{
-			IEntityIndex entityIndex;
-			if (!_entityIndices.TryGetValue(name, out entityIndex))
-			{
-				throw new ContextEntityIndexDoesNotExistException(this, name);
-			}
-
-			return entityIndex;
 		}
 
 		/// Resets the creationIndex back to 0.

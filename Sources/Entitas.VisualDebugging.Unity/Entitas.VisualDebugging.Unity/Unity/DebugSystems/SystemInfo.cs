@@ -136,9 +136,7 @@ namespace Entitas.VisualDebugging.Unity {
             if (system is IInitializeSystem) {
                 flags |= SystemInterfaceFlags.IInitializeSystem;
             }
-            if (system is IReactiveSystem) {
-                flags |= SystemInterfaceFlags.IReactiveSystem;
-            } else if (system is IExecuteSystem) {
+            if (system is IExecuteSystem) {
                 flags |= SystemInterfaceFlags.IExecuteSystem;
             }
             if (system is ICleanupSystem) {

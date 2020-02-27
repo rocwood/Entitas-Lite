@@ -85,57 +85,6 @@ namespace Entitas {
             }
         }
 
-        /// Activates all ReactiveSystems in the systems list.
-        public void ActivateReactiveSystems() {
-            for (int i = 0; i < _executeSystems.Count; i++) {
-                var system = _executeSystems[i];
-                var reactiveSystem = system as IReactiveSystem;
-                if (reactiveSystem != null) {
-                    reactiveSystem.Activate();
-                }
-
-                var nestedSystems = system as Systems;
-                if (nestedSystems != null) {
-                    nestedSystems.ActivateReactiveSystems();
-                }
-            }
-        }
-
-        /// Deactivates all ReactiveSystems in the systems list.
-        /// This will also clear all ReactiveSystems.
-        /// This is useful when you want to soft-restart your application and
-        /// want to reuse your existing system instances.
-        public void DeactivateReactiveSystems() {
-            for (int i = 0; i < _executeSystems.Count; i++) {
-                var system = _executeSystems[i];
-                var reactiveSystem = system as IReactiveSystem;
-                if (reactiveSystem != null) {
-                    reactiveSystem.Deactivate();
-                }
-
-                var nestedSystems = system as Systems;
-                if (nestedSystems != null) {
-                    nestedSystems.DeactivateReactiveSystems();
-                }
-            }
-        }
-
-        /// Clears all ReactiveSystems in the systems list.
-        public void ClearReactiveSystems() {
-            for (int i = 0; i < _executeSystems.Count; i++) {
-                var system = _executeSystems[i];
-                var reactiveSystem = system as IReactiveSystem;
-                if (reactiveSystem != null) {
-                    reactiveSystem.Clear();
-                }
-
-                var nestedSystems = system as Systems;
-                if (nestedSystems != null) {
-                    nestedSystems.ClearReactiveSystems();
-                }
-            }
-        }
-
 		public ReadOnlyCollection<ISystem> GetAllSystems() {
 			return _allSystems.AsReadOnly();
 		}

@@ -268,17 +268,6 @@ namespace Entitas.VisualDebugging.Unity.Editor {
 
                         EditorGUI.indentLevel = indent;
 
-                        if (systemInfo.isActive != wasActive) {
-                            var reactiveSystem = systemInfo.system as IReactiveSystem;
-                            if (reactiveSystem != null) {
-                                if (systemInfo.isActive) {
-                                    reactiveSystem.Activate();
-                                } else {
-                                    reactiveSystem.Deactivate();
-                                }
-                            }
-                        }
-
                         switch (type) {
                             case SystemInterfaceFlags.IInitializeSystem:
                                 EditorGUILayout.LabelField(systemInfo.systemName, systemInfo.initializationDuration.ToString(), getSystemStyle(systemInfo, SystemInterfaceFlags.IInitializeSystem));
