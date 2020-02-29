@@ -43,7 +43,6 @@ namespace Entitas
 
 		/// Each entity has its own unique id which will be set by 
 		/// the context when you create the entity.
-		[Obsolete("Please use entity.id")]
 		public int creationIndex => _id;
 		public int id => _id;
 
@@ -70,12 +69,14 @@ namespace Entitas
 		private ContextInfo _contextInfo;
 		private int _totalComponents;
 
+		private object _syncObj = new object();
+
 		//IAERC _aerc;
 
 		//IComponent[] _componentsCache;
 		//int[] _componentIndicesCache;
 
-		string _toStringCache;
+		private string _toStringCache;
 
 		internal Entity()
 		{
@@ -97,59 +98,55 @@ namespace Entitas
 		
 		internal void Start(int id, string name = null)
 		{
+			if (!_enabled)
+				throw new EntityIsNotEnabledException($"Cannot add component {_contextInfo.componentNames[index]} to {this} !");
+
 			_id = id;
 			_name = name;
 			_enabled = true;
 		}
 
-		/*
-		ContextInfo createDefaultContextInfo()
-		{
-			var componentNames = new string[totalComponents];
-			for (int i = 0; i < componentNames.Length; i++)
-			{
-				componentNames[i] = i.ToString();
-			}
-
-			return new ContextInfo("No Context", componentNames, null);
-		}
-		*/
-
 		/// Adds a component at the specified index.
 		/// If already exists, return the old component.
 		public IComponent AddComponent(int index)
 		{
-			if (!_enabled)
-				throw new EntityIsNotEnabledException($"Cannot add component {_contextInfo.componentNames[index]} to {this} !");
-
-			// If exists, return the old component
-			var component = _components[index];
-			if (component != null)
+			lock (_syncObj)
 			{
+				if (!_enabled)
+					throw new EntityIsNotEnabledException($"Cannot add component {_contextInfo.componentNames[index]} to {this} !");
+
+				// If exists, return the old component
+				var component = _components[index];
+				if (component == null)
+				{
+					component.Modify();
+					return component;
+				}
+
+				// Create from pool
+				component = _componentPools[index].Get();
 				component.Modify();
+
+				// Add to component list, and update mask
+				_components[index] = component;
+				_componentsMask[index] = true;
+
+				OnComponentAdded?.Invoke(this, index, component);
+
 				return component;
 			}
-
-			// Create from pool
-			component = _componentPools[index].Get();
-			component.Modify();
-
-			// Add to component list
-			_components[index] = component;
-			_componentsMask[index] = true;
-
-			OnComponentAdded?.Invoke(this, index, component);
-
-			return component;
 		}
 
 		/// Removes a component at the specified index if exists.
 		public void RemoveComponent(int index)
 		{
-			if (!_enabled)
-				throw new EntityIsNotEnabledException($"Cannot remove component {_contextInfo.componentNames[index]} from {this} !");
+			lock (_syncObj)
+			{
+				if (!_enabled)
+					throw new EntityIsNotEnabledException($"Cannot remove component {_contextInfo.componentNames[index]} from {this} !");
 
-			RemoveComponentImpl(index);
+				RemoveComponentImpl(index);
+			}
 		}
 
 		private void RemoveComponentImpl(int index)
@@ -277,25 +274,6 @@ namespace Entitas
 
             return _componentsCache;
         }
-
-        /// Returns all indices of added components.
-        public int[] GetComponentIndices() {
-            if (_componentIndicesCache == null) {
-                var indices = EntitasCache.GetIntList();
-
-                    for (int i = 0; i < _components.Length; i++) {
-                        if (_components[i] != null) {
-                            indices.Add(i);
-                        }
-                    }
-
-                    _componentIndicesCache = indices.ToArray();
-
-                EntitasCache.PushIntList(indices);
-            }
-
-            return _componentIndicesCache;
-        }
 		*/
 
 		/// Determines whether this entity has a component at the specified index.
@@ -319,11 +297,14 @@ namespace Entitas
 		/// Removes all components.
 		public void RemoveAllComponents()
 		{
-			if (!_enabled)
-				throw new EntityIsNotEnabledException($"Cannot remove all components from {this} !");
+			lock (_syncObj)
+			{
+				if (!_enabled)
+					throw new EntityIsNotEnabledException($"Cannot remove all components from {this} !");
 
-			for (int i = 0; i < _components.Length; i++)
-				RemoveComponentImpl(i);
+				for (int i = 0; i < _components.Length; i++)
+					RemoveComponentImpl(i);
+			}
 		}
 
 		/*
