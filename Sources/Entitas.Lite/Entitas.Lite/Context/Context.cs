@@ -203,12 +203,6 @@ namespace Entitas {
 			return _entitiesCache;
 		}
 
-		/// Returns a new collector
-		public Collector CreateCollector()
-		{
-			return new Collector(this);
-		}
-
 		/// Returns a group for the specified matcher.
 		/// Calling context.GetGroup(matcher) with the same matcher will always
 		/// return the same instance of the group.
