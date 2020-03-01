@@ -112,7 +112,7 @@ namespace Entitas {
 
 			// Cache delegates to avoid gc allocations
 			_cachedEntityChanged = updateGroupsComponentAddedOrRemoved;
-			_cachedComponentReplaced = updateGroupsComponentReplaced;
+			//_cachedComponentReplaced = updateGroupsComponentReplaced;
 			_cachedEntityReleased = onEntityReleased;
 			_cachedDestroyEntity = onDestroyEntity;
 
