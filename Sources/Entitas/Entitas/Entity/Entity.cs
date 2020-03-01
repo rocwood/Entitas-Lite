@@ -24,7 +24,7 @@ namespace Entitas
 		/// Occurs when a component gets replaced.
 		/// All event handlers will be removed when
 		/// the entity gets destroyed by the context.
-		public event EntityComponentReplaced OnComponentReplaced;
+		//public event EntityComponentReplaced OnComponentReplaced;
 
 		/// Occurs when an entity gets released and is not retained anymore.
 		/// All event handlers will be removed when
@@ -66,14 +66,14 @@ namespace Entitas
 		String _name;
 
 		IComponent[] _components;
-        IComponentPool[] _componentPools;
+		IComponentPool[] _componentPools;
 		ContextInfo _contextInfo;
 		int _totalComponents;
 
 		IAERC _aerc;
 
 		IComponent[] _componentsCache;
-		int[] _componentIndicesCache;
+		//int[] _componentIndicesCache;
 		string _toStringCache;
 		//StringBuilder _toStringBuilder;
 
@@ -82,7 +82,7 @@ namespace Entitas
 		internal Entity()
 		{
 		}
-		
+
 		internal void Initialize(int creationIndex, IComponentPool[] componentPools, ContextInfo contextInfo, IAERC aerc)
 		{
 			Reactivate(creationIndex);
@@ -101,6 +101,7 @@ namespace Entitas
 			_isEnabled = true;
 		}
 
+		/*
 		/// Adds a component at the specified index.
 		/// You can only have one component at an index.
 		/// Each component type must have its own constant index.
@@ -144,8 +145,8 @@ namespace Entitas
 				OnComponentAdded(this, index, component);
 			}
 		}
+		*/
 
-		/*
 		/// Adds a component at the specified index.
 		/// If already exists, return the old component.
 		public IComponent AddComponent(int index)
@@ -163,72 +164,47 @@ namespace Entitas
 					return component;
 				}
 
-				// Create from pool
 				component = _componentPools[index].Get();
+				component.SetEntityId(_creationIndex);
 				component.Modify();
 
-				// Add to component list, and update mask
 				_components[index] = component;
-				_componentsMask[index] = true;
+				_componentsCache = null;
+				//_componentIndicesCache = null;
 
 				OnComponentAdded?.Invoke(this, index, component);
 
 				return component;
 			}
 		}
-		*/
 
-		/// Removes a component at the specified index.
-		/// You can only remove a component at an index if it exists.
-		/// The prefered way is to use the
-		/// generated methods from the code generator.
+		/// Removes a component at the specified index if exists.
 		public void RemoveComponent(int index)
 		{
-			if (!_isEnabled)
+			lock (_syncObj)
 			{
-				throw new EntityIsNotEnabledException(
-					"Cannot remove component '" +
-					_contextInfo.componentNames[index] + "' from " + this + "!"
-				);
-			}
+				if (!_isEnabled)
+					throw new EntityIsNotEnabledException($"Cannot remove component {_contextInfo.componentNames[index]} from {this} !");
 
-			if (!HasComponent(index))
-			{
-				throw new EntityDoesNotHaveComponentException(
-					index, "Cannot remove component '" +
-					_contextInfo.componentNames[index] + "' from " + this + "!",
-					"You should check if an entity has the component " +
-					"before removing it."
-				);
+				DoRemoveComponent(index);
 			}
-
-			replaceComponent(index, null);
 		}
 
-		/// Replaces an existing component at the specified index
-		/// or adds it if it doesn't exist yet.
-		/// The prefered way is to use the
-		/// generated methods from the code generator.
-		public void ReplaceComponent(int index, IComponent component)
+		private void DoRemoveComponent(int index)
 		{
-			if (!_isEnabled)
-			{
-				throw new EntityIsNotEnabledException(
-					"Cannot replace component '" +
-					_contextInfo.componentNames[index] + "' on " + this + "!"
-				);
-			}
+			var component = _components[index];
+			if (component == null)
+				return;
 
-			if (HasComponent(index))
-			{
-				replaceComponent(index, component);
-			}
-			else if (component != null)
-			{
-				AddComponent(index, component);
-			}
+			_components[index] = null;
+			_componentsCache = null;
+
+			OnComponentRemoved?.Invoke(this, index, component);
+
+			_componentPools[index].Return(component);
 		}
 
+		/*
 		void replaceComponent(int index, IComponent replacement)
 		{
 			//_toStringCache = null;
@@ -262,7 +238,7 @@ namespace Entitas
 
 				// Reset entityId
 				var entityIdRef = previousComponent as IEntityIdRef;
-				if (entityIdRef != null)
+				if (entityIdRef != null)h
 					entityIdRef.entityId = 0;
 
 				// Reset modified flag
@@ -290,6 +266,7 @@ namespace Entitas
 
 			return component;
 		}
+		*/
 
 		/// Returns a component at the specified index.
 		/// You can only get a component at an index if it exists.
@@ -298,33 +275,28 @@ namespace Entitas
 			if (index < 0)
 				return null;
 
-			return _components[index];
+			lock (_syncObj)
+			{
+				return _components[index];
+			}
 		}
 
 		/// Returns all added components.
 		public IComponent[] GetComponents()
 		{
-			if (_componentsCache == null)
+			lock (_syncObj)
 			{
-				var components = EntitasCache.GetIComponentList();
-
-				for (int i = 0; i < _components.Length; i++)
+				if (_componentsCache == null)
 				{
-					var component = _components[i];
-					if (component != null)
-					{
-						components.Add(component);
-					}
+					_componentsCache = new IComponent[_totalComponents];
+					_components.CopyTo(_componentsCache, 0);
 				}
 
-				_componentsCache = components.ToArray();
-
-				EntitasCache.PushIComponentList(components);
+				return _componentsCache;
 			}
-
-			return _componentsCache;
 		}
 
+		/*
 		/// Returns all indices of added components.
 		public int[] GetComponentIndices()
 		{
@@ -347,15 +319,14 @@ namespace Entitas
 
 			return _componentIndicesCache;
 		}
+		*/
 
 		/// Determines whether this entity has a component
 		/// at the specified index.
 		public bool HasComponent(int index)
 		{
 			if (index < 0)
-			{
 				return false;
-			}
 
 			return _components[index] != null;
 		}
@@ -367,9 +338,7 @@ namespace Entitas
 			for (int i = 0; i < indices.Length; i++)
 			{
 				if (_components[indices[i]] == null)
-				{
 					return false;
-				}
 			}
 
 			return true;
@@ -382,9 +351,7 @@ namespace Entitas
 			for (int i = 0; i < indices.Length; i++)
 			{
 				if (_components[indices[i]] != null)
-				{
 					return true;
-				}
 			}
 
 			return false;
@@ -393,21 +360,15 @@ namespace Entitas
 		/// Removes all components.
 		public void RemoveAllComponents()
 		{
-			//_toStringCache = null;
-			for (int i = 0; i < _components.Length; i++)
+			lock (_syncObj)
 			{
-				if (_components[i] != null)
-				{
-					replaceComponent(i, null);
-				}
-			}
-		}
+				// Don't check enabled 
+				//if (!_isEnabled)
+				//	throw new EntityIsNotEnabledException($"Cannot remove all components from {this} !");
 
-		/// Returns a new or reusable component from the componentPool
-		/// for the specified component index.
-		public IComponent CreateComponent(int index, Type type)
-		{
-			return _componentPools[index].Get();
+				for (int i = 0; i < _components.Length; i++)
+					DoRemoveComponent(i);
+			}
 		}
 
 		/// Returns the number of objects that retain this entity.
@@ -421,7 +382,6 @@ namespace Entitas
 		public void Retain(object owner)
 		{
 			_aerc.Retain(owner);
-			//_toStringCache = null;
 		}
 
 		/// Releases the entity. An owner can only release an entity
@@ -433,28 +393,20 @@ namespace Entitas
 		public void Release(object owner)
 		{
 			_aerc.Release(owner);
-			//_toStringCache = null;
 
 			if (_aerc.retainCount == 0)
-			{
-				if (OnEntityReleased != null)
-				{
-					OnEntityReleased(this);
-				}
-			}
+				OnEntityReleased?.Invoke(this);
 		}
 
 		// Dispatches OnDestroyEntity which will start the destroy process.
 		public void Destroy()
 		{
-			if (!_isEnabled)
+			lock (_syncObj)
 			{
-				throw new EntityIsNotEnabledException("Cannot destroy " + this + "!");
-			}
+				if (!_isEnabled)
+					throw new EntityIsNotEnabledException($"Cannot destroy {this} !");
 
-			if (OnDestroyEntity != null)
-			{
-				OnDestroyEntity(this);
+				OnDestroyEntity?.Invoke(this);
 			}
 		}
 
@@ -469,13 +421,13 @@ namespace Entitas
 			RemoveAllComponents();
 
 			OnComponentAdded = null;
-			OnComponentReplaced = null;
+			//OnComponentReplaced = null;
 			OnComponentRemoved = null;
 			OnDestroyEntity = null;
 		}
 
 		// Do not call this method manually. This method is called by the context.
-		public void RemoveAllOnEntityReleasedHandlers()
+		internal void RemoveAllOnEntityReleasedHandlers()
 		{
 			OnEntityReleased = null;
 		}
@@ -486,9 +438,7 @@ namespace Entitas
 		public override string ToString()
 		{
 			if (_toStringCache == null)
-			{
-				_toStringCache = string.Format("Entity({0}) {1}", _creationIndex, _name);
-			}
+				_toStringCache = $"Entity({_creationIndex}) {_name}";
 
 			return _toStringCache;
 		}

@@ -7,11 +7,7 @@ namespace Entitas
 		public T Add<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			//return (T)AddComponent(index);
-
-			var component = (T)CreateComponent(index, typeof(T));
-			AddComponent(index, component);
-			return component;
+			return (T)AddComponent(index);
 		}
 
 		public void Remove<T>() where T : IComponent
@@ -34,8 +30,9 @@ namespace Entitas
 
 		public T Modify<T>() where T : IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			return (T)ModifyComponent(index);
+			var component = Get<T>();
+			component?.Modify();
+			return component;
 		}
 	}
 }

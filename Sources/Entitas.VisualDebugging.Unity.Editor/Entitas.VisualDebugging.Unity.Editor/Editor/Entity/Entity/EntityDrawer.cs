@@ -51,11 +51,12 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                 var entity = entities[0];
                 var index = drawAddComponentMenu(context, entity);
                 if (index >= 0) {
-                    var componentType = entity.contextInfo.componentTypes[index];
+                    //var componentType = entity.contextInfo.componentTypes[index];
                     foreach (var e in entities) {
-                        var component = e.CreateComponent(index, componentType);
-                        e.AddComponent(index, component);
-                    }
+						//var component = e.CreateComponent(index, componentType);
+						//e.AddComponent(index, component);
+						e.AddComponent(index);
+					}
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -120,10 +121,11 @@ namespace Entitas.VisualDebugging.Unity.Editor {
 
                 var index = drawAddComponentMenu(context, entity);
                 if (index >= 0) {
-                    var componentType = entity.contextInfo.componentTypes[index];
-                    var component = entity.CreateComponent(index, componentType);
-                    entity.AddComponent(index, component);
-                }
+					//var componentType = entity.contextInfo.componentTypes[index];
+					//var component = entity.CreateComponent(index, componentType);
+					//entity.AddComponent(index, component);
+					entity.AddComponent(index);
+				}
 
                 EditorGUILayout.Space();
 
@@ -131,10 +133,11 @@ namespace Entitas.VisualDebugging.Unity.Editor {
 
                 EditorGUILayout.Space();
 
-                var indices = entity.GetComponentIndices();
                 var components = entity.GetComponents();
                 for (int i = 0; i < components.Length; i++) {
-                    DrawComponent(unfoldedComponents, componentMemberSearch, context, entity, indices[i], components[i]);
+					var component = components[i];
+					if (component != null)
+						DrawComponent(unfoldedComponents, componentMemberSearch, context, entity, i, component);
                 }
             }
             EntitasEditorLayout.EndVerticalBox();
@@ -188,7 +191,7 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                         }
 
 						if (changed) {
-							entity.ReplaceComponent(index, component);
+							component.Modify();
 						}
                     }
                 }

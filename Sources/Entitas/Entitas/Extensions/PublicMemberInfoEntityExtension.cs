@@ -1,3 +1,4 @@
+/*
 using Entitas.Utils;
 
 namespace Entitas {
@@ -25,3 +26,4 @@ namespace Entitas {
         }
     }
 }
+*/

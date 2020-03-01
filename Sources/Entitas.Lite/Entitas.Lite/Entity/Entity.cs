@@ -296,8 +296,9 @@ namespace Entitas
 		{
 			lock (_syncObj)
 			{
-				if (!_enabled)
-					throw new EntityIsNotEnabledException($"Cannot remove all components from {this} !");
+				// Don't check enabled 
+				//if (!_enabled)
+				//	throw new EntityIsNotEnabledException($"Cannot remove all components from {this} !");
 
 				for (int i = 0; i < _components.Length; i++)
 					RemoveComponentImpl(i);
