@@ -66,7 +66,7 @@ namespace Entitas
 		String _name;
 
 		IComponent[] _components;
-        Stack<IComponent>[] _componentPools;
+        IComponentPool[] _componentPools;
 		ContextInfo _contextInfo;
 		int _totalComponents;
 
@@ -77,11 +77,13 @@ namespace Entitas
 		string _toStringCache;
 		//StringBuilder _toStringBuilder;
 
+		readonly object _syncObj = new object();
+
 		internal Entity()
 		{
 		}
 		
-		internal void Initialize(int creationIndex, Stack<IComponent>[] componentPools, ContextInfo contextInfo, IAERC aerc)
+		internal void Initialize(int creationIndex, IComponentPool[] componentPools, ContextInfo contextInfo, IAERC aerc)
 		{
 			Reactivate(creationIndex);
 
@@ -142,6 +144,39 @@ namespace Entitas
 				OnComponentAdded(this, index, component);
 			}
 		}
+
+		/*
+		/// Adds a component at the specified index.
+		/// If already exists, return the old component.
+		public IComponent AddComponent(int index)
+		{
+			lock (_syncObj)
+			{
+				if (!_isEnabled)
+					throw new EntityIsNotEnabledException($"Cannot add component {_contextInfo.componentNames[index]} to {this} !");
+
+				// If exists, return the old component
+				var component = _components[index];
+				if (component == null)
+				{
+					component.Modify();
+					return component;
+				}
+
+				// Create from pool
+				component = _componentPools[index].Get();
+				component.Modify();
+
+				// Add to component list, and update mask
+				_components[index] = component;
+				_componentsMask[index] = true;
+
+				OnComponentAdded?.Invoke(this, index, component);
+
+				return component;
+			}
+		}
+		*/
 
 		/// Removes a component at the specified index.
 		/// You can only remove a component at an index if it exists.
@@ -235,8 +270,7 @@ namespace Entitas
 				if (modifiable != null)
 					modifiable.modified = false;
 
-				GetComponentPool(index).Push(previousComponent);
-
+				_componentPools[index].Return(previousComponent);
 			}
 			else
 			{
@@ -369,44 +403,15 @@ namespace Entitas
 			}
 		}
 
-		/// Returns the componentPool for the specified component index.
-		/// componentPools is set by the context which created the entity and
-		/// is used to reuse removed components.
-		/// Removed components will be pushed to the componentPool.
-		/// Use entity.CreateComponent(index, type) to get a new or
-		/// reusable component from the componentPool.
-		public Stack<IComponent> GetComponentPool(int index)
-		{
-			var componentPool = _componentPools[index];
-			if (componentPool == null)
-			{
-				componentPool = new Stack<IComponent>();
-				_componentPools[index] = componentPool;
-			}
-
-			return componentPool;
-		}
-
 		/// Returns a new or reusable component from the componentPool
 		/// for the specified component index.
 		public IComponent CreateComponent(int index, Type type)
 		{
-			var componentPool = GetComponentPool(index);
-			return componentPool.Count > 0
-						? componentPool.Pop()
-						: (IComponent)Activator.CreateInstance(type);
-		}
-
-		/// Returns a new or reusable component from the componentPool
-		/// for the specified component index.
-		public T CreateComponent<T>(int index) where T : new()
-		{
-			var componentPool = GetComponentPool(index);
-			return componentPool.Count > 0 ? (T)componentPool.Pop() : new T();
+			return _componentPools[index].Get();
 		}
 
 		/// Returns the number of objects that retain this entity.
-		public int retainCount { get { return _aerc.retainCount; } }
+		public int retainCount => _aerc.retainCount;
 
 		/// Retains the entity. An owner can only retain the same entity once.
 		/// Retain/Release is part of AERC (Automatic Entity Reference Counting)

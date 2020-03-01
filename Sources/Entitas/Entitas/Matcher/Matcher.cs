@@ -11,9 +11,9 @@ namespace Entitas {
             }
         }
 
-        public int[] allOfIndices { get { return _allOfIndices; } }
-        public int[] anyOfIndices { get { return _anyOfIndices; } }
-        public int[] noneOfIndices { get { return _noneOfIndices; } }
+        public int[] allOfIndices => _allOfIndices;
+        public int[] anyOfIndices => _anyOfIndices;
+        public int[] noneOfIndices => _noneOfIndices;
 
 		public string[] componentNames => ContextProvider.GetComponentNames();
 
@@ -22,8 +22,7 @@ namespace Entitas {
         int[] _anyOfIndices;
         int[] _noneOfIndices;
 
-        Matcher() {
-        }
+        Matcher() {}
 
         IAnyOfMatcher IAllOfMatcher.AnyOf(params int[] indices) {
             _anyOfIndices = distinctIndices(indices);

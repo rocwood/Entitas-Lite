@@ -98,9 +98,6 @@ namespace Entitas
 		
 		internal void Start(int id, string name = null)
 		{
-			if (!_enabled)
-				throw new EntityIsNotEnabledException($"Cannot add component {_contextInfo.componentNames[index]} to {this} !");
-
 			_id = id;
 			_name = name;
 			_enabled = true;

@@ -7,15 +7,19 @@ namespace Entitas
 		public T Add<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			return (T)AddComponent(index);
+			//return (T)AddComponent(index);
+
+			var component = (T)CreateComponent(index, typeof(T));
+			AddComponent(index, component);
+			return component;
 		}
 
-		public void Remove<T>() where T: IComponent
+		public void Remove<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
 			RemoveComponent(index);
 		}
-		
+
 		public bool Has<T>() where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();

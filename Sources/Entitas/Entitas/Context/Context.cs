@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Entitas.Utils;
 
 namespace Entitas {
@@ -33,7 +34,7 @@ namespace Entitas {
 		/// Removed components will be pushed to the componentPool.
 		/// Use entity.CreateComponent(index, type) to get a new or reusable
 		/// component from the componentPool.
-		public Stack<IComponent>[] componentPools { get { return _componentPools; } }
+		//public Stack<IComponent>[] componentPools { get { return _componentPools; } }
 
 		/// The contextInfo contains information about the context.
 		/// It's used to provide better error messages.
@@ -52,7 +53,7 @@ namespace Entitas {
 
 		readonly int _totalComponents;
 
-		readonly Stack<IComponent>[] _componentPools;
+		readonly IComponentPool[] _componentPools;
 		readonly ContextInfo _contextInfo;
 		readonly Func<IEntity, IAERC> _aercFactory;
 
@@ -75,18 +76,12 @@ namespace Entitas {
 		EntityEvent _cachedEntityReleased;
 		EntityEvent _cachedDestroyEntity;
 
-		/// The prefered way to create a context is to use the generated methods
-		/// from the code generator, e.g. var context = new GameContext();
-		public Context(int totalComponents) : this(totalComponents, 0, null, null)
+		public Context(ContextInfo contextInfo, Func<IEntity, IAERC> aercFactory)
 		{
-		}
+			int totalComponents = contextInfo.GetComponentCount();
 
-		/// The prefered way to create a context is to use the generated methods
-		/// from the code generator, e.g. var context = new GameContext();
-		public Context(int totalComponents, int startCreationIndex, ContextInfo contextInfo, Func<IEntity, IAERC> aercFactory)
-		{
 			_totalComponents = totalComponents;
-			_creationIndex = startCreationIndex;
+			_creationIndex = 0;
 
 			if (contextInfo != null)
 			{
@@ -107,7 +102,7 @@ namespace Entitas {
 
 			_groupsForIndex = new List<IGroup>[totalComponents];
 			_groupForSingle = new IGroup[totalComponents];
-			_componentPools = new Stack<IComponent>[totalComponents];
+			_componentPools = new IComponentPool[totalComponents];
 
 			_groupChangedListPool = new ObjectPool<List<GroupChanged>>(
 										() => new List<GroupChanged>(),
@@ -144,15 +139,17 @@ namespace Entitas {
 		{
 			Entity entity;
 
+			Interlocked.Increment(ref _creationIndex);
+
 			if (_reusableEntities.Count > 0)
 			{
 				entity = _reusableEntities.Pop();
-				entity.Reactivate(_creationIndex++);
+				entity.Reactivate(_creationIndex);
 			}
 			else
 			{
 				entity = (Entity)Activator.CreateInstance(typeof(Entity));
-				entity.Initialize(_creationIndex++, _componentPools, _contextInfo, _aercFactory(entity));
+				entity.Initialize(_creationIndex, _componentPools, _contextInfo, _aercFactory(entity));
 			}
 
 			_entities.Add(entity);
@@ -298,6 +295,7 @@ namespace Entitas {
 			_creationIndex = 0;
 		}
 
+		/*
 		/// Clears the componentPool at the specified index.
 		internal void ClearComponentPool(int index)
 		{
@@ -316,6 +314,7 @@ namespace Entitas {
 				ClearComponentPool(i);
 			}
 		}
+		*/
 
 		/// Resets the context (destroys all entities and
 		/// resets creationIndex back to 0).
@@ -462,7 +461,7 @@ namespace Entitas {
 			}
 
 			entity = CreateEntity(typeof(T).Name);
-			T component = entity.CreateComponent<T>(componentIndex);
+			var component = (T)entity.CreateComponent(componentIndex, typeof(T));
 			entity.AddComponent(componentIndex, component);
 
 			return component;

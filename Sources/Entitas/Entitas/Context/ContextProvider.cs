@@ -8,7 +8,6 @@ namespace Entitas
 	/// </summary>
 	public static class ContextProvider
 	{
-		public static int startCreationIndex = 1;
 		public static bool useSafeAERC = true;
 
 		public static Context Create(string name)
@@ -18,7 +17,7 @@ namespace Entitas
 
 			var contextInfo = new ContextInfo(name, _baseContextInfo.componentNames, _baseContextInfo.componentTypes);
 
-			return new Context(contextInfo.GetComponentCount(), startCreationIndex, contextInfo, GetAERC());
+			return new Context(contextInfo, GetAERC());
 		}
 		
 		public static int GetComponentCount()

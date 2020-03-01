@@ -31,8 +31,9 @@ namespace Entitas {
         void AddComponent(int index, IComponent component);
         void RemoveComponent(int index);
         void ReplaceComponent(int index, IComponent component);
+		IComponent CreateComponent(int index, Type type);
 
-        IComponent GetComponent(int index);
+		IComponent GetComponent(int index);
         IComponent[] GetComponents();
         int[] GetComponentIndices();
 
@@ -41,10 +42,6 @@ namespace Entitas {
         bool HasAnyComponent(int[] indices);
 
         void RemoveAllComponents();
-
-        Stack<IComponent> GetComponentPool(int index);
-        IComponent CreateComponent(int index, Type type);
-        T CreateComponent<T>(int index) where T : new();
 
         void Destroy();
         void RemoveAllOnEntityReleasedHandlers();

@@ -8,29 +8,29 @@ namespace Entitas
 		private static Context Instance => Contexts.Get(ContextAttribute.GetName<C>());
 
 		public static IGroup AllOf<T1>() where T1 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1>.All()); }
+			=> Instance.AllOf<T1>();
 		public static IGroup AllOf<T1, T2>() where T1 : IComponent where T2 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2>.All()); }
+			=> Instance.AllOf<T1, T2>();
 		public static IGroup AllOf<T1, T2, T3>() where T1 : IComponent where T2 : IComponent where T3 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3>.All()); }
+			=> Instance.AllOf<T1, T2, T3>();
 		public static IGroup AllOf<T1, T2, T3, T4>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4>.All()); }
+			=> Instance.AllOf<T1, T2, T3, T4>();
 		public static IGroup AllOf<T1, T2, T3, T4, T5>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4, T5>.All()); }
+			=> Instance.AllOf<T1, T2, T3, T4, T5>();
 		public static IGroup AllOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4, T5, T6>.All()); }
+			=> Instance.AllOf<T1, T2, T3, T4, T5, T6>();
 
 		public static IGroup AnyOf<T1>() where T1 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1>.Any()); }
+			=> Instance.AnyOf<T1>();
 		public static IGroup AnyOf<T1, T2>() where T1 : IComponent where T2 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2>.Any()); }
+			=> Instance.AnyOf<T1, T2>();
 		public static IGroup AnyOf<T1, T2, T3>() where T1 : IComponent where T2 : IComponent where T3 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3>.Any()); }
+			=> Instance.AnyOf<T1, T2, T3>();
 		public static IGroup AnyOf<T1, T2, T3, T4>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4>.Any()); }
+			=> Instance.AnyOf<T1, T2, T3, T4>();
 		public static IGroup AnyOf<T1, T2, T3, T4, T5>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4, T5>.Any()); }
+			=> Instance.AnyOf<T1, T2, T3, T4, T5>();
 		public static IGroup AnyOf<T1, T2, T3, T4, T5, T6>() where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
-		{ return Instance.GetGroup(MatcherCache<T1, T2, T3, T4, T5, T6>.Any()); }
+			=> Instance.AnyOf<T1, T2, T3, T4, T5, T6>();
 	}
 }

@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace Entitas {
+namespace Entitas
+{
+	public class EntityEqualityComparer : IEqualityComparer<Entity>
+	{
+		public static readonly IEqualityComparer<Entity> comparer = new EntityEqualityComparer();
 
-    public class EntityEqualityComparer : IEqualityComparer<Entity> {
+		public bool Equals(Entity x, Entity y) => x == y;
 
-        public static readonly IEqualityComparer<Entity> comparer = new EntityEqualityComparer();
-
-        public bool Equals(Entity x, Entity y) {
-            return x == y;
-        }
-
-        public int GetHashCode(Entity obj) {
-            return obj.creationIndex;
-        }
-    }
+		public int GetHashCode(Entity obj) => obj.creationIndex;
+	}
 }
