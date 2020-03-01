@@ -1,30 +1,27 @@
-using System;
-using System.Collections.Generic;
+namespace Entitas
+{
+	public delegate void ContextEntityChanged(IContext context, Entity entity);
+	public delegate void ContextGroupChanged(IContext context, IGroup group);
 
-namespace Entitas {
+	public interface IContext
+	{
+		event ContextEntityChanged OnEntityCreated;
+		event ContextEntityChanged OnEntityWillBeDestroyed;
+		event ContextEntityChanged OnEntityDestroyed;
 
-    public delegate void ContextEntityChanged(IContext context, IEntity entity);
-    public delegate void ContextGroupChanged(IContext context, IGroup group);
+		event ContextGroupChanged OnGroupCreated;
 
-    public interface IContext {
+		int totalComponents { get; }
 
-        event ContextEntityChanged OnEntityCreated;
-        event ContextEntityChanged OnEntityWillBeDestroyed;
-        event ContextEntityChanged OnEntityDestroyed;
+		ContextInfo contextInfo { get; }
 
-        event ContextGroupChanged OnGroupCreated;
+		int count { get; }
+		int reusableEntitiesCount { get; }
+		int retainedEntitiesCount { get; }
 
-        int totalComponents { get; }
+		void DestroyAllEntities();
 
-        ContextInfo contextInfo { get; }
-
-        int count { get; }
-        int reusableEntitiesCount { get; }
-        int retainedEntitiesCount { get; }
-
-        void DestroyAllEntities();
-
-        void Reset();
+		void Reset();
 
 		Entity CreateEntity();
 

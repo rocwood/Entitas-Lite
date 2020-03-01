@@ -1,7 +1,7 @@
 namespace Entitas
 {
-	public delegate void EntityComponentChanged(IEntity entity, int index, IComponent component);
-	public delegate void EntityEvent(IEntity entity);
+	public delegate void EntityComponentChanged(Entity entity, int index, IComponent component);
+	public delegate void EntityEvent(Entity entity);
 
 	public interface IEntity : IAERC
 	{
@@ -12,6 +12,7 @@ namespace Entitas
 
 		int totalComponents { get; }
 		int creationIndex { get; }
+		int id { get; }
 		bool isEnabled { get; }
 
 		ContextInfo contextInfo { get; }

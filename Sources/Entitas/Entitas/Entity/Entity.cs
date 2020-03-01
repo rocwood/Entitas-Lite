@@ -42,6 +42,7 @@ namespace Entitas
 		/// Each entity has its own unique creationIndex which will be set by
 		/// the context when you create the entity.
 		public int creationIndex => _creationIndex;
+		public int id => _creationIndex;
 
 		/// The context manages the state of an entity.
 		/// Active entities are enabled, destroyed entities are not.
