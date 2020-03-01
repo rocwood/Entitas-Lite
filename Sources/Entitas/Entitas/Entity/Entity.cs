@@ -29,7 +29,7 @@ namespace Entitas
 		/// Occurs when an entity gets released and is not retained anymore.
 		/// All event handlers will be removed when
 		/// the entity gets destroyed by the context.
-		public event EntityEvent OnEntityReleased;
+		//public event EntityEvent OnEntityReleased;
 
 		/// Occurs when calling entity.Destroy().
 		/// All event handlers will be removed when
@@ -56,12 +56,6 @@ namespace Entitas
 		/// It's used to provide better error messages.
 		public ContextInfo contextInfo => _contextInfo;
 
-		/// Automatic Entity Reference Counting (AERC)
-		/// is used internally to prevent pooling retained entities.
-		/// If you use retain manually you also have to
-		/// release it manually at some point.
-		public IAERC aerc { get { return _aerc; } }
-
 		int _creationIndex;
 		bool _isEnabled;
 		String _name;
@@ -71,12 +65,8 @@ namespace Entitas
 		ContextInfo _contextInfo;
 		int _totalComponents;
 
-		IAERC _aerc;
-
 		IComponent[] _componentsCache;
-		//int[] _componentIndicesCache;
 		string _toStringCache;
-		//StringBuilder _toStringBuilder;
 
 		readonly object _syncObj = new object();
 
@@ -84,7 +74,7 @@ namespace Entitas
 		{
 		}
 
-		internal void Initialize(int creationIndex, IComponentPool[] componentPools, ContextInfo contextInfo, IAERC aerc)
+		internal void Initialize(int creationIndex, IComponentPool[] componentPools, ContextInfo contextInfo)
 		{
 			Reactivate(creationIndex);
 
@@ -93,7 +83,6 @@ namespace Entitas
 			_componentPools = componentPools;
 
 			_contextInfo = contextInfo;
-			_aerc = aerc;
 		}
 
 		internal void Reactivate(int creationIndex)
@@ -372,33 +361,6 @@ namespace Entitas
 			}
 		}
 
-		/// Returns the number of objects that retain this entity.
-		public int retainCount => _aerc.retainCount;
-
-		/// Retains the entity. An owner can only retain the same entity once.
-		/// Retain/Release is part of AERC (Automatic Entity Reference Counting)
-		/// and is used internally to prevent pooling retained entities.
-		/// If you use retain manually you also have to
-		/// release it manually at some point.
-		public void Retain(object owner)
-		{
-			_aerc.Retain(owner);
-		}
-
-		/// Releases the entity. An owner can only release an entity
-		/// if it retains it.
-		/// Retain/Release is part of AERC (Automatic Entity Reference Counting)
-		/// and is used internally to prevent pooling retained entities.
-		/// If you use retain manually you also have to
-		/// release it manually at some point.
-		public void Release(object owner)
-		{
-			_aerc.Release(owner);
-
-			if (_aerc.retainCount == 0)
-				OnEntityReleased?.Invoke(this);
-		}
-
 		// Dispatches OnDestroyEntity which will start the destroy process.
 		public void Destroy()
 		{
@@ -427,11 +389,13 @@ namespace Entitas
 			OnDestroyEntity = null;
 		}
 
+		/*
 		// Do not call this method manually. This method is called by the context.
 		internal void RemoveAllOnEntityReleasedHandlers()
 		{
 			OnEntityReleased = null;
 		}
+		*/
 
 		/// Returns a cached string to describe the entity
 		/// with the following format:

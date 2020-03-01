@@ -3,11 +3,10 @@ namespace Entitas
 	public delegate void EntityComponentChanged(Entity entity, int index, IComponent component);
 	public delegate void EntityEvent(Entity entity);
 
-	public interface IEntity : IAERC
+	public interface IEntity
 	{
 		event EntityComponentChanged OnComponentAdded;
 		event EntityComponentChanged OnComponentRemoved;
-		event EntityEvent OnEntityReleased;
 		event EntityEvent OnDestroyEntity;
 
 		int totalComponents { get; }
@@ -16,7 +15,6 @@ namespace Entitas
 		bool isEnabled { get; }
 
 		ContextInfo contextInfo { get; }
-		IAERC aerc { get; }
 
 		IComponent AddComponent(int index);
 		void RemoveComponent(int index);

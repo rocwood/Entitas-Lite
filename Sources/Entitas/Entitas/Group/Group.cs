@@ -110,7 +110,7 @@ namespace Entitas
 			_entitiesCache = null;
 			_singleEntityCache = null;
 
-			entity.Retain(this);
+			//entity.Retain(this);
 
 			return true;
 		}
@@ -132,7 +132,7 @@ namespace Entitas
 				_entitiesCache = null;
 				_singleEntityCache = null;
 
-				entity.Release(this);
+				//entity.Release(this);
 			}
 
 			return removed;
@@ -151,7 +151,7 @@ namespace Entitas
 
 				OnEntityRemoved?.Invoke(this, entity, index, component);
 
-				entity.Release(this);
+				//entity.Release(this);
 			}
 		}
 

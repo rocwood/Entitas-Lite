@@ -17,7 +17,7 @@ namespace Entitas
 
 			var contextInfo = new ContextInfo(name, _baseContextInfo.componentNames, _baseContextInfo.componentTypes);
 
-			return new Context(contextInfo, GetAERC());
+			return new Context(contextInfo);
 		}
 		
 		public static int GetComponentCount()
@@ -69,14 +69,6 @@ namespace Entitas
 			Array.Sort(types, (x, y) => string.CompareOrdinal(x.FullName, y.FullName));
 
 			return new ContextInfo(null, types);
-		}
-
-		private static Func<IEntity, IAERC> GetAERC()
-		{
-			if (useSafeAERC)
-				return (entity) => new SafeAERC(entity);
-			else
-				return (entity) => new UnsafeAERC();
 		}
 	}
 }

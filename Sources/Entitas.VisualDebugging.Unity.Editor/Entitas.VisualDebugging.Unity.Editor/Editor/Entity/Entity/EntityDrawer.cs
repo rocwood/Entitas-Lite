@@ -23,6 +23,8 @@ namespace Entitas.VisualDebugging.Unity.Editor {
             EditorGUILayout.Space();
 
 			EditorGUILayout.IntField("CreationIndex", entity.creationIndex);
+
+			/*
 			EditorGUILayout.LabelField("Retained by (" + entity.retainCount + ")", EditorStyles.boldLabel);
 
             var safeAerc = entity.aerc as SafeAERC;
@@ -42,9 +44,10 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                 }
                 EntitasEditorLayout.EndVerticalBox();
             }
-        }
+			*/
+		}
 
-        public static void DrawMultipleEntities(IContext context, IEntity[] entities) {
+		public static void DrawMultipleEntities(IContext context, IEntity[] entities) {
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             {

@@ -18,7 +18,7 @@ namespace Entitas.Unity {
 
             _entity = entity;
             _context = context;
-            _entity.Retain(this);
+            //_entity.Retain(this);
         }
 
         public void Unlink() {
@@ -26,7 +26,7 @@ namespace Entitas.Unity {
                 throw new Exception("EntityLink is already unlinked!");
             }
 
-            _entity.Release(this);
+            //_entity.Release(this);
             _entity = null;
             _context = null;
         }

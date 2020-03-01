@@ -55,7 +55,6 @@ namespace Entitas {
 
 		readonly IComponentPool[] _componentPools;
 		readonly ContextInfo _contextInfo;
-		readonly Func<IEntity, IAERC> _aercFactory;
 
 		readonly HashSet<Entity> _entities = new HashSet<Entity>(EntityEqualityComparer.comparer);
 		readonly Stack<Entity> _reusableEntities = new Stack<Entity>();
@@ -73,14 +72,14 @@ namespace Entitas {
 		// Cache delegates to avoid gc allocations
 		EntityComponentChanged _cachedEntityChanged;
 		//EntityComponentReplaced _cachedComponentReplaced;
-		EntityEvent _cachedEntityReleased;
+		//EntityEvent _cachedEntityReleased;
 		EntityEvent _cachedDestroyEntity;
 
 		private readonly object _syncGroupObj = new object();
 
 		public static int maxRetainedComponentsInPool = 128;
 
-		public Context(ContextInfo contextInfo, Func<IEntity, IAERC> aercFactory)
+		internal Context(ContextInfo contextInfo)
 		{
 			int totalComponents = contextInfo.GetComponentCount();
 
@@ -100,10 +99,6 @@ namespace Entitas {
 				_contextInfo = createDefaultContextInfo();
 			}
 
-			_aercFactory = aercFactory == null
-				? (entity) => new SafeAERC(entity)
-				: aercFactory;
-
 			_groupsForIndex = new List<IGroup>[totalComponents];
 			_groupForSingle = new IGroup[totalComponents];
 			_componentPools = new IComponentPool[totalComponents];
@@ -120,7 +115,7 @@ namespace Entitas {
 			// Cache delegates to avoid gc allocations
 			_cachedEntityChanged = updateGroupsComponentAddedOrRemoved;
 			//_cachedComponentReplaced = updateGroupsComponentReplaced;
-			_cachedEntityReleased = onEntityReleased;
+			//_cachedEntityReleased = onEntityReleased;
 			_cachedDestroyEntity = onDestroyEntity;
 
 			// Add listener for updating lookup
@@ -156,16 +151,16 @@ namespace Entitas {
 			else
 			{
 				entity = (Entity)Activator.CreateInstance(typeof(Entity));
-				entity.Initialize(_creationIndex, _componentPools, _contextInfo, _aercFactory(entity));
+				entity.Initialize(_creationIndex, _componentPools, _contextInfo);
 			}
 
 			_entities.Add(entity);
-			entity.Retain(this);
+			//entity.Retain(this);
 			_entitiesCache = null;
 			entity.OnComponentAdded += _cachedEntityChanged;
 			entity.OnComponentRemoved += _cachedEntityChanged;
 			//entity.OnComponentReplaced += _cachedComponentReplaced;
-			entity.OnEntityReleased += _cachedEntityReleased;
+			//entity.OnEntityReleased += _cachedEntityReleased;
 			entity.OnDestroyEntity += _cachedDestroyEntity;
 
 			if (OnEntityCreated != null) {
@@ -208,6 +203,7 @@ namespace Entitas {
 				OnEntityDestroyed(this, entity);
 			}
 
+			/*
 			if (entity.retainCount == 1)
 			{
 				// Can be released immediately without
@@ -222,6 +218,7 @@ namespace Entitas {
 				_retainedEntities.Add(entity);
 				entity.Release(this);
 			}
+			*/
 		}
 
 		/// Destroys all entities in the context.
@@ -239,7 +236,7 @@ namespace Entitas {
 
 			if (_retainedEntities.Count != 0)
 			{
-				throw new ContextStillHasRetainedEntitiesException(this, _retainedEntities.ToArray());
+				//throw new ContextStillHasRetainedEntitiesException(this, _retainedEntities.ToArray());
 			}
 		}
 
@@ -387,25 +384,21 @@ namespace Entitas {
 				}
 			}
 		}
-		*/
 		
 		void onEntityReleased(Entity entity)
 		{
 			if (entity.isEnabled)
-			{
-				throw new EntityIsNotDestroyedException(
-					"Cannot release " + entity + "!"
-				);
-			}
-			var tEntity = (Entity)entity;
-			tEntity.RemoveAllOnEntityReleasedHandlers();
-			_retainedEntities.Remove(tEntity);
-			_reusableEntities.Push(tEntity);
+				throw new EntityIsNotDestroyedException($"Cannot release {entity}!");
+
+			//entity.RemoveAllOnEntityReleasedHandlers();
+			_retainedEntities.Remove(entity);
+			_reusableEntities.Push(entity);
 		}
+		*/
 
 		void onDestroyEntity(Entity entity)
 		{
-			DestroyEntity((Entity)entity);
+			DestroyEntity(entity);
 		}
 
 

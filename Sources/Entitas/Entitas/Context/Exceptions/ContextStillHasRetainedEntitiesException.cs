@@ -1,4 +1,5 @@
-﻿using System.Linq;
+/*
+using System.Linq;
 
 namespace Entitas {
 
@@ -26,3 +27,4 @@ namespace Entitas {
         }
     }
 }
+*/
