@@ -3,7 +3,7 @@ using Entitas.Utils;
 
 namespace Entitas
 {
-	public class MatcherBuilder : IMatcherBuilder
+	public class MatcherBuilder : IFilter
 	{
 		private List<int> _allOfIndices;
 		private List<int> _anyOfIndices;

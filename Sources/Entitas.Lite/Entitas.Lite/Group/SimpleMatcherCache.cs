@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Entitas
 {
-	class SimpleMatchCache<T1>  where T1 : IComponent
+	class SimpleMatcherCache<T1>  where T1 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1>.Get();
 
@@ -11,7 +11,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2>  where T1 : IComponent where T2 : IComponent
+	class SimpleMatcherCache<T1, T2>  where T1 : IComponent where T2 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2>.Get();
 
@@ -20,7 +20,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3>  where T1 : IComponent where T2 : IComponent where T3 : IComponent
+	class SimpleMatcherCache<T1, T2, T3>  where T1 : IComponent where T2 : IComponent where T3 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3>.Get();
 
@@ -29,7 +29,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3, T4>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
+	class SimpleMatcherCache<T1, T2, T3, T4>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3,T4>.Get();
 
@@ -38,7 +38,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3, T4, T5>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
+	class SimpleMatcherCache<T1, T2, T3, T4, T5>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3,T4,T5>.Get();
 
@@ -47,7 +47,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3, T4, T5, T6>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
+	class SimpleMatcherCache<T1, T2, T3, T4, T5, T6>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3,T4,T5,T6>.Get();
 
@@ -56,7 +56,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3, T4, T5, T6, T7>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent
+	class SimpleMatcherCache<T1, T2, T3, T4, T5, T6, T7>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3,T4,T5,T6,T7>.Get();
 
@@ -65,7 +65,7 @@ namespace Entitas
 		public static Matcher AllOf() => _allOfCached ?? (_allOfCached = new Matcher(indices, null, null));
 		public static Matcher AnyOf() => _anyOfCached ?? (_anyOfCached = new Matcher(null, indices, null));
 	}
-	class SimpleMatchCache<T1, T2, T3, T4, T5, T6, T7, T8>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent where T8 : IComponent
+	class SimpleMatcherCache<T1, T2, T3, T4, T5, T6, T7, T8>  where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent where T8 : IComponent
 	{
 		private static IReadOnlyList<int> indices => ComponentIndexList<T1,T2,T3,T4,T5,T6,T7,T8>.Get();
 

@@ -11,22 +11,9 @@ namespace Entitas
 	/// remove entities as soon as they don't match the matcher anymore.
 	public class Group
 	{
-		/*
-		/// Occurs when an entity gets added.
-		public event GroupChanged OnEntityAdded;
+		public int Count => _entities.Count;
 
-		/// Occurs when an entity gets removed.
-		public event GroupChanged OnEntityRemoved;
-
-		/// Occurs when a component of an entity in the group gets replaced.
-		public event GroupUpdated OnEntityUpdated;
-		*/
-
-		/// Returns the number of entities in the group.
-		public int count => _entities.Count;
-
-		/// Returns the matcher which was used to create this group.
-		public Matcher matcher => _matcher;
+		internal Matcher matcher => _matcher;
 
 		private readonly Matcher _matcher;
 		private readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
@@ -45,54 +32,13 @@ namespace Entitas
 		internal void HandleEntity(Entity entity)
 		{
 			if (entity.isEnabled && _matcher.Matches(entity))
-				addEntitySilently(entity);
+				AddEntityImpl(entity);
 			else
-				removeEntitySilently(entity);
+				RemoveEntityImpl(entity);
 		}
 
-		/*
-		/// This is used by the context to manage the group.
-		public void UpdateEntity(Entity entity, int index, IComponent previousComponent, IComponent newComponent)
+		private bool AddEntityImpl(Entity entity)
 		{
-			if (_entities.Contains(entity))
-			{
-				if (OnEntityRemoved != null)
-				{
-					OnEntityRemoved(this, entity, index, previousComponent);
-				}
-				if (OnEntityAdded != null)
-				{
-					OnEntityAdded(this, entity, index, newComponent);
-				}
-				if (OnEntityUpdated != null)
-				{
-					OnEntityUpdated(this, entity, index, previousComponent, newComponent);
-				}
-			}
-		}
-
-		/// This is called by context.Reset() to remove all event handlers.
-		/// This is useful when you want to soft-restart your application.
-		public void RemoveAllEventHandlers()
-		{
-			OnEntityAdded = null;
-			OnEntityRemoved = null;
-			OnEntityUpdated = null;
-		}
-
-		public GroupChanged HandleEntity(Entity entity)
-		{
-			return _matcher.Matches(entity)
-					   ? (addEntitySilently(entity) ? OnEntityAdded : null)
-					   : (removeEntitySilently(entity) ? OnEntityRemoved : null);
-		}
-		*/
-
-		bool addEntitySilently(Entity entity)
-		{
-			if (!entity.isEnabled)
-				return false;
-
 			if (Contains(entity))
 				return false;
 
@@ -104,7 +50,7 @@ namespace Entitas
 			return true;
 		}
 
-		bool removeEntitySilently(Entity entity)
+		private bool RemoveEntityImpl(Entity entity)
 		{
 			if (!_entities.Remove(entity.id))
 				return false;
@@ -115,7 +61,6 @@ namespace Entitas
 			return true;
 		}
 
-		/// Determines whether this group has the specified entity.
 		public bool Contains(Entity entity)
 		{
 			if (!_entities.TryGetValue(entity.id, out var item))

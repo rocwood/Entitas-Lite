@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Entitas
 {
-	public interface IMatcherBuilder
+	public interface IFilter
 	{
 		void AllOf(IReadOnlyList<int> indices);
 		void AnyOf(IReadOnlyList<int> indices);

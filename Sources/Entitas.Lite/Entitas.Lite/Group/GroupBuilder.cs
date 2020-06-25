@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Entitas
 {
-	public class ContextGroupBuilder : IMatcherBuilder
+	public class GroupBuilder : IFilter
 	{
 		private readonly Context _context;
 		private readonly MatcherBuilder _builder = new MatcherBuilder();
@@ -17,13 +17,13 @@ namespace Entitas
 		public void AnyOf(params int[] indices) => _builder.AnyOf(indices);
 		public void NoneOf(params int[] indices) => _builder.NoneOf(indices);
 
-		internal ContextGroupBuilder(Context c) => _context = c;
+		internal GroupBuilder(Context c) => _context = c;
 
-		public static implicit operator Group(ContextGroupBuilder groupBuilder) => groupBuilder.Result();
+		public static implicit operator Group(GroupBuilder groupBuilder) => groupBuilder.Result();
 	}
 
 	public static class ContextGroupBuilderExtension
 	{
-		public static ContextGroupBuilder BuildGroup(this Context c) => new ContextGroupBuilder(c);
+		public static GroupBuilder BuildGroup(this Context c) => new GroupBuilder(c);
 	}
 }

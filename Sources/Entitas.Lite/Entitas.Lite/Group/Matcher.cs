@@ -85,59 +85,8 @@ namespace Entitas
 			}
 		}
 
-		internal IReadOnlyList<int> allOfIndices => _allOfIndices;
-		internal IReadOnlyList<int> anyOfIndices => _anyOfIndices;
-		internal IReadOnlyList<int> noneOfIndices => _noneOfIndices;
-
-		public Matcher AllOf(params IReadOnlyList<int> indices)
-		{
-			SetIndices(ref _allOfIndices, indices);
-			SetDirty();
-			return this;
-		}
-
-		public Matcher AnyOf(params IReadOnlyList<int> indices)
-		{
-			SetIndices(ref _anyOfIndices, indices);
-			SetDirty();
-			return this;
-		}
-
-		public Matcher NoneOf(params IReadOnlyList<int> indices)
-		{
-			SetIndices(ref _noneOfIndices, indices);
-			SetDirty();
-			return this;
-		}
-
-		private void SetDirty()
-		{
-			_combineIndicesCached = false;
-			_hashCached = false;
-		}
-
-		private static void SetIndices(ref List<int> list, IReadOnlyList<int> indices)
-		{
-			if (indices == null)
-			{
-				list = null;
-			}
-			else
-			{
-				if (list == null)
-					list = new List<int>(indices.Length);
-
-				list.Clear();
-				list.MergeDistinctSorted(indices);
-			}
-		}
-
 		private bool _combineIndicesCached;
 		private List<int> _combineIndices;
-
-		private List<int> _allOfIndices;
-		private List<int> _anyOfIndices;
-		private List<int> _noneOfIndices;
 		*/
 	}
 }
