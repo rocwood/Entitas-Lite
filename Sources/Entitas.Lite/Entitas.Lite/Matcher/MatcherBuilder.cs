@@ -5,6 +5,12 @@ namespace Entitas
 {
 	public class MatcherBuilder : IMatcherBuilder
 	{
+		private List<int> _allOfIndices;
+		private List<int> _anyOfIndices;
+		private List<int> _noneOfIndices;
+
+		private Matcher _result;
+
 		public Matcher Result() => _result ?? (_result = new Matcher(_allOfIndices, _anyOfIndices, _noneOfIndices));
 
 		public void AllOf(IReadOnlyList<int> indices) => MakeIndices(ref _allOfIndices, indices);
@@ -32,11 +38,5 @@ namespace Entitas
 
 			_result = null;
 		}
-
-		private List<int> _allOfIndices;
-		private List<int> _anyOfIndices;
-		private List<int> _noneOfIndices;
-
-		private Matcher _result;
 	}
 }
