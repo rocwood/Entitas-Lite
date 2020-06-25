@@ -35,8 +35,7 @@ namespace Entitas
 		private Entity _singleEntityCache;
 		private string _toStringCache;
 
-		/// Use context.GetGroup(matcher) to get a group of entities which match
-		/// the specified matcher.
+		/// Use context.GetGroup(matcher) to get a group of entities which match the specified matcher.
 		internal Group(Matcher matcher)
 		{
 			_matcher = matcher;

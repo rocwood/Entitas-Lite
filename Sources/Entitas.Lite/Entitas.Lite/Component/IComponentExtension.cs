@@ -23,7 +23,7 @@ namespace Entitas
 		/// <summary>
 		/// Accept modification flag, then reset
 		/// </summary>
-		public static void Accept(this IModifiable modifiable)
+		public static void Commit(this IModifiable modifiable)
 		{
 			if (modifiable != null)
 				modifiable.modified = false;

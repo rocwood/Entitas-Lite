@@ -311,8 +311,7 @@ namespace Entitas
 		}
 		*/
 
-		/// Determines whether this entity has a component
-		/// at the specified index.
+		/// Determines whether this entity has a component at the specified index.
 		public bool HasComponent(int index)
 		{
 			if (index < 0)
@@ -321,8 +320,7 @@ namespace Entitas
 			return _components[index] != null;
 		}
 
-		/// Determines whether this entity has components
-		/// at all the specified indices.
+		/// Determines whether this entity has components at all the specified indices.
 		public bool HasComponents(int[] indices)
 		{
 			for (int i = 0; i < indices.Length; i++)
@@ -334,8 +332,7 @@ namespace Entitas
 			return true;
 		}
 
-		/// Determines whether this entity has a component
-		/// at any of the specified indices.
+		/// Determines whether this entity has a component at any of the specified indices.
 		public bool HasAnyComponent(int[] indices)
 		{
 			for (int i = 0; i < indices.Length; i++)

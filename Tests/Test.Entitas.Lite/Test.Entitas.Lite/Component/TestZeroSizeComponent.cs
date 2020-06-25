@@ -13,13 +13,13 @@ namespace Entitas.Test
 		[Test]
 		public void Test1()
 		{
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Position>());
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Player>());
-			Assert.IsTrue(ComponentChecker.IsZeroSize<Movable>());
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy>());
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy3>());
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy4>());
-			Assert.IsFalse(ComponentChecker.IsZeroSize<Dummy5>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Position>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Player>());
+			Assert.IsTrue(ComponentTrait.IsZeroSize<Movable>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Dummy>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Dummy3>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Dummy4>());
+			Assert.IsFalse(ComponentTrait.IsZeroSize<Dummy5>());
 		}
 
 		class Position : IComponent

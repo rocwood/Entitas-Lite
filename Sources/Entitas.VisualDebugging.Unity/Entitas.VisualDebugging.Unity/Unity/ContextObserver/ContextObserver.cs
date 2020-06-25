@@ -1,76 +1,111 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Entitas.Utils;
+using Microsoft.Extensions.ObjectPool;
 using UnityEngine;
 
-namespace Entitas.VisualDebugging.Unity {
+namespace Entitas.VisualDebugging.Unity
+{
+	public class ContextObserver
+	{
+		public IContext context { get { return _context; } }
+		public IGroup[] groups { get { return _groups.ToArray(); } }
+		public GameObject gameObject { get { return _gameObject; } }
 
-    public class ContextObserver {
+		readonly IContext _context;
+		readonly List<IGroup> _groups;
+		readonly GameObject _gameObject;
 
-        public IContext context { get { return _context; } }
-        public IGroup[] groups { get { return _groups.ToArray(); }}
-        public GameObject gameObject { get { return _gameObject; } }
+		readonly ObjectPool<EntityBehaviour> _pool;
 
-        readonly IContext _context;
-        readonly List<IGroup> _groups;
-        readonly GameObject _gameObject;
+		StringBuilder _toStringBuilder = new StringBuilder();
 
-        readonly ObjectPool<EntityBehaviour> _pool;
+		public ContextObserver(IContext context)
+		{
+			_context = context;
+			_groups = new List<IGroup>();
+			_gameObject = new GameObject();
+			_gameObject.AddComponent<ContextObserverBehaviour>().Init(this);
 
-        StringBuilder _toStringBuilder = new StringBuilder();
+			_pool = CreatePool(_gameObject.transform);
 
-        public ContextObserver(IContext context) {
-            _context = context;
-            _groups = new List<IGroup>();
-            _gameObject = new GameObject();
-            _gameObject.AddComponent<ContextObserverBehaviour>().Init(this);
-
-            _pool = new ObjectPool<EntityBehaviour>(CreateEntityBehaviour);
-
-            _context.OnEntityCreated += onEntityCreated;
-            _context.OnGroupCreated += onGroupCreated;
-        }
-
-        public void Deactivate() {
-            _context.OnEntityCreated -= onEntityCreated;
-            _context.OnGroupCreated -= onGroupCreated;
-        }
-
-        void onEntityCreated(IContext context, IEntity entity) {
-            var entityBehaviour = _pool.Get();
-            entityBehaviour.Init(context, entity, _pool);
+			_context.OnEntityCreated += onEntityCreated;
+			_context.OnGroupCreated += onGroupCreated;
 		}
 
-		void onGroupCreated(IContext context, IGroup group) {
-            _groups.Add(group);
-        }
+		public void Deactivate()
+		{
+			_context.OnEntityCreated -= onEntityCreated;
+			_context.OnGroupCreated -= onGroupCreated;
+		}
 
-        public override string ToString() {
-            _toStringBuilder.Length = 0;
-            _toStringBuilder
+		void onEntityCreated(IContext context, IEntity entity)
+		{
+			var entityBehaviour = _pool.Get();
+			entityBehaviour.Init(context, entity, _pool);
+		}
+
+		void onGroupCreated(IContext context, IGroup group)
+		{
+			_groups.Add(group);
+		}
+
+		public override string ToString()
+		{
+			_toStringBuilder.Length = 0;
+			_toStringBuilder
 				.Append("[Context] ")
-                .Append(_context.contextInfo.name).Append(" (")
-                .Append(_context.count).Append(" entities, ")
-                .Append(_context.reusableEntitiesCount).Append(" reusable, ");
+				.Append(_context.contextInfo.name).Append(" (")
+				.Append(_context.count).Append(" entities, ")
+			//	.Append(_context.reusableEntitiesCount).Append(" reusable, ");
+			//	.Append(_context.retainedEntitiesCount).Append(" retained, ");
+				.Append(_groups.Count).Append(" groups)");
 
-            if (_context.retainedEntitiesCount != 0) {
-                _toStringBuilder
-                    .Append(_context.retainedEntitiesCount).Append(" retained, ");
-            }
+			var str = _toStringBuilder.ToString();
+			_gameObject.name = str;
+			return str;
+		}
 
-            _toStringBuilder
-                .Append(_groups.Count)
-                .Append(" groups)");
+		EntityBehaviour CreateEntityBehaviour()
+		{
+			var entityBehaviour = new GameObject().AddComponent<EntityBehaviour>();
+			entityBehaviour.transform.SetParent(_gameObject.transform, false);
+			return entityBehaviour;
+		}
 
-            var str = _toStringBuilder.ToString();
-            _gameObject.name = str;
-            return str;
-        }
+		static ObjectPool<EntityBehaviour> CreatePool(Transform root)
+		{
+			var provider = new DefaultObjectPoolProvider();
+			var policy = new PoolPolicy(root);
 
-        EntityBehaviour CreateEntityBehaviour() {
-            var entityBehaviour = new GameObject().AddComponent<EntityBehaviour>();
-            entityBehaviour.transform.SetParent(_gameObject.transform, false);
-            return entityBehaviour;
-        }
+			return provider.Create(policy);
+		}
+
+		class PoolPolicy : IPooledObjectPolicy<EntityBehaviour>
+		{
+			private Transform _root;
+
+			public PoolPolicy(Transform root)
+			{
+				_root = root;
+			}
+
+			public EntityBehaviour Create()
+			{
+				var behaviour = new GameObject().AddComponent<EntityBehaviour>();
+				behaviour.transform.SetParent(_root, false);
+
+				return behaviour;
+			}
+
+			public bool Return(EntityBehaviour obj)
+			{
+				if (obj == null)
+					return false;
+
+				obj.gameObject.SetActive(false);
+				return true;
+			}
+		}
 	}
 }

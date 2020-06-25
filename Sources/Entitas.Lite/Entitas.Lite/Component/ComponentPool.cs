@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Entitas
@@ -61,7 +63,7 @@ namespace Entitas
 				if (obj is IEntityIdRef entityIdRef)
 					entityIdRef.entityId = 0;
 				if (obj is IModifiable modifiable)
-					modifiable.Accept();
+					modifiable.Commit();
 				if (obj is IResetable resetable)
 					resetable.Reset();
 				if (obj is IDisposable disposable)
@@ -88,17 +90,40 @@ namespace Entitas
 		public void Return(IComponent obj) { }
 	}
 
-	internal static class ComponentPoolFactory
+	static class ComponentPoolFactory
 	{
 		public static IComponentPool Create(Type objType, int maxRetained = 0)
 		{
 			if (!objType.IsAssignableFrom(typeof(IComponent)))
 				throw new ArgumentException($"{objType.FullName} isn't IComponent");
 
-			if (ComponentChecker.IsZeroSize(objType))
+			if (ComponentTrait.IsZeroSize(objType))
 				return new ZeroSizeComponentPool(objType);
 			else
 				return new ComponentPool(objType, maxRetained);
+		}
+	}
+
+	static class ComponentTrait
+	{
+		public static bool IsZeroSize<T>() where T : class, IComponent
+		{
+			return IsZeroSize(typeof(T));
+		}
+
+		public static bool IsZeroSize(Type type)
+		{
+			for (; ; )
+			{
+				if (type == null || type == typeof(object))
+					return true;
+
+				var members = type.GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+				if (members.Any(m => m.MemberType != MemberTypes.Constructor))
+					return false;
+
+				type = type.BaseType;
+			}
 		}
 	}
 }

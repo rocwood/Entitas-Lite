@@ -1,53 +1,55 @@
-using Entitas.Utils;
+using Microsoft.Extensions.ObjectPool;
 using UnityEngine;
 
-namespace Entitas.VisualDebugging.Unity {
+namespace Entitas.VisualDebugging.Unity
+{
+	[ExecuteInEditMode]
+	public class EntityBehaviour : MonoBehaviour
+	{
+		public IContext context { get { return _context; } }
+		public IEntity entity { get { return _entity; } }
 
-    [ExecuteInEditMode]
-    public class EntityBehaviour : MonoBehaviour {
+		IContext _context;
+		IEntity _entity;
+		string _cachedName;
 
-        public IContext context { get { return _context; } }
-        public IEntity entity { get { return _entity; } }
+		ObjectPool<EntityBehaviour> _pool;
 
-        IContext _context;
-        IEntity _entity;
-        string _cachedName;
+		public void Init(IContext context, IEntity entity, ObjectPool<EntityBehaviour> pool)
+		{
+			_pool = pool;
+			_context = context;
+			_entity = entity;
+			_entity.OnDestroyEntity += onDestroyEntity;
 
-        ObjectPool<EntityBehaviour> _pool;
+			gameObject.SetActive(true);
+			Update();
+		}
 
-        public void Init(IContext context, IEntity entity, ObjectPool<EntityBehaviour> pool) {
-            _pool = pool;
-            _context = context;
-            _entity = entity;
-            _entity.OnEntityReleased += onEntityReleased;
+		void onDestroyEntity(Entity e)
+		{
+			if (_entity != null)
+				_entity.OnDestroyEntity -= onDestroyEntity;
 
-            gameObject.SetActive(true);
-            Update();
-        }
+			gameObject.SetActive(false);
 
-        void onEntityReleased(IEntity e) {
-            if (_entity != null)
-                _entity.OnEntityReleased -= onEntityReleased;
+			_context = null;
+			_entity = null;
+			name = _cachedName = string.Empty;
 
-            gameObject.SetActive(false);
+			_pool.Return(this);
+		}
 
-            _context = null;
-            _entity = null;
-            name = _cachedName = string.Empty;
+		void Update()
+		{
+			if (_entity != null && _cachedName != _entity.ToString())
+				name = _cachedName = _entity.ToString();
+		}
 
-            _pool.Push(this);
-            _pool = null;
-        }
-
-        void Update() {
-            if (_entity != null && _cachedName != _entity.ToString()) {
-                name = _cachedName = _entity.ToString();
-            }
-        }
-
-        void OnDestroy() {
-            if (_entity != null)
-                _entity.OnEntityReleased -= onEntityReleased;
-        }
-    }
+		void OnDestroy()
+		{
+			if (_entity != null)
+				_entity.OnDestroyEntity -= onDestroyEntity;
+		}
+	}
 }

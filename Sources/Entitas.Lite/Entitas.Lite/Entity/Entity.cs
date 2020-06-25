@@ -63,7 +63,7 @@ namespace Entitas
 		private bool _enabled;
 
 		private IComponent[] _components;
-		private BitArray _componentsMask;
+		//private BitArray _componentsMask;
 
 		private IComponentPool[] _componentPools;
 		private ContextInfo _contextInfo;
@@ -92,7 +92,7 @@ namespace Entitas
 				_totalComponents = contextInfo.GetComponentCount();
 
 				_components = new IComponent[_totalComponents];
-				_componentsMask = new BitArray(_totalComponents);
+				//_componentsMask = new BitArray(_totalComponents);
 			}
 		}
 		
@@ -126,7 +126,7 @@ namespace Entitas
 
 				// Add to component list, and update mask
 				_components[index] = component;
-				_componentsMask[index] = true;
+				//_componentsMask[index] = true;
 
 				OnComponentAdded?.Invoke(this, index, component);
 
@@ -154,7 +154,7 @@ namespace Entitas
 
 			// Remove from component list
 			_components[index] = null;
-			_componentsMask[index] = false;
+			//_componentsMask[index] = false;
 
 			OnComponentRemoved?.Invoke(this, index, component);
 
@@ -280,15 +280,27 @@ namespace Entitas
 		}
 
 		/// Determines whether this entity has components at all the specified mask.
-		internal bool HasAllComponents(BitArray mask)
+		internal bool HasAllComponents(IReadOnlyList<int> indices)
 		{
-			return _componentsMask.HasAllOf(mask);
+			for (int i = 0; i < indices.Count; i++)
+			{
+				if (_components[indices[i]] == null)
+					return false;
+			}
+
+			return true;
 		}
 
 		/// Determines whether this entity has a component at any of the specified mask.
-		internal bool HasAnyComponent(BitArray mask)
+		internal bool HasAnyComponent(IReadOnlyList<int> indices)
 		{
-			return _componentsMask.HasAnyOf(mask);
+			for (int i = 0; i < indices.Count; i++)
+			{
+				if (_components[indices[i]] != null)
+					return true;
+			}
+
+			return false;
 		}
 
 		/// Removes all components.
