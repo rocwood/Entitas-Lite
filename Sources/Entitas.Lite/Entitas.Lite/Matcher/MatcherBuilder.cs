@@ -5,31 +5,17 @@ namespace Entitas
 {
 	public class MatcherBuilder : IMatcherBuilder
 	{
-		public Matcher Result() => new Matcher(_allOfIndices, _anyOfIndices, _noneOfIndices);
+		public Matcher Result() => _result ?? (_result = new Matcher(_allOfIndices, _anyOfIndices, _noneOfIndices));
 
-		public MatcherBuilder AllOf(IReadOnlyList<int> indices)
-		{
-			MakeList(ref _allOfIndices, indices);
-			return this;
-		}
+		public void AllOf(IReadOnlyList<int> indices) => MakeIndices(ref _allOfIndices, indices);
+		public void AnyOf(IReadOnlyList<int> indices) => MakeIndices(ref _anyOfIndices, indices);
+		public void NoneOf(IReadOnlyList<int> indices) => MakeIndices(ref _noneOfIndices, indices);
 
-		public MatcherBuilder AnyOf(IReadOnlyList<int> indices)
-		{
-			MakeList(ref _anyOfIndices, indices);
-			return this;
-		}
+		public void AllOf(params int[] indices) => AllOf((IReadOnlyList<int>)indices);
+		public void AnyOf(params int[] indices) => AnyOf((IReadOnlyList<int>)indices);
+		public void NoneOf(params int[] indices) => NoneOf((IReadOnlyList<int>)indices);
 
-		public MatcherBuilder NoneOf(IReadOnlyList<int> indices)
-		{
-			MakeList(ref _noneOfIndices, indices);
-			return this;
-		}
-
-		public MatcherBuilder AllOf(params int[] indices) => AllOf((IReadOnlyList<int>)indices);
-		public MatcherBuilder AnyOf(params int[] indices) => AnyOf((IReadOnlyList<int>)indices);
-		public MatcherBuilder NoneOf(params int[] indices) => NoneOf((IReadOnlyList<int>)indices);
-
-		private static void MakeList(ref List<int> list, IReadOnlyList<int> indices)
+		private void MakeIndices(ref List<int> list, IReadOnlyList<int> indices)
 		{
 			if (indices == null)
 			{
@@ -43,10 +29,14 @@ namespace Entitas
 				list.Clear();
 				list.AddDistinctSorted(indices);
 			}
+
+			_result = null;
 		}
 
 		private List<int> _allOfIndices;
 		private List<int> _anyOfIndices;
 		private List<int> _noneOfIndices;
+
+		private Matcher _result;
 	}
 }
