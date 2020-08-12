@@ -1,59 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{70222463-4E60-4862-8C18-1EBA6CA63353}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Entitas.VisualDebugging.Unity</RootNamespace>
-    <AssemblyName>Entitas.VisualDebugging.Unity</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <TargetFramework>netstandard20</TargetFramework>
+    <DefineConstants>ENABLE_PROFILER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\Libraries\UnityEngine.dll</HintPath>
-    </Reference>
+    </Reference>  
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserver.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverExtension.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\ContextObserver\ContextObserverHelper.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystems.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\DebugSystemsBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\FeatureObserver.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\DebugSystems\SystemInfo.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\DontDrawComponentAttribute.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\Entity\EntityBehaviour.cs" />
-    <Compile Include="Entitas.VisualDebugging.Unity\Unity\GameObjectDestroyExtension.cs" />
+    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Entitas.Lite\Entitas.Lite.csproj">
-      <Project>{A0A11CC3-8B1E-4345-A5FA-01FC60E581D8}</Project>
-      <Name>Entitas.Lite</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Release' ">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\Build\Deploy\Entitas-Lite" />
-  </Target>  
+  </Target>
 </Project>

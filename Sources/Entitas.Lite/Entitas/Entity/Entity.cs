@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Entitas.Utils;
@@ -131,11 +131,20 @@ namespace Entitas {
                 );
             }
 
-            _components[index] = component;
+			var entityIdRef = component as IEntityIdRef;
+			if (entityIdRef != null)
+				entityIdRef.entityId = _creationIndex;
+
+			var modifiable = component as IModifiable;
+			if (modifiable != null)
+				modifiable.modified = true;
+
+			_components[index] = component;
             _componentsCache = null;
             _componentIndicesCache = null;
-            //_toStringCache = null;
-            if (OnComponentAdded != null) {
+			//_toStringCache = null;
+
+			if (OnComponentAdded != null) {
                 OnComponentAdded(this, index, component);
             }
         }
@@ -205,6 +214,16 @@ namespace Entitas {
 				if (resetablePrevComponent != null) {
 					resetablePrevComponent.Reset();
 				}
+
+				// Reset entityId
+				var entityIdRef = previousComponent as IEntityIdRef;
+				if (entityIdRef != null)
+					entityIdRef.entityId = 0;
+
+				// Reset modified flag
+				var modifiable = previousComponent as IModifiable;
+				if (modifiable != null)
+					modifiable.modified = false;
 
 				GetComponentPool(index).Push(previousComponent);
 

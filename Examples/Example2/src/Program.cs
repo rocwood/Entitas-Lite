@@ -1,4 +1,4 @@
-﻿using Entitas;
+using Entitas;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -7,9 +7,9 @@ using System.Threading;
 using UnityEngine;
 #endif
 
-namespace Example1
+namespace Example
 {
-	public class InputComponent : IUniqueComponent
+	public class InputComponent : IComponent, IUnique
 	{
 		public bool spaceKey;		
 	}
@@ -117,10 +117,8 @@ namespace Example1
 
 				Thread.Sleep(20);
 
-				/*
 				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
 					break;
-				*/
 			}
 		}
 	}

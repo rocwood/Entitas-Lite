@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Entitas.Utils;
@@ -192,9 +192,7 @@ namespace Entitas {
 
 		/// Destroys the entity, removes all its components and pushs it back
 		/// to the internal ObjectPool for entities.
-		// TODO Obsolete since 0.42.0, April 2017
-		[Obsolete("Please use entity.Destroy()")]
-		public void DestroyEntity(Entity entity)
+		private void DestroyEntity(Entity entity)
 		{
 			var removed = _entities.Remove(entity);
 			if (!removed)
@@ -452,7 +450,7 @@ namespace Entitas {
 		}
 
 		/// return unique entity with specified component
-		public Entity GetSingleEntity<T>() where T : IUniqueComponent {
+		public Entity GetSingleEntity<T>() where T : IComponent,IUnique {
 			return GetSingleEntity(ComponentIndex<T>.FindIn(this.contextInfo));
 		}
 
@@ -467,7 +465,7 @@ namespace Entitas {
 			return group.GetSingleEntity();
 		}
 
-		public T GetUnique<T>() where T : IUniqueComponent {
+		public T GetUnique<T>() where T : IComponent,IUnique {
 			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
 
 			IComponent component = GetUniqueComponent(componentIndex);
@@ -485,8 +483,7 @@ namespace Entitas {
 			return entity.GetComponent(componentIndex);
 		}
 
-		public T AddUnique<T>(bool useExisted = true) where T : IUniqueComponent, new()
-		{
+		public T AddUnique<T>(bool useExisted = true) where T : IComponent, IUnique, new() {
 			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
 
 			Entity entity = GetSingleEntity(componentIndex);
@@ -507,7 +504,7 @@ namespace Entitas {
 			return component;
 		}
 
-		public T ModifyUnique<T>() where T : IUniqueComponent {
+		public T ModifyUnique<T>() where T : IComponent,IUnique {
 			int componentIndex = ComponentIndex<T>.FindIn(this.contextInfo);
 
 			IComponent component = ModifyUniqueComponent(componentIndex);

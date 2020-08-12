@@ -149,7 +149,8 @@ namespace Entitas {
         }
 
         public IEnumerator<Entity> GetEnumerator() {
-            return _entities.GetEnumerator();
+			var entities = (IEnumerable<Entity>)GetEntities();
+			return entities.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

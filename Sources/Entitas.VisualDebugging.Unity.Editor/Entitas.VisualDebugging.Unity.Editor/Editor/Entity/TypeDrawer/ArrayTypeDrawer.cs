@@ -51,7 +51,7 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                 var localIndex = i;
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EntityDrawer.DrawObjectMember(elementType, memberName + "[" + localIndex + "]", array.GetValue(localIndex),
+                    EntityDrawer.DrawObjectMember(elementType, "[" + localIndex + "]", array.GetValue(localIndex),
                                                   target, (newComponent, newValue) => array.SetValue(newValue, localIndex));
 
                     var action = drawEditActions(array, elementType, localIndex);
@@ -100,7 +100,7 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                 var localIndex1 = i;
                 for (int j = 0; j < array.GetLength(1); j++) {
                     var localIndex2 = j;
-                    EntityDrawer.DrawObjectMember(elementType, memberName + "[" + localIndex1 + ", " + localIndex2 + "]", array.GetValue(localIndex1, localIndex2),
+                    EntityDrawer.DrawObjectMember(elementType, "[" + localIndex1 + ", " + localIndex2 + "]", array.GetValue(localIndex1, localIndex2),
                                                   target, (newComponent, newValue) => array.SetValue(newValue, localIndex1, localIndex2));
                 }
                 EditorGUILayout.Space();
@@ -124,7 +124,7 @@ namespace Entitas.VisualDebugging.Unity.Editor {
                     var localIndex2 = j;
                     for (int k = 0; k < array.GetLength(2); k++) {
                         var localIndex3 = k;
-                        EntityDrawer.DrawObjectMember(elementType, memberName + "[" + localIndex1 + ", " + localIndex2 + " ," + localIndex3 + "]", array.GetValue(localIndex1, localIndex2, localIndex3),
+                        EntityDrawer.DrawObjectMember(elementType, "[" + localIndex1 + ", " + localIndex2 + " ," + localIndex3 + "]", array.GetValue(localIndex1, localIndex2, localIndex3),
                                                       target, (newComponent, newValue) => array.SetValue(newValue, localIndex1, localIndex2, localIndex3));
                     }
                     EditorGUILayout.Space();

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Entitas.VisualDebugging.Unity {
 
@@ -204,19 +206,26 @@ namespace Entitas.VisualDebugging.Unity {
             if (Time.frameCount % (int)avgResetInterval == 0) {
                 ResetDurations();
             }
-            for (int i = 0; i < _executeSystems.Count; i++) {
+
+			Profiler.BeginSample("Systems.Execute()");
+			for (int i = 0; i < _executeSystems.Count; i++) {
                 var systemInfo = _executeSystemInfos[i];
                 if (systemInfo.isActive) {
                     _stopwatch.Reset();
                     _stopwatch.Start();
-                    _executeSystems[i].Execute();
-                    _stopwatch.Stop();
+
+					Profiler.BeginSample(systemInfo.systemName);
+					try	{ _executeSystems[i].Execute(); }
+					finally { Profiler.EndSample(); }
+
+					_stopwatch.Stop();
                     var duration = _stopwatch.Elapsed.TotalMilliseconds;
                     _executeDuration += duration;
                     systemInfo.AddExecutionDuration(duration);
                 }
             }
-        }
+			Profiler.EndSample();
+		}
 
         public void StepCleanup() {
             _cleanupDuration = 0;

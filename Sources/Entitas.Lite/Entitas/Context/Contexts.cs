@@ -30,16 +30,16 @@ namespace Entitas
 		private Dictionary<string, Context> _contextLookup;
 		private Context[] _contextList;
 		private Context _defaultContext;
-		
+
 		public IContext[] allContexts { get { return _contextList; } }
 		public Context defaultContext { get { return _defaultContext; } }
 
-		public Context GetContext<S>() where S:ContextAttribute { return _contextLookup[ContextAttribute.GetName<S>()]; }
+		public Context GetContext<S>() where S:ContextAttribute { return GetContext(ContextAttribute.GetName<S>()); }
 		public Context GetContext(string contextName) { return _contextLookup[contextName]; }
 
 		public static Context Default { get { return sharedInstance.defaultContext; } }
-		public static Context Get<S>() where S:ContextAttribute { return sharedInstance._contextLookup[ContextAttribute.GetName<S>()]; }
-		public static Context Get(string contextName) { return sharedInstance._contextLookup[contextName]; }
+		public static Context Get<S>() where S:ContextAttribute { return sharedInstance.GetContext<S>(); }
+		public static Context Get(string contextName) { return sharedInstance.GetContext(contextName); }
 
 
 		public Contexts()
@@ -59,6 +59,8 @@ namespace Entitas
 		/// Build contexts' list and lookup according to collected Component-Types
 		private void InitAllContexts()
 		{
+			var defaultContextName = ContextAttribute.GetName<Default>();
+
 			var comps = CollectAllComponents();
 
 			var contextList = new List<Context>();
@@ -68,7 +70,7 @@ namespace Entitas
 			{
 				var name = cc.Key;
 				var list = cc.Value;
-				var isDefault = name == Entitas.Default.NAME;
+				var isDefault = name == defaultContextName;
 
 				list.Sort((x, y) => string.CompareOrdinal(x.FullName, y.FullName));
 
@@ -78,21 +80,23 @@ namespace Entitas
 				contextList.Add(c);
 			}
 
-			_defaultContext = _contextLookup[Entitas.Default.NAME];
+			_defaultContext = _contextLookup[defaultContextName];
 			_contextList = contextList.ToArray();
 		}
 
 		/// Collect all Compoent-Types in current domain
 		private static Dictionary<string, List<Type>> CollectAllComponents()
 		{
+			var defaultContextName = ContextAttribute.GetName<Default>();
+
 			var compType = typeof(IComponent);
 			var types = AppDomain.CurrentDomain.GetAssemblies()
 								.SelectMany(s => s.GetTypes())
-								.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && 
+								.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract &&
 											compType.IsAssignableFrom(p));
 
-			Dictionary<string, List<Type>> comps = new Dictionary<string, List<Type>>();
-			comps[Entitas.Default.NAME] = new List<Type>();
+			var comps = new Dictionary<string, List<Type>>();
+			comps[defaultContextName] = new List<Type>();
 
 			var attrType = typeof(ContextAttribute);
 
@@ -102,7 +106,7 @@ namespace Entitas
 
 				if (attribs == null || attribs.Length <= 0)
 				{
-					CollectComponent(comps, Entitas.Default.NAME, t);
+					CollectComponent(comps, defaultContextName, t);
 				}
 				else
 				{

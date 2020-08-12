@@ -7,7 +7,7 @@ using System.Threading;
 using UnityEngine;
 #endif
 
-namespace Example1
+namespace Example
 {
 	[Default]
 	public class PositionComponent : IComponent
