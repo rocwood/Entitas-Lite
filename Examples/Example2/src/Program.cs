@@ -7,7 +7,7 @@ using System.Threading;
 using UnityEngine;
 #endif
 
-namespace Example1
+namespace Example
 {
 	public class InputComponent : IComponent, IUnique
 	{
@@ -117,10 +117,8 @@ namespace Example1
 
 				Thread.Sleep(20);
 
-				/*
 				if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
 					break;
-				*/
 			}
 		}
 	}
