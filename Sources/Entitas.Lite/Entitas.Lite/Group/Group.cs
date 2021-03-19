@@ -1,81 +1,95 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Entitas
 {
-	/// Use context.GetGroup(matcher) to get a group of entities which match
-	/// the specified matcher. Calling context.GetGroup(matcher) with the
-	/// same matcher will always return the same instance of the group.
-	/// The created group is managed by the context and will always be up to date.
-	/// It will automatically add entities that match the matcher or
-	/// remove entities as soon as they don't match the matcher anymore.
 	public class Group
 	{
-		public int Count => _entities.Count;
-
-		private readonly Query _query;
+		private readonly Matcher _matcher;
 		private readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
 
-		private Entity[] _entitiesCache;
+		private readonly List<Entity> _entitiesCache = new List<Entity>();
+		private bool _hasCached = false;
 
-		internal Group(Query matcher)
+		public int Count => _entities.Count;
+
+		internal Group(Matcher matcher)
 		{
-			_query = matcher;
+			_matcher = matcher;
 		}
 
 		internal void HandleEntity(Entity entity)
 		{
-			if (entity.isEnabled && _query.Matches(entity))
-				AddEntityImpl(entity);
+			if (entity == null)
+				return;
+
+			if (entity.isEnabled && _matcher.Matches(entity))
+				HandleAddEntity(entity);
 			else
-				RemoveEntityImpl(entity);
+				HandleRemoveEntity(entity);
 		}
 
-		private bool AddEntityImpl(Entity entity)
+		private void HandleAddEntity(Entity entity)
 		{
-			if (Contains(entity))
-				return false;
+			_entities.TryGetValue(entity.id, out var item);
+			if (entity == item)
+				return;
 
 			_entities[entity.id] = entity;
 
-			_entitiesCache = null;
-
-			return true;
+			_hasCached = false;
 		}
 
-		private bool RemoveEntityImpl(Entity entity)
+		private void HandleRemoveEntity(Entity entity)
 		{
 			if (!_entities.Remove(entity.id))
-				return false;
-
-			_entitiesCache = null;
-
-			return true;
+				return;
+				
+			_hasCached = false;
 		}
 
 		public bool Contains(Entity entity)
 		{
+			if (entity == null)
+				return false;
+
 			if (!_entities.TryGetValue(entity.id, out var item))
 				return false;
 
 			return entity == item;
 		}
 
-		public Entity[] GetEntities()
+		public IReadOnlyList<Entity> GetEntities()
 		{
-			if (_entitiesCache == null)
+			if (!_hasCached)
 			{
-				_entitiesCache = new Entity[_entities.Count];
-				_entities.Values.CopyTo(_entitiesCache, 0);
+				_entitiesCache.Clear();
+
+				var values = _entities.Values;
+
+				if (_entitiesCache.Capacity < values.Count)
+					_entitiesCache.Capacity = values.Count;
+
+				for (int i = 0; i < values.Count; i++)
+					_entitiesCache.Add(values[i]);
 			}
 
 			return _entitiesCache;
 		}
 
+		public void GetEntities(IList<Entity> output)
+		{
+			output.Clear();
+
+			var values = _entities.Values;
+
+			for (int i = 0; i < values.Count; i++)
+				output.Add(values[i]);
+		}
+
 		public override string ToString()
 		{
 			if (_toStringCache == null)
-				_toStringCache = $"Group({_query})";
+				_toStringCache = $"Group({_matcher})";
 
 			return _toStringCache;
 		}

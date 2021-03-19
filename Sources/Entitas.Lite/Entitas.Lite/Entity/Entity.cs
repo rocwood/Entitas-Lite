@@ -187,6 +187,11 @@ namespace Entitas
 			return false;
 		}
 
+		internal void ResetModified()
+		{
+			_modified = false;
+		}
+
 		public void Destroy()
 		{
 			_enabled = false;

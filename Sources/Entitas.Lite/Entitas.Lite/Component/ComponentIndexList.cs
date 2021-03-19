@@ -26,7 +26,7 @@ namespace Entitas
 	class ComponentIndexList<T1, T2> : ComponentIndexListBase where T1 : IComponent where T2 : IComponent
 	{
 		private static IReadOnlyList<int> _cacheList;
-		public static IReadOnlyList<int> Get() => _cacheList ?? (_cacheList = Make(idx<T1>(), idx<T2>());
+		public static IReadOnlyList<int> Get() => _cacheList ?? (_cacheList = Make(idx<T1>(), idx<T2>()));
 	}
 	class ComponentIndexList<T1, T2, T3> : ComponentIndexListBase where T1 : IComponent where T2 : IComponent where T3 : IComponent
 	{

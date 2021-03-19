@@ -8,12 +8,4 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="3.1.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entitas.Lite\Utils\" />
-    <Folder Include="Entitas.Lite\Extensions\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Entitas.Lite\Extensions\CollectionExtension.cs" />
-    <Compile Remove="Entitas.Lite\Extensions\PublicMemberInfoEntityExtension.cs" />
-  </ItemGroup>
 </Project>

@@ -63,6 +63,8 @@ namespace Entitas.Utils
 			{
 				for (int i = 0; i < indices.Count; i++)
 					hashCode = hashCode * multiply + indices[i];
+
+				hashCode = hashCode * multiply + indices.Count;
 			}
 
 			return hashCode;

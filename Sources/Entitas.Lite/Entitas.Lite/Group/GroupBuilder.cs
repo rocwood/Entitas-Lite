@@ -1,33 +1,53 @@
-#if false
-
 using System.Collections.Generic;
 
 namespace Entitas
 {
-	public class GroupBuilder : IFilter
+	public struct GroupBuilder
 	{
-		private readonly Context _context;
-		private readonly MatcherBuilder _builder = new MatcherBuilder();
+		private Context _context;
+		private Matcher _matcher;
 
-		public Group Result() => _context.GetGroup(_builder.Result());
+		internal GroupBuilder(Context context, Matcher matcher)
+		{
+			_context = context;
+			_matcher = matcher;
+		}
 
-		public void AllOf(IReadOnlyList<int> indices) => _builder.AllOf(indices);
-		public void AnyOf(IReadOnlyList<int> indices) => _builder.AnyOf(indices);
-		public void NoneOf(IReadOnlyList<int> indices) => _builder.NoneOf(indices);
+		public GroupBuilder WithAll(IReadOnlyList<int> indices)
+		{
+			if (_matcher.isSealed)
+				return SpawnNew();
 
-		public void AllOf(params int[] indices) => _builder.AllOf(indices);
-		public void AnyOf(params int[] indices) => _builder.AnyOf(indices);
-		public void NoneOf(params int[] indices) => _builder.NoneOf(indices);
+			_matcher.WithAll(indices);
+			return this;
+		}
 
-		internal GroupBuilder(Context c) => _context = c;
+		public GroupBuilder WithAny(IReadOnlyList<int> indices)
+		{
+			if (_matcher.isSealed)
+				return SpawnNew();
 
-		public static implicit operator Group(GroupBuilder groupBuilder) => groupBuilder.Result();
-	}
+			_matcher.WithAny(indices);
+			return this;
+		}
 
-	public static class ContextGroupBuilderExtension
-	{
-		public static GroupBuilder BuildGroup(this Context c) => new GroupBuilder(c);
+		public GroupBuilder WithNone(IReadOnlyList<int> indices)
+		{
+			if (_matcher.isSealed)
+				return SpawnNew();
+
+			_matcher.WithNone(indices);
+			return this;
+		}
+
+		private GroupBuilder SpawnNew()
+		{
+			return new GroupBuilder(_context, _matcher.Clone());
+		}
+
+		public Group GetGroup()
+		{
+			return _context.GetGroup(_matcher.MakeSealed());
+		}
 	}
 }
-
-#endif

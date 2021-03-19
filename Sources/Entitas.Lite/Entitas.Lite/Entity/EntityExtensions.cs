@@ -1,8 +1,7 @@
 
 namespace Entitas
 {
-	/// Generic interface of Entity, using ComponentIndex to Component->Index mapping
-	public static class EntityGeneric
+	public static class EntityExtensions
 	{
 		public static T Add<T>(this Entity entity) where T : IComponent
 		{

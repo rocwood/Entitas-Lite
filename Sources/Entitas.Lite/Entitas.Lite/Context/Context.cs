@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace Entitas
 {
-
 	public class Context
 	{
 		public static int defaultEntityCapacity = 1024;
@@ -14,7 +13,7 @@ namespace Entitas
 		private readonly IComponentPool[] _componentPools;
 
 		private readonly EntityManager _entities = new EntityManager(defaultEntityCapacity, maxRetainedEntities);
-		private readonly Dictionary<Query, Group> _groups = new Dictionary<Query, Group>();
+		private readonly Dictionary<Matcher, Group> _groups = new Dictionary<Matcher, Group>();
 
 		public int Count => _entities.Count;
 
@@ -59,30 +58,21 @@ namespace Entitas
 		/// Returns a group for the specified matcher.
 		/// Calling context.GetGroup(matcher) with the same matcher will always
 		/// return the same instance of the group.
-		public Group GetGroup(Query matcher)
+		public Group GetGroup(Matcher matcher)
 		{
 			if (!_groups.TryGetValue(matcher, out var group))
 			{
 				group = new Group(matcher);
 
 				for (int i = 0; i < _entities.Count; i++)
-					group.HandleEntity(_entities[i]);
+				{
+					var entity = _entities[i];
+
+					if (entity.isEnabled)
+						group.HandleEntity(entity);
+				}
 
 				_groups.Add(matcher, group);
-
-				/*
-				for (int i = 0; i < matcher.indices.Length; i++)
-				{
-					var index = matcher.indices[i];
-
-					if (_groupsForIndex[index] == null)
-						_groupsForIndex[index] = new List<IGroup>();
-
-					_groupsForIndex[index].Add(group);
-				}
-				*/
-
-				//OnGroupCreated?.Invoke(this, group);
 			}
 
 			return group;
@@ -100,6 +90,8 @@ namespace Entitas
 				{
 					foreach (var kv in _groups)
 						kv.Value?.HandleEntity(entity);
+
+					entity.ResetModified();
 				}
 			}
 		}

@@ -1,5 +1,3 @@
-#if false
-
 using System.Collections.Generic;
 using Entitas.Utils;
 
@@ -7,24 +5,61 @@ namespace Entitas
 {
 	public class Matcher
 	{
-		public readonly IReadOnlyList<int> all;
-		public readonly IReadOnlyList<int> any;
-		public readonly IReadOnlyList<int> none;
+		private List<int> _all;
+		private List<int> _any;
+		private List<int> _none;
 
-		internal Matcher(IReadOnlyList<int> all, IReadOnlyList<int> any, IReadOnlyList<int> none)
+		internal bool isSealed { get; private set; }
+
+		internal Matcher(bool isSealed, IReadOnlyList<int> all, IReadOnlyList<int> any, IReadOnlyList<int> none)
 		{
-			this.all = all;
-			this.any = any;
-			this.none = none;
+			WithAll(all);
+			WithAny(any);
+			WithNone(none);
 
-			ComputeHashCode();
+			if (isSealed)
+				MakeSealed();
+		}
+
+		internal Matcher Clone()
+		{
+			return new Matcher(false, _all, _any, _none);
+		}
+
+		internal void WithAll(IReadOnlyList<int> indices) => Add(ref _all, indices);
+		internal void WithAny(IReadOnlyList<int> indices) => Add(ref _any, indices);
+		internal void WithNone(IReadOnlyList<int> indices) => Add(ref _none, indices);
+
+		internal Matcher MakeSealed()
+		{
+			if (!isSealed)
+			{
+				ComputeHashCode();
+				isSealed = true;
+			}
+
+			return this;
+		}
+
+		private void Add(ref List<int> list, IReadOnlyList<int> indices)
+		{
+			if (isSealed)
+				return;
+
+			if (indices == null)
+				return;
+
+			if (list == null)
+				list = new List<int>(indices.Count);
+
+			list.AddDistinctSorted(indices);
 		}
 
 		public bool Matches(Entity entity)
 		{
-			return (all == null || entity.HasAllComponents(all))
-				&& (any == null || entity.HasAnyComponent(any))
-				&& (none == null || !entity.HasAnyComponent(none));
+			return (_all == null || entity.HasAllComponents(_all))
+				&& (_any == null || entity.HasAnyComponent(_any))
+				&& (_none == null || !entity.HasAnyComponent(_none));
 		}
 
 		public override bool Equals(object obj)
@@ -40,9 +75,9 @@ namespace Entitas
 			if (other == null || other.GetHashCode() != GetHashCode())
 				return false;
 
-			if (!all.CheckEquals(other.all))	return false;
-			if (!any.CheckEquals(other.any))	return false;
-			if (!none.CheckEquals(other.none))	return false;
+			if (!_all.CheckEquals(other._all)) return false;
+			if (!_any.CheckEquals(other._any)) return false;
+			if (!_none.CheckEquals(other._none)) return false;
 
 			return true;
 		}
@@ -51,9 +86,9 @@ namespace Entitas
 		{
 			var hashCode = -80052522;
 
-			hashCode = all.ComputeHashCode(hashCode, -1521134295);
-			hashCode = any.ComputeHashCode(hashCode, -1521134295);
-			hashCode = none.ComputeHashCode(hashCode, -1521134295);
+			hashCode = _all.ComputeHashCode(hashCode, -1521134295);
+			hashCode = _any.ComputeHashCode(hashCode, -1521134295);
+			hashCode = _none.ComputeHashCode(hashCode, -1521134295);
 
 			_hash = hashCode;
 		}
@@ -63,5 +98,3 @@ namespace Entitas
 		private int _hash;
 	}
 }
-
-#endif

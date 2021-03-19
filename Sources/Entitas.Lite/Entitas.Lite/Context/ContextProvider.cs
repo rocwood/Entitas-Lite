@@ -15,7 +15,7 @@ namespace Entitas
 
 			var contextInfo = new ContextInfo(name, _contextInfo.componentNames, _contextInfo.componentTypes);
 
-			return new Context(contextInfo);
+			return new Context(name, contextInfo);
 		}
 
 		public static int GetComponentCount()
