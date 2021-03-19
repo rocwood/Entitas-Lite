@@ -2,14 +2,13 @@ using System.Collections.Generic;
 
 namespace Entitas
 {
-	public class Context
+	public partial class Context
 	{
 		public static int defaultEntityCapacity = 1024;
 		public static int maxRetainedEntities = 256;
 		public static int maxRetainedComponents = 128;
 
-		private readonly string _name;
-		private readonly ContextInfo _contextInfo;
+		private readonly string _contextName;
 		private readonly IComponentPool[] _componentPools;
 
 		private readonly EntityManager _entities = new EntityManager(defaultEntityCapacity, maxRetainedEntities);
@@ -17,25 +16,20 @@ namespace Entitas
 
 		public int Count => _entities.Count;
 
-		internal Context(string name, ContextInfo contextInfo)
+		internal Context(string contextName)
 		{
-			_name = name;
-			_contextInfo = contextInfo;
+			_contextName = contextName;
 
-			int totalComponents = _contextInfo.GetComponentCount();
+			int componentCount = _contextInfo.GetComponentCount();
+			_componentPools = new IComponentPool[componentCount];
 
-			_componentPools = new IComponentPool[totalComponents];
-
-			for (int i = 0; i < totalComponents; i++)
-				_componentPools[i] = ComponentPoolFactory.Create(contextInfo.componentTypes[i], maxRetainedComponents);
+			for (int i = 0; i < componentCount; i++)
+				_componentPools[i] = ComponentPoolFactory.Create(_contextInfo.componentTypes[i], maxRetainedComponents);
 		}
 
-		public Entity CreateEntity(string name = null)
+		public Entity CreateEntity(string entityName = null)
 		{
-			var entity = _entities.CreateEntity(name);
-			entity.SetProvider(_contextInfo, _componentPools);
-
-			return entity;
+			return _entities.CreateEntity(entityName, _componentPools);
 		}
 
 		public Entity GetEntity(int id)
@@ -101,7 +95,7 @@ namespace Entitas
 		public override string ToString()
 		{
 			if (_toStringCache == null)
-				_toStringCache = $"Context<{_name}>";
+				_toStringCache = $"Context<{_contextName}>";
 
 			return _toStringCache;
 		}

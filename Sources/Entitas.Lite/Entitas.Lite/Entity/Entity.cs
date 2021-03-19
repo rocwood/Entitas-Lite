@@ -58,10 +58,8 @@ namespace Entitas
 		private bool _modified;
 
 		private IComponent[] _components;
-
 		private IComponentPool[] _componentPools;
-		private ContextInfo _contextInfo;
-		private int _totalComponents;
+		//private ContextInfo _contextInfo;
 
 		private object _syncObj = new object();
 
@@ -69,16 +67,14 @@ namespace Entitas
 		{
 		}
 
-		internal void SetProvider(ContextInfo contextInfo, IComponentPool[] componentPools)
+		internal void Init(IComponentPool[] componentPools)
 		{
-			if (_contextInfo != contextInfo)
-			{
-				_contextInfo = contextInfo;
-				_componentPools = componentPools;
-				_totalComponents = contextInfo.GetComponentCount();
+			_componentPools = componentPools;
 
-				_components = new IComponent[_totalComponents];
-			}
+			int componentCount = componentPools.Length;
+
+			if (_components == null || _components.Length != componentCount)
+				_components = new IComponent[componentCount];
 		}
 		
 		internal void Active(int id, string name = null)

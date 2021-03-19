@@ -33,11 +33,12 @@ namespace Entitas
 			_lookup = new Dictionary<int, Entity>(capacity);
 		}
 
-		public Entity CreateEntity(string name = null)
+		public Entity CreateEntity(string name, IComponentPool[] componentPools)
 		{
 			int id = Interlocked.Increment(ref _lastId);
 
 			var entity = _pool.Get();
+			entity.Init(componentPools);
 			entity.Active(id, name);
 
 			EnsureAccess(_count);

@@ -11,7 +11,7 @@ namespace Entitas
 		{
 			if (_cachedIndex < 0)
 			{
-				_cachedIndex = ContextProvider.GetComponentIndex<T>();
+				_cachedIndex = Context.GetComponentIndex<T>();
 
 				if (_cachedIndex < 0)
 					throw new ComponentIndexNotFoundException(typeof(T));

@@ -4,28 +4,17 @@ namespace Entitas
 {
 	public class ContextInfo
 	{
-		public readonly string name;
 		public readonly string[] componentNames;
 		public readonly Type[] componentTypes;
 
-		internal ContextInfo(string name, string[] componentNames, Type[] componentTypes)
-		{
-			this.name = name;
-			this.componentNames = componentNames;
-			this.componentTypes = componentTypes;
-		}
-
-		internal ContextInfo(string name, Type[] componentTypes)
+		internal ContextInfo(Type[] componentTypes)
 		{
 			int count = componentTypes.Length;
 			var componentNames = new string[count];
 
 			for (int i = 0; i < count; i++)
-			{
 				componentNames[i] = componentTypes[i].Name.RemoveComponentSuffix();
-			}
 
-			this.name = name;
 			this.componentNames = componentNames;
 			this.componentTypes = componentTypes;
 		}
