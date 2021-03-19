@@ -1,20 +1,20 @@
 namespace Entitas
 {
-	public static class ComponentStringExtension
+	static class ComponentStringExtension
 	{
-		const string COMPONENT_SUFFIX = "Component";
+		const string ComponentSuffix = "Component";
 
 		public static string AddComponentSuffix(this string componentName)
 		{
-			return componentName.EndsWith(COMPONENT_SUFFIX, System.StringComparison.Ordinal)
+			return componentName.EndsWith(ComponentSuffix, System.StringComparison.Ordinal)
 								? componentName
-								: componentName + COMPONENT_SUFFIX;
+								: componentName + ComponentSuffix;
 		}
 
 		public static string RemoveComponentSuffix(this string componentName)
 		{
-			return componentName.EndsWith(COMPONENT_SUFFIX, System.StringComparison.Ordinal)
-								? componentName.Substring(0, componentName.Length - COMPONENT_SUFFIX.Length)
+			return componentName.EndsWith(ComponentSuffix, System.StringComparison.Ordinal)
+								? componentName.Substring(0, componentName.Length - ComponentSuffix.Length)
 								: componentName;
 		}
 	}

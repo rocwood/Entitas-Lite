@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Entitas.Utils;
 
 namespace Entitas
 {
@@ -7,10 +6,13 @@ namespace Entitas
 	{
 		protected static IReadOnlyList<int> Make(params int[] indices)
 		{
+			/*
 			var list = new List<int>(indices.Length);
 			list.AddDistinctSorted(indices);
-
 			return list;
+			*/
+
+			return indices;
 		}
 
 		protected static int idx<T>() where T : IComponent => ComponentIndex<T>.Get();
@@ -50,10 +52,5 @@ namespace Entitas
 	{
 		private static IReadOnlyList<int> _cacheList;
 		public static IReadOnlyList<int> Get() => _cacheList ?? (_cacheList = Make(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>()));
-	}
-	class ComponentIndexList<T1, T2, T3, T4, T5, T6, T7, T8> : ComponentIndexListBase where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent where T6 : IComponent where T7 : IComponent where T8 : IComponent
-	{
-		private static IReadOnlyList<int> _cacheList;
-		public static IReadOnlyList<int> Get() => _cacheList ?? (_cacheList = Make(idx<T1>(), idx<T2>(), idx<T3>(), idx<T4>(), idx<T5>(), idx<T6>(), idx<T7>(), idx<T8>()));
 	}
 }

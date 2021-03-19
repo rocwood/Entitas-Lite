@@ -1,3 +1,5 @@
+#if false
+
 using System.Collections.Generic;
 
 namespace Entitas
@@ -27,3 +29,5 @@ namespace Entitas
 		public static GroupBuilder BuildGroup(this Context c) => new GroupBuilder(c);
 	}
 }
+
+#endif

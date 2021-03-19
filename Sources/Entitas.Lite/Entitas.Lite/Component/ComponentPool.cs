@@ -11,9 +11,6 @@ namespace Entitas
 		void Return(IComponent obj);
 	}
 
-	/// <summary>
-	/// Common component's pool
-	/// </summary>
 	class ComponentPool : IComponentPool
 	{
 		private readonly ObjectPool<IComponent> _pool;
@@ -60,23 +57,20 @@ namespace Entitas
 					return false;
 
 				// Reset component status before returning to pool
-				if (obj is IEntityIdRef entityIdRef)
-					entityIdRef.entityId = 0;
-				if (obj is IModifiable modifiable)
-					modifiable.Commit();
 				if (obj is IResetable resetable)
 					resetable.Reset();
 				if (obj is IDisposable disposable)
 					disposable.Dispose();
-				
+				if (obj is IModifiable modifiable)
+					modifiable.modified = false;
+				if (obj is IEntityIdRef entityIdRef)
+					entityIdRef.entityId = 0;
+
 				return true;
 			}
 		}
 	}
 
-	/// <summary>
-	/// Unique instance pool for zero-size components
-	/// </summary>
 	class ZeroSizeComponentPool : IComponentPool
 	{
 		private readonly IComponent _instance;

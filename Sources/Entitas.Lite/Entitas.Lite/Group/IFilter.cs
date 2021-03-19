@@ -1,3 +1,5 @@
+#if false
+
 using System.Collections.Generic;
 
 namespace Entitas
@@ -13,3 +15,5 @@ namespace Entitas
 		void NoneOf(params int[] indices);
 	}
 }
+
+#endif

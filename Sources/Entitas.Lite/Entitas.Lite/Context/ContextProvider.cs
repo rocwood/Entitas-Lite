@@ -10,48 +10,46 @@ namespace Entitas
 	{
 		public static Context Create(string name)
 		{
-			if (_baseContextInfo == null)
-				_baseContextInfo = CollectAllComponents();
+			if (_contextInfo == null)
+				_contextInfo = CollectAllComponents();
 
-			var contextInfo = new ContextInfo(name, _baseContextInfo.componentNames, _baseContextInfo.componentTypes);
+			var contextInfo = new ContextInfo(name, _contextInfo.componentNames, _contextInfo.componentTypes);
 
 			return new Context(contextInfo);
 		}
 
 		public static int GetComponentCount()
 		{
-			if (_baseContextInfo == null)
-				_baseContextInfo = CollectAllComponents();
+			if (_contextInfo == null)
+				_contextInfo = CollectAllComponents();
 
-			return _baseContextInfo.GetComponentCount();
+			return _contextInfo.GetComponentCount();
 		}
 
 		public static int GetComponentIndex<T>() where T : IComponent => GetComponentIndex(typeof(T));
 		public static int GetComponentIndex(Type type)
 		{
-			if (_baseContextInfo == null)
-				_baseContextInfo = CollectAllComponents();
+			if (_contextInfo == null)
+				_contextInfo = CollectAllComponents();
 
-			return _baseContextInfo.GetComponentIndex(type);
+			return _contextInfo.GetComponentIndex(type);
 		}
 
 		public static string[] GetComponentNames()
 		{
-			if (_baseContextInfo == null)
-				_baseContextInfo = CollectAllComponents();
+			if (_contextInfo == null)
+				_contextInfo = CollectAllComponents();
 
-			return _baseContextInfo.componentNames;
+			return _contextInfo.componentNames;
 		}
 
 		public static Type[] GetComponentTypes()
 		{
-			if (_baseContextInfo == null)
-				_baseContextInfo = CollectAllComponents();
+			if (_contextInfo == null)
+				_contextInfo = CollectAllComponents();
 
-			return _baseContextInfo.componentTypes;
+			return _contextInfo.componentTypes;
 		}
-
-		private static ContextInfo _baseContextInfo;
 
 		/// Collect all public IComponent class in current domain
 		private static ContextInfo CollectAllComponents()
@@ -68,5 +66,7 @@ namespace Entitas
 
 			return new ContextInfo(null, types);
 		}
+
+		private static ContextInfo _contextInfo;
 	}
 }

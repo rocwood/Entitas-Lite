@@ -1,3 +1,5 @@
+#if false
+
 namespace Entitas
 {
 	public static class IFilterGeneric
@@ -128,3 +130,5 @@ namespace Entitas
 		}
 	}
 }
+
+#endif

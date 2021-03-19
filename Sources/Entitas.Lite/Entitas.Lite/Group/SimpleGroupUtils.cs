@@ -1,3 +1,5 @@
+#if false
+
 namespace Entitas
 {
 	public static class SimpleGroupUtils
@@ -37,3 +39,5 @@ namespace Entitas
 			=> c.GetGroup(SimpleMatcherCache<T1, T2, T3, T4, T5, T6, T7, T8>.AnyOf());
 	}
 }
+
+#endif

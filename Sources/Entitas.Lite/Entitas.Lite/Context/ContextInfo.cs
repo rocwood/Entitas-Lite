@@ -8,14 +8,14 @@ namespace Entitas
 		public readonly string[] componentNames;
 		public readonly Type[] componentTypes;
 
-		public ContextInfo(string name, string[] componentNames, Type[] componentTypes)
+		internal ContextInfo(string name, string[] componentNames, Type[] componentTypes)
 		{
 			this.name = name;
 			this.componentNames = componentNames;
 			this.componentTypes = componentTypes;
 		}
 
-		public ContextInfo(string name, Type[] componentTypes)
+		internal ContextInfo(string name, Type[] componentTypes)
 		{
 			int count = componentTypes.Length;
 			var componentNames = new string[count];

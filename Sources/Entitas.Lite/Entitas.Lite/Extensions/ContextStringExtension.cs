@@ -1,20 +1,20 @@
-﻿namespace Entitas
+namespace Entitas
 {
-	public static class ContextStringExtension
+	static class ContextStringExtension
 	{
-		const string CONTEXT_SUFFIX = "Context";
+		const string ContextSuffix = "Context";
 
 		public static string AddContextSuffix(this string contextName)
 		{
-			return contextName.EndsWith(CONTEXT_SUFFIX, System.StringComparison.Ordinal)
+			return contextName.EndsWith(ContextSuffix, System.StringComparison.Ordinal)
 							  ? contextName
-							  : contextName + CONTEXT_SUFFIX;
+							  : contextName + ContextSuffix;
 		}
 
 		public static string RemoveContextSuffix(this string contextName)
 		{
-			return contextName.EndsWith(CONTEXT_SUFFIX, System.StringComparison.Ordinal)
-							  ? contextName.Substring(0, contextName.Length - CONTEXT_SUFFIX.Length)
+			return contextName.EndsWith(ContextSuffix, System.StringComparison.Ordinal)
+							  ? contextName.Substring(0, contextName.Length - ContextSuffix.Length)
 							  : contextName;
 		}
 	}

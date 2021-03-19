@@ -4,24 +4,5 @@ namespace Entitas
 	public interface IComponent
 	{
 	}
-
-	public interface IUnique
-	{
-	}
-
-	public interface IEntityIdRef
-	{
-		int entityId { get; set; }
-	}
-
-	public interface IResetable
-	{
-		void Reset();
-	}
-
-	public interface IModifiable
-	{
-		bool modified { get; set; }
-	}
 }
 

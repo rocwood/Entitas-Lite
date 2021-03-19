@@ -1,3 +1,5 @@
+#if false
+
 using System.Collections.Generic;
 using Entitas.Utils;
 
@@ -40,3 +42,5 @@ namespace Entitas
 		}
 	}
 }
+
+#endif

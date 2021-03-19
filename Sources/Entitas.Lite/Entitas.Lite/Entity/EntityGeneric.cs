@@ -2,36 +2,36 @@
 namespace Entitas
 {
 	/// Generic interface of Entity, using ComponentIndex to Component->Index mapping
-	public partial class Entity
+	public static class EntityGeneric
 	{
-		public T Add<T>() where T : IComponent
+		public static T Add<T>(this Entity entity) where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			return (T)AddComponent(index);
+			return (T)entity.AddComponent(index);
 		}
 
-		public void Remove<T>() where T: IComponent
+		public static void Remove<T>(this Entity entity) where T: IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			RemoveComponent(index);
+			entity.RemoveComponent(index);
 		}
 		
-		public bool Has<T>() where T : IComponent
+		public static bool Has<T>(this Entity entity) where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			return HasComponent(index);
+			return entity.HasComponent(index);
 		}
 
-		public T Get<T>() where T : IComponent
+		public static T Get<T>(this Entity entity) where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			return (T)GetComponent(index);
+			return (T)entity.GetComponent(index);
 		}
 
-		public T Modify<T>() where T : IComponent
+		public static T Modify<T>(this Entity entity) where T : IComponent
 		{
 			int index = ComponentIndex<T>.Get();
-			return (T)ModifyComponent(index);
+			return (T)entity.ModifyComponent(index);
 		}
 	}
 }

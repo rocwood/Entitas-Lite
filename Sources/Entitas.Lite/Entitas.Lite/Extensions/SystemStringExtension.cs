@@ -1,21 +1,21 @@
-﻿namespace Entitas
+namespace Entitas
 {
-	public static class SystemStringExtension
+	static class SystemStringExtension
 	{
-		const string COMPONENT_SUFFIX = "System";
+		const string SystemSuffix = "System";
 
-		public static string AddSystemSuffix(this string componentName)
+		public static string AddSystemSuffix(this string systemName)
 		{
-			return componentName.EndsWith(COMPONENT_SUFFIX, System.StringComparison.Ordinal)
-								? componentName
-								: componentName + COMPONENT_SUFFIX;
+			return systemName.EndsWith(SystemSuffix, System.StringComparison.Ordinal)
+								? systemName
+								: systemName + SystemSuffix;
 		}
 
-		public static string RemoveSystemSuffix(this string componentName)
+		public static string RemoveSystemSuffix(this string systemName)
 		{
-			return componentName.EndsWith(COMPONENT_SUFFIX, System.StringComparison.Ordinal)
-								? componentName.Substring(0, componentName.Length - COMPONENT_SUFFIX.Length)
-								: componentName;
+			return systemName.EndsWith(SystemSuffix, System.StringComparison.Ordinal)
+								? systemName.Substring(0, systemName.Length - SystemSuffix.Length)
+								: systemName;
 		}
 	}
 }

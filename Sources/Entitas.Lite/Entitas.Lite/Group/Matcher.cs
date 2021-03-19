@@ -1,3 +1,5 @@
+#if false
+
 using System.Collections.Generic;
 using Entitas.Utils;
 
@@ -5,15 +7,24 @@ namespace Entitas
 {
 	public class Matcher
 	{
-		public readonly IReadOnlyList<int> allOfIndices;
-		public readonly IReadOnlyList<int> anyOfIndices;
-		public readonly IReadOnlyList<int> noneOfIndices;
+		public readonly IReadOnlyList<int> all;
+		public readonly IReadOnlyList<int> any;
+		public readonly IReadOnlyList<int> none;
+
+		internal Matcher(IReadOnlyList<int> all, IReadOnlyList<int> any, IReadOnlyList<int> none)
+		{
+			this.all = all;
+			this.any = any;
+			this.none = none;
+
+			ComputeHashCode();
+		}
 
 		public bool Matches(Entity entity)
 		{
-			return (allOfIndices == null || entity.HasAllComponents(allOfIndices))
-				&& (anyOfIndices == null || entity.HasAnyComponent(anyOfIndices))
-				&& (noneOfIndices == null || !entity.HasAnyComponent(noneOfIndices));
+			return (all == null || entity.HasAllComponents(all))
+				&& (any == null || entity.HasAnyComponent(any))
+				&& (none == null || !entity.HasAnyComponent(none));
 		}
 
 		public override bool Equals(object obj)
@@ -29,32 +40,20 @@ namespace Entitas
 			if (other == null || other.GetHashCode() != GetHashCode())
 				return false;
 
-			if (!allOfIndices.CheckEquals(other.allOfIndices))
-				return false;
-			if (!anyOfIndices.CheckEquals(other.anyOfIndices))
-				return false;
-			if (!noneOfIndices.CheckEquals(other.noneOfIndices))
-				return false;
+			if (!all.CheckEquals(other.all))	return false;
+			if (!any.CheckEquals(other.any))	return false;
+			if (!none.CheckEquals(other.none))	return false;
 
 			return true;
-		}
-
-		internal Matcher(IReadOnlyList<int> allOfIndices, IReadOnlyList<int> anyOfIndices, IReadOnlyList<int> noneOfIndices)
-		{
-			this.allOfIndices = allOfIndices;
-			this.anyOfIndices = anyOfIndices;
-			this.noneOfIndices = noneOfIndices;
-			
-			ComputeHashCode();
 		}
 
 		private void ComputeHashCode()
 		{
 			var hashCode = -80052522;
 
-			hashCode = allOfIndices.ComputeHashCode(hashCode, -1521134295);
-			hashCode = anyOfIndices.ComputeHashCode(hashCode, -1521134295);
-			hashCode = noneOfIndices.ComputeHashCode(hashCode, -1521134295);
+			hashCode = all.ComputeHashCode(hashCode, -1521134295);
+			hashCode = any.ComputeHashCode(hashCode, -1521134295);
+			hashCode = none.ComputeHashCode(hashCode, -1521134295);
 
 			_hash = hashCode;
 		}
@@ -62,31 +61,7 @@ namespace Entitas
 		public override int GetHashCode() => _hash;
 
 		private int _hash;
-
-		/*
-		internal IReadOnlyList<int> combineIndices
-		{
-			get {
-				if (!_combineIndicesCached)
-				{
-					if (_combineIndices == null)
-						_combineIndices = new List<int>(ContextProvider.GetComponentCount());
-
-					_combineIndices.Clear();
-
-					_combineIndices.MergeDistinctSorted(_allOfIndices);
-					_combineIndices.MergeDistinctSorted(_anyOfIndices);
-					_combineIndices.MergeDistinctSorted(_noneOfIndices);
-
-					_combineIndicesCached = true;
-				}
-
-				return _combineIndices;
-			}
-		}
-
-		private bool _combineIndicesCached;
-		private List<int> _combineIndices;
-		*/
 	}
 }
+
+#endif

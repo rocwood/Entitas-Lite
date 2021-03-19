@@ -13,25 +13,19 @@ namespace Entitas
 	{
 		public int Count => _entities.Count;
 
-		internal Matcher matcher => _matcher;
-
-		private readonly Matcher _matcher;
+		private readonly Query _query;
 		private readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
 
 		private Entity[] _entitiesCache;
-		private Entity _singleEntityCache;
-		private string _toStringCache;
 
-		/// Use context.GetGroup(matcher) to get a group of entities which match the specified matcher.
-		internal Group(Matcher matcher)
+		internal Group(Query matcher)
 		{
-			_matcher = matcher;
+			_query = matcher;
 		}
 
-		/// This is used by the context to manage the group.
 		internal void HandleEntity(Entity entity)
 		{
-			if (entity.isEnabled && _matcher.Matches(entity))
+			if (entity.isEnabled && _query.Matches(entity))
 				AddEntityImpl(entity);
 			else
 				RemoveEntityImpl(entity);
@@ -45,7 +39,6 @@ namespace Entitas
 			_entities[entity.id] = entity;
 
 			_entitiesCache = null;
-			_singleEntityCache = null;
 
 			return true;
 		}
@@ -56,7 +49,6 @@ namespace Entitas
 				return false;
 
 			_entitiesCache = null;
-			_singleEntityCache = null;
 
 			return true;
 		}
@@ -69,7 +61,6 @@ namespace Entitas
 			return entity == item;
 		}
 
-		/// Returns all entities which are currently in this group.
 		public Entity[] GetEntities()
 		{
 			if (_entitiesCache == null)
@@ -81,43 +72,14 @@ namespace Entitas
 			return _entitiesCache;
 		}
 
-		/*
-		/// Returns the only entity in this group. It will return null
-		/// if the group is empty. It will throw an exception if the group
-		/// has more than one entity.
-		public Entity GetSingleEntity()
-		{
-			if (_singleEntityCache == null)
-			{
-				var c = _entities.Count;
-				if (c == 1)
-				{
-					using (var enumerator = _entities.GetEnumerator())
-					{
-						enumerator.MoveNext();
-						_singleEntityCache = enumerator.Current;
-					}
-				}
-				else if (c == 0)
-				{
-					return null;
-				}
-				else
-				{
-					throw new GroupSingleEntityException(this);
-				}
-			}
-
-			return _singleEntityCache;
-		}
-		*/
-
 		public override string ToString()
 		{
 			if (_toStringCache == null)
-				_toStringCache = $"Group({_matcher})";
+				_toStringCache = $"Group({_query})";
 
 			return _toStringCache;
 		}
+
+		private string _toStringCache;
 	}
 }
