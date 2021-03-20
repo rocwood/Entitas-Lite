@@ -88,7 +88,7 @@ namespace Entitas
 	{
 		public static IComponentPool Create(Type objType, int maxRetained = 0)
 		{
-			if (!objType.IsAssignableFrom(typeof(IComponent)))
+			if (!typeof(IComponent).IsAssignableFrom(objType))
 				throw new ArgumentException($"{objType.FullName} isn't IComponent");
 
 			if (ComponentTrait.IsZeroSize(objType))

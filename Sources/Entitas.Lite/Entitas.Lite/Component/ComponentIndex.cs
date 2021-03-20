@@ -1,5 +1,3 @@
-using System;
-
 namespace Entitas
 {
 	/// <summary>
@@ -14,20 +12,12 @@ namespace Entitas
 				_cachedIndex = Context.GetComponentIndex<T>();
 
 				if (_cachedIndex < 0)
-					throw new ComponentIndexNotFoundException(typeof(T));
+					throw new EntitasException($"Component {typeof(T)} index is not found in Context");
 			}
 
 			return _cachedIndex;
 		}
 
 		private static int _cachedIndex = -1;
-	}
-
-	public class ComponentIndexNotFoundException : EntitasException
-	{
-		public ComponentIndexNotFoundException(Type type)
-			: base(type + " is not found in Context", "")
-		{
-		}
 	}
 }

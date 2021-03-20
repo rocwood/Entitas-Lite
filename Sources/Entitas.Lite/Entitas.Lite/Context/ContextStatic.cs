@@ -40,12 +40,10 @@ namespace Entitas
 
 		private static ContextInfo CollectAllComponents()
 		{
-			var compType = typeof(IComponent);
-
 			var types = AppDomain.CurrentDomain
 						.GetAssemblies()
 						.SelectMany(s => s.GetTypes())
-						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && compType.IsAssignableFrom(p))
+						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && typeof(IComponent).IsAssignableFrom(p))
 						.ToArray();
 
 			Array.Sort(types, (x, y) => string.CompareOrdinal(x.FullName, y.FullName));

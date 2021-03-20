@@ -123,6 +123,8 @@ namespace Entitas
 			}
 
 			Array.Clear(_items, freeIndex, _count - freeIndex);
+
+			_count = freeIndex;
 		}
 	}
 }

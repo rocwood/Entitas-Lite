@@ -13,7 +13,7 @@ namespace Entitas
 			var componentNames = new string[count];
 
 			for (int i = 0; i < count; i++)
-				componentNames[i] = componentTypes[i].Name.RemoveComponentSuffix();
+				componentNames[i] = componentTypes[i].Name;
 
 			this.componentNames = componentNames;
 			this.componentTypes = componentTypes;

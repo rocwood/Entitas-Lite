@@ -16,25 +16,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{83
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FC46F12C-6EE6-48B6-A5C9-4A85D9D502ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.Lite", "Sources\Entitas.Lite\Entitas.Lite.csproj", "{B3D58C33-32F4-489B-8BCD-F93260A71EB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas.Lite", "Sources\Entitas.Lite\Entitas.Lite.csproj", "{B3D58C33-32F4-489B-8BCD-F93260A71EB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.Unity", "Sources\Entitas.Unity\Entitas.Unity.csproj", "{CB3ADCB3-E842-4A71-B32E-15ABDE7311F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas.Unity", "Sources\Entitas.Unity\Entitas.Unity.csproj", "{CB3ADCB3-E842-4A71-B32E-15ABDE7311F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.Unity.Editor", "Sources\Entitas.Unity.Editor\Entitas.Unity.Editor.csproj", "{9AF72B25-85B0-4FDC-85C3-660926C82438}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas.Unity.Editor", "Sources\Entitas.Unity.Editor\Entitas.Unity.Editor.csproj", "{9AF72B25-85B0-4FDC-85C3-660926C82438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.VisualDebugging.Unity", "Sources\Entitas.VisualDebugging.Unity\Entitas.VisualDebugging.Unity.csproj", "{70222463-4E60-4862-8C18-1EBA6CA63353}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas.VisualDebugging.Unity", "Sources\Entitas.VisualDebugging.Unity\Entitas.VisualDebugging.Unity.csproj", "{70222463-4E60-4862-8C18-1EBA6CA63353}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas.VisualDebugging.Unity.Editor", "Sources\Entitas.VisualDebugging.Unity.Editor\Entitas.VisualDebugging.Unity.Editor.csproj", "{6DCBB57A-C3A3-4055-B99E-0C97A0D3C4CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas.VisualDebugging.Unity.Editor", "Sources\Entitas.VisualDebugging.Unity.Editor\Entitas.VisualDebugging.Unity.Editor.csproj", "{6DCBB57A-C3A3-4055-B99E-0C97A0D3C4CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example1", "Examples\Example1\Example1.csproj", "{9CDA172D-E860-4821-BB3D-9A3D66BCEA40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example1", "Examples\Example1\Example1.csproj", "{9CDA172D-E860-4821-BB3D-9A3D66BCEA40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example2", "Examples\Example2\Example2.csproj", "{C64C6661-F81F-43A9-A00C-811791EA1238}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example2", "Examples\Example2\Example2.csproj", "{C64C6661-F81F-43A9-A00C-811791EA1238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readme", "Examples\Readme\Readme.csproj", "{9604FF12-06E3-41FB-B510-3A52ECBF4D6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Readme", "Examples\Readme\Readme.csproj", "{9604FF12-06E3-41FB-B510-3A52ECBF4D6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Entitas.Lite", "Tests\Test.Entitas.Lite\Test.Entitas.Lite.csproj", "{FF81A63F-372B-4264-A389-88E0D8E00C2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Entitas.Lite", "Tests\Test.Entitas.Lite\Test.Entitas.Lite.csproj", "{FF81A63F-372B-4264-A389-88E0D8E00C2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entitas", "Sources\Entitas\Entitas.csproj", "{E5086603-F437-4C5D-955E-CE0F5D1B9CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entitas", "Sources\Entitas\Entitas.csproj", "{E5086603-F437-4C5D-955E-CE0F5D1B9CF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark1", "Examples\Benchmark1\Benchmark1.csproj", "{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{E5086603-F437-4C5D-955E-CE0F5D1B9CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5086603-F437-4C5D-955E-CE0F5D1B9CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5086603-F437-4C5D-955E-CE0F5D1B9CF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{9604FF12-06E3-41FB-B510-3A52ECBF4D6C} = {835EEC49-4DDE-4EFC-AE41-4157E788738F}
 		{FF81A63F-372B-4264-A389-88E0D8E00C2E} = {FC46F12C-6EE6-48B6-A5C9-4A85D9D502ED}
 		{E5086603-F437-4C5D-955E-CE0F5D1B9CF7} = {3DADB01D-23B9-4E33-8243-E2ED50D7D0D1}
+		{B8FB6059-3F9A-4B7D-A27C-2450E4C66E11} = {835EEC49-4DDE-4EFC-AE41-4157E788738F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDCADD66-64A6-44F3-8F6F-BA38856D0F19}
