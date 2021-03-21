@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace Entitas.Benchmark
 {
@@ -15,6 +17,8 @@ namespace Entitas.Benchmark
 		}
 
 		public bool modified { get; set; }
+
+		public override string ToString() => $"Position({x},{y})";
 	}
 
 	public class Velocity : IComponent
@@ -27,11 +31,15 @@ namespace Entitas.Benchmark
 			this.x = x;
 			this.y = y;
 		}
+
+		public override string ToString() => $"Velocity({x},{y})";
 	}
 
 	public class LifeTime : IComponent
 	{
 		public int ticks;
+
+		public override string ToString() => $"LifeTime({ticks})";
 	}
 
 	public class MovementSystem : IExecuteSystem
@@ -72,6 +80,7 @@ namespace Entitas.Benchmark
 		public void Execute()
 		{
 			var entities = Context<Default>.AllOf<Position, LifeTime>().GetEntities();
+			Array.Sort(entities, entityComparer);
 
 			foreach (var e in entities)
 			{
@@ -94,6 +103,9 @@ namespace Entitas.Benchmark
 				}
 			}
 		}
+
+		private static Comparison<Entity> entityComparer = EntityComparer;
+		private static int EntityComparer(Entity x, Entity y) => x.creationIndex - y.creationIndex;
 
 		private void Spawn(float x, float y, Random random)
 		{
@@ -128,28 +140,66 @@ namespace Entitas.Benchmark
 			systems.Initialize();
 		}
 
+		public int frameId { get; private set; }
+
 		public void Execute()
 		{
-			int _iterateCount = 0;
+			frameId = 0;
 
 			while (context.count > 0)
 			{
-				_iterateCount++;
+				//Dump();
 
 				systems.Execute();
-				systems.Cleanup();
+				//systems.Cleanup();
+
+				frameId++;
 			}
 		}
 
+		/*
+		private StringBuilder _dumpBuffer = new StringBuilder();
+
+		public string GetDumpResult() => _dumpBuffer.ToString();
+
+		private void Dump()
+		{
+			_dumpBuffer.Append($"Frame {frameId}\n");
+
+			var entities = context.GetEntities();
+			for (int i = 0; i < entities.Length; i++)
+			{
+				var e = entities[i];
+
+				_dumpBuffer.Append(e);
+
+				var components = e.GetComponents();
+				for (int j = 0; j < components.Length; j++)
+				{
+					var comp = components[j];
+					if (comp == null)
+						continue;
+
+					_dumpBuffer.Append(comp);
+					_dumpBuffer.Append(' ');
+				}
+
+				_dumpBuffer.Append('\n');
+			}
+
+			_dumpBuffer.Append('\n');
+		}
+		*/
+
 		public void Cleanup()
 		{
-			systems.TearDown();
-			context.Reset();
+			//systems.TearDown();
+			//context.Reset();
 
 			systems = null;
 			context = null;
 
-			Contexts.DestroyInstance();
+			//Contexts.DestroyInstance();
 		}
 	}
 
@@ -181,7 +231,10 @@ namespace Entitas.Benchmark
 
 			var mem2 = GC.GetTotalMemory(false);
 
-			Console.WriteLine($"Init = {initTime}ms, Execute = {execTime}ms, Cleanup = {cleanupTime}, Memory = {(mem2 - mem1) / 1024}KB");
+			Console.WriteLine($"Frame = {benchmark.frameId}\n");
+			Console.WriteLine($"Init = {initTime}ms, {(mem1 - mem0) / 1024}KB\nExec = {execTime}ms, {(mem2 - mem1) / 1024}KB\nClean = {cleanupTime}");
+
+			//File.WriteAllText("DumpResult.txt", benchmark.GetDumpResult());
 		}
 	}
 }
