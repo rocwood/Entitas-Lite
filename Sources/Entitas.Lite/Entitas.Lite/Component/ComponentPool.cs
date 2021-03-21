@@ -1,7 +1,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
+
+#if THREADSAFE_POOL
 using Microsoft.Extensions.ObjectPool;
+#else
+using Entitas.Utils;
+#endif
 
 namespace Entitas
 {
@@ -13,6 +18,7 @@ namespace Entitas
 
 	class ComponentPool : IComponentPool
 	{
+#if THREADSAFE_POOL
 		private readonly ObjectPool<IComponent> _pool;
 	
 		public ComponentPool(Type objType, int maxRetained = 0)
@@ -25,6 +31,14 @@ namespace Entitas
 
 			_pool = provider.Create(policy);
 		}
+#else
+		private readonly ObjectPool<IComponent> _pool;
+
+		public ComponentPool(Type objType, int maxRetained = 0)
+		{
+			_pool = new ObjectPool<IComponent>(new PoolPolicy(objType), maxRetained);
+		}
+#endif
 
 		public IComponent Get()
 		{
@@ -33,11 +47,14 @@ namespace Entitas
 
 		public void Return(IComponent obj)
 		{
-			if (obj != null)
-				_pool.Return(obj);
+			_pool.Return(obj);
 		}
 
+#if THREADSAFE_POOL
 		class PoolPolicy : IPooledObjectPolicy<IComponent>
+#else
+		class PoolPolicy : ObjectPool<IComponent>.Policy
+#endif
 		{
 			private readonly Type _objType;
 
@@ -67,6 +84,10 @@ namespace Entitas
 					entityIdRef.entityId = 0;
 
 				return true;
+			}
+
+			public void Dispose(IComponent obj)
+			{
 			}
 		}
 	}

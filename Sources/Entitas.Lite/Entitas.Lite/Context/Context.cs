@@ -5,7 +5,7 @@ namespace Entitas
 	public partial class Context
 	{
 		public static int defaultEntityCapacity = 1024;
-		public static int maxRetainedEntities = 256;
+		public static int maxRetainedEntities = 128;
 		public static int maxRetainedComponents = 128;
 
 		private readonly string _contextName;
