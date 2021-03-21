@@ -22,10 +22,12 @@ namespace Entitas
 
 		public static SystemManager CollectAll(this SystemManager manager, string fullNamePrefix = null)
 		{
-			var types = AppDomain.CurrentDomain.GetAssemblies()
-								.SelectMany(s => s.GetTypes())
-								.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && typeof(SystemBase).IsAssignableFrom(p))
-								.ToArray();
+			var types = AppDomain.CurrentDomain
+						.GetAssemblies()
+						.Where(s => !s.FullName.StartsWith("System") && !s.FullName.StartsWith("Entitas"))
+						.SelectMany(s => s.GetTypes())
+						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && typeof(SystemBase).IsAssignableFrom(p))
+						.ToArray();
 
 			foreach (var type in types)
 			{

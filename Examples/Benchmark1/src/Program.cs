@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace Entitas.Benchmark
 {
@@ -15,6 +18,8 @@ namespace Entitas.Benchmark
 		}
 
 		public bool modified { get; set; }
+
+		public override string ToString() => $"Position({x},{y})";
 	}
 
 	public class Velocity : IComponent
@@ -27,11 +32,15 @@ namespace Entitas.Benchmark
 			this.x = x;
 			this.y = y;
 		}
+
+		public override string ToString() => $"Velocity({x},{y})";
 	}
 
 	public class LifeTime : IComponent
 	{
 		public int ticks;
+
+		public override string ToString() => $"LifeTime({ticks})";
 	}
 
 	public class MovementSystem : SystemBase
@@ -126,18 +135,59 @@ namespace Entitas.Benchmark
 			systems.CollectAll();
 		}
 
+		public int frameId { get; private set; }
+
 		public void Execute()
 		{
-			int _iterateCount = 0;
+			frameId = 0;
 
 			while (context.Count > 0)
 			{
-				_iterateCount++;
+				//Dump();
 
 				systems.Execute();
 				//systems.Cleanup();
+
+				frameId++;
 			}
 		}
+
+		/*
+		private StringBuilder _dumpBuffer = new StringBuilder();
+		public string GetDumpResult() => _dumpBuffer.ToString();
+
+		private List<Entity> tempEntitiesList = new List<Entity>();
+
+		private void Dump()
+		{
+			_dumpBuffer.Append($"Frame {frameId}\n");
+
+			context.GetEntities(tempEntitiesList);
+			for (int i = 0; i < tempEntitiesList.Count; i++)
+			{
+				var e = tempEntitiesList[i];
+
+				_dumpBuffer.Append(e);
+
+				int compCount = Context.GetComponentCount();
+				for (int j = 0; j < compCount; j++)
+				{
+					var comp = e.GetComponent(j);
+					if (comp == null)
+						continue;
+
+					_dumpBuffer.Append(comp);
+					_dumpBuffer.Append(' ');
+				}
+
+				_dumpBuffer.Append('\n');
+			}
+
+			_dumpBuffer.Append('\n');
+
+			tempEntitiesList.Clear();
+		}
+		*/
 
 		public void Cleanup()
 		{
@@ -179,7 +229,10 @@ namespace Entitas.Benchmark
 
 			var mem2 = GC.GetTotalMemory(false);
 
-			Console.WriteLine($"Init = {initTime}ms, Execute = {execTime}ms, Cleanup = {cleanupTime}, Memory = {(mem2 - mem1) / 1024}KB");
+			Console.WriteLine($"Frame = {benchmark.frameId}\n");
+			Console.WriteLine($"Init = {initTime}ms, {(mem1 - mem0) / 1024}KB\nExec = {execTime}ms, {(mem2 - mem1) / 1024}KB\nClean = {cleanupTime}");
+
+			//File.WriteAllText("DumpResult.txt", benchmark.GetDumpResult());
 		}
 	}
 }
