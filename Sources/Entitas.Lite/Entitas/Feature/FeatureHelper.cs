@@ -44,7 +44,7 @@ namespace Entitas
 			var ssType = typeof(Systems);
 
 			var types = AppDomain.CurrentDomain.GetAssemblies()
-								.Where(s => !s.FullName.StartsWith("System") && !s.FullName.StartsWith("Entitas"))
+								.Where(s => !s.FullName.StartsWith("System.") && !s.FullName.StartsWith("Entitas."))
 								.SelectMany(s => s.GetTypes())
 								.Where(p => p.IsClass 
 										&& p.IsPublic 
