@@ -24,7 +24,7 @@ namespace Entitas
 		{
 			var types = AppDomain.CurrentDomain
 						.GetAssemblies()
-						.Where(s => !s.FullName.StartsWith("System") && !s.FullName.StartsWith("Entitas"))
+						.Where(s => !s.FullName.StartsWith("System.") && !s.FullName.StartsWith("Entitas."))
 						.SelectMany(s => s.GetTypes())
 						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && typeof(SystemBase).IsAssignableFrom(p))
 						.ToArray();

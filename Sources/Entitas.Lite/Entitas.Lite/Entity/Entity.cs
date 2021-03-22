@@ -61,7 +61,7 @@ namespace Entitas
 		private IComponentPool[] _componentPools;
 		//private ContextInfo _contextInfo;
 
-		private object _syncObj = new object();
+		//private object _syncObj = new object();
 
 		internal Entity()
 		{
@@ -79,7 +79,7 @@ namespace Entitas
 		
 		internal void Active(int id, string name = null)
 		{
-			lock (_syncObj)
+			//lock (_syncObj)
 			{
 				_id = id;
 				_name = name;
@@ -93,7 +93,7 @@ namespace Entitas
 		/// If already exists, return the old component.
 		public IComponent AddComponent(int index)
 		{
-			lock (_syncObj)
+			//lock (_syncObj)
 			{
 				if (!_enabled)
 					return null;
@@ -118,7 +118,7 @@ namespace Entitas
 
 		public void RemoveComponent(int index)
 		{
-			lock (_syncObj)
+			//lock (_syncObj)
 			{
 				if (!_enabled)
 					return;
@@ -195,7 +195,7 @@ namespace Entitas
 
 		internal void InternalDestroy()
 		{
-			lock (_syncObj)
+			//lock (_syncObj)
 			{
 				for (int i = 0; i < _components.Length; i++)
 					RemoveComponentImpl(i);
