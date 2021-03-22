@@ -49,7 +49,7 @@ namespace Entitas.Benchmark
 
 		public override void Execute()
 		{
-			var entities = Context.WithAll<Position, Velocity>().GetEntities();
+			var entities = context.WithAll<Position, Velocity>().GetEntities();
 
 			foreach (var e in entities)
 			{
@@ -80,7 +80,7 @@ namespace Entitas.Benchmark
 
 		public override void Execute()
 		{
-			var entities = Context.WithAll<Position, LifeTime>().GetEntities();
+			var entities = context.WithAll<Position, LifeTime>().GetEntities();
 
 			foreach (var e in entities)
 			{
@@ -106,7 +106,7 @@ namespace Entitas.Benchmark
 
 		private void Spawn(float x, float y, Random random)
 		{
-			var child = Context.CreateEntity();
+			var child = context.CreateEntity();
 
 			child.Add<LifeTime>().ticks = random.Next(1, maxChildLifeTime);
 			child.Add<Position>().Set(x, y);
