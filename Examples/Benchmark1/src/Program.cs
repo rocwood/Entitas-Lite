@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Entitas.Benchmark
 {
-	public class Position : IComponent, IModifiable
+	public class Position : IComponent
 	{
 		public float x;
 		public float y;
@@ -16,10 +17,6 @@ namespace Entitas.Benchmark
 			this.x = x;
 			this.y = y;
 		}
-
-		public bool modified { get; set; }
-
-		public override string ToString() => $"Position({x},{y})";
 	}
 
 	public class Velocity : IComponent
@@ -32,29 +29,40 @@ namespace Entitas.Benchmark
 			this.x = x;
 			this.y = y;
 		}
-
-		public override string ToString() => $"Velocity({x},{y})";
 	}
 
 	public class LifeTime : IComponent
 	{
+		public int id;
 		public int ticks;
 
-		public override string ToString() => $"LifeTime({ticks})";
+		public void Set(int id, int ticks)
+		{
+			this.id = id;
+			this.ticks = ticks;
+		}
 	}
 
 	public class MovementSystem : SystemBase
 	{
-		private float axisBound = 100;
+		private const float axisBound = 100;
+
+		private Group query;
 
 		public override void Execute()
 		{
-			var entities = Context.WithAll<Position, Velocity>().GetEntities();
+			if (query == null)
+				query = Context.WithAll<Position, Velocity>().GetGroup();
 
-			foreach (var e in entities)
+			//var entities = query.GetEntities();
+
+			//foreach (var e in entities)
+			for (int i = 0; i < query.Count; i++)
 			{
+				var e = query.GetAt(i);
+
 				var v = e.Get<Velocity>();
-				var pos = e.Modify<Position>();
+				var pos = e.Get<Position>();
 
 				pos.x += v.x;
 				pos.y += v.y;
@@ -78,29 +86,37 @@ namespace Entitas.Benchmark
 		private const int maxChildLifeTime = 1000;
 		private const float maxAxisSpeed = 20;
 
+		private Group query;
+
 		public override void Execute()
 		{
-			var entities = Context.WithAll<Position, LifeTime>().GetEntities();
+			if (query == null)
+				query = Context.WithAll<Position, LifeTime>().GetGroup();
 
-			foreach (var e in entities)
+			//var entities = query.GetEntities();
+
+			//foreach (var e in entities)
+			for (int i = 0; i < query.Count; i++)
 			{
+				var e = query.GetAt(i); 
+				
 				var lifeTime = e.Get<LifeTime>();
-				if (lifeTime.ticks-- <= 0)
-				{
-					var pos = e.Get<Position>();
+				if (lifeTime.ticks-- > 0)
+					continue;
 
-					// spawn children and destroy self
-					var random = new Random(e.id);
+				var pos = e.Get<Position>();
 
-					var childCount = (e.id == 1) 
-						? initChildCount 
-						: random.Next(minChildCount, maxChildCount);
+				// spawn children and destroy self
+				var random = new Random(lifeTime.id);
 
-					for (int i = 0; i < childCount; i++)
-						Spawn(pos.x, pos.y, random);
+				var childCount = (lifeTime.id == 1) 
+					? initChildCount 
+					: random.Next(minChildCount, maxChildCount);
 
-					e.Destroy();
-				}
+				for (int j = 0; j < childCount; j++)
+					Spawn(pos.x, pos.y, random);
+
+				e.Destroy();
 			}
 		}
 
@@ -108,7 +124,7 @@ namespace Entitas.Benchmark
 		{
 			var child = Context.CreateEntity();
 
-			child.Add<LifeTime>().ticks = random.Next(1, maxChildLifeTime);
+			child.Add<LifeTime>().Set(random.Next(1000, int.MaxValue), random.Next(1, maxChildLifeTime));
 			child.Add<Position>().Set(x, y);
 
 			float vx = ((float)random.NextDouble() - 0.5f) * maxAxisSpeed;
@@ -128,8 +144,8 @@ namespace Entitas.Benchmark
 
 			var e = context.CreateEntity();
 
-			e.Add<Position>(); // x = y = 0, without Velocity
-			e.Add<LifeTime>(); // ticks = 0
+			e.Add<Position>();			// x = y = 0, without Velocity
+			e.Add<LifeTime>().id = 1;	// ticks = 0
 
 			systems = new SystemManager(context);
 			systems.CollectAll();
@@ -143,51 +159,12 @@ namespace Entitas.Benchmark
 
 			while (context.Count > 0)
 			{
-				//Dump();
-
 				systems.Execute();
 				//systems.Cleanup();
 
 				frameId++;
 			}
 		}
-
-		/*
-		private StringBuilder _dumpBuffer = new StringBuilder();
-		public string GetDumpResult() => _dumpBuffer.ToString();
-
-		private List<Entity> tempEntitiesList = new List<Entity>();
-
-		private void Dump()
-		{
-			_dumpBuffer.Append($"Frame {frameId}\n");
-
-			context.GetEntities(tempEntitiesList);
-			for (int i = 0; i < tempEntitiesList.Count; i++)
-			{
-				var e = tempEntitiesList[i];
-
-				_dumpBuffer.Append(e);
-
-				int compCount = Context.GetComponentCount();
-				for (int j = 0; j < compCount; j++)
-				{
-					var comp = e.GetComponent(j);
-					if (comp == null)
-						continue;
-
-					_dumpBuffer.Append(comp);
-					_dumpBuffer.Append(' ');
-				}
-
-				_dumpBuffer.Append('\n');
-			}
-
-			_dumpBuffer.Append('\n');
-
-			tempEntitiesList.Clear();
-		}
-		*/
 
 		public void Cleanup()
 		{
@@ -231,8 +208,6 @@ namespace Entitas.Benchmark
 
 			Console.WriteLine($"Frame = {benchmark.frameId}\n");
 			Console.WriteLine($"Init = {initTime}ms, {(mem1 - mem0) / 1024}KB\nExec = {execTime}ms, {(mem2 - mem1) / 1024}KB\nClean = {cleanupTime}");
-
-			//File.WriteAllText("DumpResult.txt", benchmark.GetDumpResult());
 		}
 	}
 }

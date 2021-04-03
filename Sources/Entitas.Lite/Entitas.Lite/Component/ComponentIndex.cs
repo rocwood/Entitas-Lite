@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Entitas
 {
 	/// <summary>
@@ -5,6 +7,7 @@ namespace Entitas
 	/// </summary>
 	public static class ComponentIndex<T> where T : IComponent
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int Get()
 		{
 			if (_cachedIndex < 0)

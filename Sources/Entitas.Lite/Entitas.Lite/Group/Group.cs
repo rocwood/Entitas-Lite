@@ -1,89 +1,52 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
 	public class Group
 	{
 		private readonly Matcher _matcher;
-		private readonly SortedList<int, Entity> _entities = new SortedList<int, Entity>();
+		private readonly EntitySet _entities = new EntitySet();
 
-		private readonly List<Entity> _entitiesCache = new List<Entity>();
-		private bool _hasCached = false;
+		public int Count
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _entities.Count;
+		}
 
-		public int Count => _entities.Count;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Entity GetAt(int index) => _entities.GetAt(index);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public IEnumerator<Entity> GetEnumerator() => _entities.GetEnumerator();
 
 		internal Group(Matcher matcher)
 		{
 			_matcher = matcher;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void HandleEntity(Entity entity)
 		{
 			if (entity == null)
 				return;
 
 			if (entity.isEnabled && _matcher.Matches(entity))
-				HandleAddEntity(entity);
+				_entities.Add(entity);
 			else
-				HandleRemoveEntity(entity);
+				_entities.Remove(entity);
 		}
 
-		private void HandleAddEntity(Entity entity)
-		{
-			_entities.TryGetValue(entity.id, out var item);
-			if (entity == item)
-				return;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public IReadOnlyList<Entity> GetEntities() => _entities.GetEntities();
 
-			_entities[entity.id] = entity;
-
-			_hasCached = false;
-		}
-
-		private void HandleRemoveEntity(Entity entity)
-		{
-			if (!_entities.Remove(entity.id))
-				return;
-				
-			_hasCached = false;
-		}
-
-		public bool Contains(Entity entity)
-		{
-			if (entity == null)
-				return false;
-
-			if (!_entities.TryGetValue(entity.id, out var item))
-				return false;
-
-			return entity == item;
-		}
-
-		public IReadOnlyList<Entity> GetEntities()
-		{
-			if (!_hasCached)
-			{
-				_entitiesCache.Clear();
-
-				var values = _entities.Values;
-
-				if (_entitiesCache.Capacity < values.Count)
-					_entitiesCache.Capacity = values.Count;
-
-				for (int i = 0; i < values.Count; i++)
-					_entitiesCache.Add(values[i]);
-			}
-
-			return _entitiesCache;
-		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetEntities(IList<Entity> output)
 		{
 			output.Clear();
 
-			var values = _entities.Values;
-
-			for (int i = 0; i < values.Count; i++)
-				output.Add(values[i]);
+			for (int i = 0; i < _entities.Count; i++)
+				output.Add(_entities.GetAt(i));
 		}
 
 		public override string ToString()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Entitas.Utils;
@@ -67,6 +68,7 @@ namespace Entitas
 		{
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void Init(IComponentPool[] componentPools)
 		{
 			_componentPools = componentPools;
@@ -76,7 +78,8 @@ namespace Entitas
 			if (_components == null || _components.Length != componentCount)
 				_components = new IComponent[componentCount];
 		}
-		
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void Active(int id, string name = null)
 		{
 			//lock (_syncObj)
@@ -89,6 +92,7 @@ namespace Entitas
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		/// Adds a component at the specified index.
 		/// If already exists, return the old component.
 		public IComponent AddComponent(int index)
@@ -116,6 +120,7 @@ namespace Entitas
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void RemoveComponent(int index)
 		{
 			//lock (_syncObj)
@@ -129,6 +134,7 @@ namespace Entitas
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void RemoveComponentImpl(int index)
 		{
 			var component = _components[index];
@@ -139,6 +145,7 @@ namespace Entitas
 			_componentPools[index].Return(component);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		/// Returns a component at the specified index for modification. Modified flag is set automatically.
 		public IComponent ModifyComponent(int index)
 		{
@@ -148,19 +155,19 @@ namespace Entitas
 			return component;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IComponent GetComponent(int index)
 		{
-			if (index < 0)
-				return null;
-
 			return _components[index];
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool HasComponent(int index)
 		{
             return _components[index] != null;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool HasAllComponents(IReadOnlyList<int> indices)
 		{
 			for (int i = 0; i < indices.Count; i++)
@@ -172,6 +179,7 @@ namespace Entitas
 			return true;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool HasAnyComponent(IReadOnlyList<int> indices)
 		{
 			for (int i = 0; i < indices.Count; i++)
@@ -183,16 +191,19 @@ namespace Entitas
 			return false;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ResetModified()
 		{
 			_modified = false;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Destroy()
 		{
 			_enabled = false;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void InternalDestroy()
 		{
 			//lock (_syncObj)
