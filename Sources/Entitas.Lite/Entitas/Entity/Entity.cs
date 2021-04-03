@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Entitas.Utils;
 
@@ -234,15 +235,12 @@ namespace Entitas {
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// Returns a component at the specified index.
         /// You can only get a component at an index if it exists.
         /// The prefered way is to use the
         /// generated methods from the code generator.
         public IComponent GetComponent(int index) {
-            if (index < 0) {
-                return null;
-            }
-
             return _components[index];
         }
 
@@ -285,6 +283,7 @@ namespace Entitas {
             return _componentIndicesCache;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// Determines whether this entity has a component
         /// at the specified index.
         public bool HasComponent(int index) {
@@ -295,6 +294,7 @@ namespace Entitas {
             return _components[index] != null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// Determines whether this entity has components
         /// at all the specified indices.
         public bool HasComponents(int[] indices) {
@@ -307,6 +307,7 @@ namespace Entitas {
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// Determines whether this entity has a component
         /// at any of the specified indices.
         public bool HasAnyComponent(int[] indices) {

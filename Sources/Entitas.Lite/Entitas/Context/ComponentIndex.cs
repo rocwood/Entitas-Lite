@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
 	/// Cache Component's indices in all Contexts
 	public class ComponentIndex<T> where T : IComponent
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int FindIn<C>() where C : ContextAttribute
 		{
 			return FindIn(Contexts.Get<C>());
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int FindIn(Context c)
 		{
 			if (c == null)
@@ -19,6 +22,7 @@ namespace Entitas
 			return FindIn(c.contextInfo);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int FindIn(ContextInfo c)
 		{
 			if (c == null)
@@ -52,8 +56,6 @@ namespace Entitas
 			}
 		}
 
-		static ComponentIndex() { }
-
 		private static int _cachedDefaultIndex = -1;
 		private static Dictionary<ContextInfo, int> _cachedLookup = new Dictionary<ContextInfo, int>();
 	}
@@ -63,6 +65,7 @@ namespace Entitas
 	{
 		public static int value
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get
 			{
 				if (_cachedIndex < 0)
