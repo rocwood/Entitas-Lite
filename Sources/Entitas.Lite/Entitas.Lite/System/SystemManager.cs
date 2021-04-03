@@ -24,10 +24,10 @@ namespace Entitas
 			if (proxy != null)
 				throw new EntitasException($"Duplicate {system.GetType().FullName} is found in SystemManager");
 
-			if (system.Context != null)
+			if (system.context != null)
 				throw new EntitasException($"Conflict context for {system.GetType().FullName} is found in SystemManager");
 
-			system.Context = _context;
+			system.context = _context;
 
 			_systems.Add(new SystemProxy(system, priority));
 			
