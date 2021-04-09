@@ -13,6 +13,7 @@ namespace Entitas
 
 		private readonly EntityManager _entities = new EntityManager(defaultEntityCapacity, maxRetainedEntities);
 		private readonly Dictionary<Matcher, Group> _groups = new Dictionary<Matcher, Group>();
+		private readonly List<Group> _groupList = new List<Group>();
 
 		public int Count => _entities.Count;
 
@@ -67,6 +68,7 @@ namespace Entitas
 				}
 
 				_groups.Add(matcher, group);
+				_groupList.Add(group);
 			}
 
 			return group;
@@ -74,20 +76,26 @@ namespace Entitas
 
 		private void HandleGroupChanges()
 		{
-			int count = _entities.Count;
+			var modifiedEntities = _entities.GetModifiedEntities();
+			if (modifiedEntities.Count <= 0)
+				return;
 
-			for (int i = 0; i < count; i++)
+			//for (int i = 0; i < _entities.Count; i++)
+			//{
+			//	var entity = _entities[i];
+
+			foreach (var entity in modifiedEntities)
 			{
-				var entity = _entities[i];
-
-				if (!entity.isEnabled || entity.isModified)
+				if (entity.isModified || !entity.isEnabled)
 				{
-					foreach (var kv in _groups)
-						kv.Value?.HandleEntity(entity);
+					for (int j = 0; j < _groupList.Count; j++)
+						_groupList[j].HandleEntity(entity);
 
 					entity.ResetModified();
 				}
 			}
+
+			_entities.ResetModifiedEntities();
 		}
 
 		private string _toStringCache;

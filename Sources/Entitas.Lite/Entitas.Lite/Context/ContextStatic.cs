@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Entitas
 {
@@ -49,6 +50,15 @@ namespace Entitas
 						.ToArray();
 
 			Array.Sort(types, (x, y) => string.CompareOrdinal(x.FullName, y.FullName));
+
+
+			for (int i = 0; i < types.Length; i++)
+			{
+				var ComponentIndexType = typeof(ComponentIndex<>).MakeGenericType(types[i]);
+				
+				var member = ComponentIndexType.GetField("_cachedIndex", BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic);
+				member.SetValue(null, i);
+			}
 
 			return new ContextInfo(types);
 		}

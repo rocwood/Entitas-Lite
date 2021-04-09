@@ -44,7 +44,7 @@ namespace Entitas.Utils
 
 		public void Return(T obj)
 		{
-			if (obj == null || _pool.IndexOf(obj) >= 0)
+			if (obj == null /*|| _pool.IndexOf(obj) >= 0*/)
 				return;
 
 			if (!_policy.Return(obj))

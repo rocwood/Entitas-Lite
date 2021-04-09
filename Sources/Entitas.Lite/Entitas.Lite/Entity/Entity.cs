@@ -42,11 +42,32 @@ namespace Entitas
 		//public int totalComponents => _totalComponents;
 
 		/// Each entity has its own unique id which will be set by the context when you create the entity.
-		public int id => _id;
-		public string name { get => _name; set { _name = value; _toStringCache = null; } }
+		public int id
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _id;
+		}
+		
+		public string name 
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _name;
 
-		public bool isEnabled => _enabled;
-		public bool isModified => _modified;
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set { _name = value; _toStringCache = null; } 
+		}
+
+		public bool isEnabled
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _enabled;
+		}
+		
+		public bool isModified
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _modified;
+		}
 
 		/// The contextInfo is set by the context which created the entity and
 		/// contains information about the context.
@@ -64,13 +85,16 @@ namespace Entitas
 
 		//private object _syncObj = new object();
 
+		private Dictionary<int, Entity> _modifiedSet;
+
 		internal Entity()
 		{
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void Init(IComponentPool[] componentPools)
+		internal void Init(IComponentPool[] componentPools, Dictionary<int, Entity> modifiedSet)
 		{
+			_modifiedSet = modifiedSet;
 			_componentPools = componentPools;
 
 			int componentCount = componentPools.Length;
@@ -89,6 +113,7 @@ namespace Entitas
 
 				_enabled = true;
 				_modified = true;
+				_modifiedSet[_id] = this;
 			}
 		}
 
@@ -115,6 +140,7 @@ namespace Entitas
 				component.Modify();
 
 				_modified = true;
+				_modifiedSet[_id] = this;
 
 				return component;
 			}
@@ -131,6 +157,7 @@ namespace Entitas
 				RemoveComponentImpl(index);
 
 				_modified = true;
+				_modifiedSet[_id] = this;
 			}
 		}
 
@@ -202,6 +229,7 @@ namespace Entitas
 		{
 			_enabled = false;
 			_modified = true;
+			_modifiedSet[_id] = this;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

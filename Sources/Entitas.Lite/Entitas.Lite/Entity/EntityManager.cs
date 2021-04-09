@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Entitas
@@ -13,12 +14,22 @@ namespace Entitas
 		private readonly Dictionary<int, Entity> _lookup;
 		private Entity[] _items;
 
+		private readonly Dictionary<int, Entity> _modifiedSet;
+
 		private volatile int _count = 0;
 		private volatile int _lastId = 0;
 
-		public int Count => _count;
+		public int Count
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _count;
+		}
 
-		public Entity this[int index] => _items[index];
+		public Entity this[int index]
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _items[index];
+		}
 
 		internal EntityManager(int capacity, int maxRetained)
 		{
@@ -31,6 +42,8 @@ namespace Entitas
 
 			_items = new Entity[capacity];
 			_lookup = new Dictionary<int, Entity>(capacity);
+
+			_modifiedSet = new Dictionary<int, Entity>(capacity);
 		}
 
 		public Entity CreateEntity(string name, IComponentPool[] componentPools)
@@ -38,7 +51,7 @@ namespace Entitas
 			int id = Interlocked.Increment(ref _lastId);
 
 			var entity = _pool.Get();
-			entity.Init(componentPools);
+			entity.Init(componentPools, _modifiedSet);
 			entity.Active(id, name);
 
 			EnsureAccess(_count);
@@ -59,6 +72,18 @@ namespace Entitas
 		{
 			for (int i = 0; i < _count; i++)
 				output.Add(_items[i]);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public IReadOnlyCollection<Entity> GetModifiedEntities()
+		{
+			return _modifiedSet.Values;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void ResetModifiedEntities()
+		{
+			_modifiedSet.Clear();
 		}
 
 		private void EnsureAccess(int index)

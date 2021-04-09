@@ -10,6 +10,7 @@ namespace Entitas
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static int Get()
 		{
+			/*
 			if (_cachedIndex < 0)
 			{
 				_cachedIndex = Context.GetComponentIndex<T>();
@@ -17,10 +18,11 @@ namespace Entitas
 				if (_cachedIndex < 0)
 					throw new EntitasException($"Component {typeof(T)} index is not found in Context");
 			}
+			*/
 
 			return _cachedIndex;
 		}
 
-		private static int _cachedIndex = -1;
+		internal static int _cachedIndex = -1;
 	}
 }
