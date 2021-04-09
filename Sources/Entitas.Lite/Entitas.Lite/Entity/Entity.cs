@@ -201,6 +201,7 @@ namespace Entitas
 		public void Destroy()
 		{
 			_enabled = false;
+			_modified = true;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

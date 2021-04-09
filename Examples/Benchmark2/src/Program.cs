@@ -4,7 +4,7 @@ using Entitas;
 
 namespace ECS.Benchmark
 {
-	public class Position : IComponent
+	public class Position : IComponent //, IModifiable
 	{
 		public float x;
 		public float y;
@@ -27,19 +27,7 @@ namespace ECS.Benchmark
 			this.y = y;
 		}
 	}
-
-	public class LifeTime : IComponent
-	{
-		public int id;
-		public int ticks;
-
-		public void Set(int id, int ticks)
-		{
-			this.id = id;
-			this.ticks = ticks;
-		}
-	}
-
+	
 	public class MovementSystem : SystemBase
 	{
 		private const float axisBound = 100;
@@ -51,9 +39,7 @@ namespace ECS.Benchmark
 			if (query == null)
 				query = context.WithAll<Position, Velocity>().GetGroup();
 
-			//var entities = query.GetEntities();
-
-			//foreach (var e in entities)
+			//foreach (var e in query)
 			for (int i = 0; i < query.Count; i++)
 			{
 				var e = query.GetAt(i);
@@ -75,63 +61,14 @@ namespace ECS.Benchmark
 		}
 	}
 
-	public class LifeTimeSystem : SystemBase
-	{
-		private const int initChildCount = 1000;
-		private const int minChildCount = -3;
-		private const int maxChildCount = 4;
-		private const int maxChildLifeTime = 1000;
-		private const float maxAxisSpeed = 20;
-
-		private Group query;
-
-		public override void Execute()
-		{
-			if (query == null)
-				query = context.WithAll<Position, LifeTime>().GetGroup();
-
-			//var entities = query.GetEntities();
-
-			//foreach (var e in entities)
-			for (int i = 0; i < query.Count; i++)
-			{
-				var e = query.GetAt(i); 
-				
-				var lifeTime = e.Get<LifeTime>();
-				if (lifeTime.ticks-- > 0)
-					continue;
-
-				var pos = e.Get<Position>();
-
-				// spawn children and destroy self
-				var random = new Random(lifeTime.id);
-
-				var childCount = (lifeTime.id == 1) 
-					? initChildCount 
-					: random.Next(minChildCount, maxChildCount);
-
-				for (int j = 0; j < childCount; j++)
-					Spawn(pos.x, pos.y, random);
-
-				e.Destroy();
-			}
-		}
-
-		private void Spawn(float x, float y, Random random)
-		{
-			var child = context.CreateEntity();
-
-			child.Add<LifeTime>().Set(random.Next(1000, int.MaxValue), random.Next(1, maxChildLifeTime));
-			child.Add<Position>().Set(x, y);
-
-			float vx = ((float)random.NextDouble() - 0.5f) * maxAxisSpeed;
-			float vy = ((float)random.NextDouble() - 0.5f) * maxAxisSpeed;
-			child.Add<Velocity>().Set(vx, vy);
-		}
-	}
-
 	public class BenchmarkCase
 	{
+		private const float axisBound = 100;
+		private const float maxAxisSpeed = 20;
+
+		private const int initialEntityCount = 1000;
+		private const int iterateCount = 10000;
+
 		private Context context;
 		private SystemManager systems;
 
@@ -142,36 +79,45 @@ namespace ECS.Benchmark
 			systems = new SystemManager(context);
 			systems.CollectAll();
 
-			var e = context.CreateEntity();
+			var random = new Random(1);
 
-			e.Add<Position>();			// x = y = 0, without Velocity
-			e.Add<LifeTime>().id = 1;	// ticks = 0
+			for (int i = 0; i < initialEntityCount; i++)
+			{
+				var child = context.CreateEntity();
+
+				float x = ((float)random.NextDouble() - 0.5f) * axisBound;
+				float y = ((float)random.NextDouble() - 0.5f) * axisBound;
+				child.Add<Position>().Set(x, y);
+
+				float vx = ((float)random.NextDouble() - 0.5f) * maxAxisSpeed;
+				float vy = ((float)random.NextDouble() - 0.5f) * maxAxisSpeed;
+				child.Add<Velocity>().Set(vx, vy);
+
+				if (i == 0)
+					e0 = child;
+			}
+
+			context.WithAll<Position, Velocity>().GetGroup();
+			context.Poll();
 		}
-
-		public int frameId { get; private set; }
 
 		public void Execute()
 		{
-			frameId = 0;
-
-			while (context.Count > 0)
+			for (int i = 0; i < iterateCount; i++)
 			{
 				systems.Execute();
-				//systems.Cleanup();
-
-				frameId++;
 			}
 		}
 
+		private Entity e0;
+
 		public void Cleanup()
 		{
-			//systems.TearDown();
-			//context.Reset();
+			var pos = e0.Get<Position>();
+			Console.WriteLine($"e0({pos.x},{pos.y})");
 
 			systems = null;
 			context = null;
-
-			//Contexts.DestroyInstance();
 		}
 	}
 
@@ -203,7 +149,6 @@ namespace ECS.Benchmark
 
 			var mem2 = GC.GetTotalMemory(false);
 
-			Console.WriteLine($"Frame = {benchmark.frameId}\n");
 			Console.WriteLine($"Init = {initTime}ms, {(mem1 - mem0) / 1024}KB\nExec = {execTime}ms, {(mem2 - mem1) / 1024}KB\nClean = {cleanupTime}");
 		}
 	}

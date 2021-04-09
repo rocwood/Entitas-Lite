@@ -88,6 +88,15 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Clear()
+		{
+			_lookup.Clear();
+			_count = 0;
+
+			Array.Clear(_items, 0, _items.Length);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void EnsureLength(int minSize)
 		{
 			int size = _items.Length;
