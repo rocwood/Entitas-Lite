@@ -48,6 +48,7 @@ namespace Entitas
 			HandleGroupChanges();
 
 			_entities.DestroyDisabledEntities();
+			_entities.ResetModifiedEntities(); 
 		}
 
 		/// Returns a group for the specified matcher.
@@ -59,9 +60,10 @@ namespace Entitas
 			{
 				group = new Group(matcher);
 
-				for (int i = 0; i < _entities.Count; i++)
+				//for (int i = 0; i < _entities.Count; i++)
+				foreach (var entity in _entities)
 				{
-					var entity = _entities[i];
+					//var entity = _entities[i];
 
 					if (entity.isEnabled)
 						group.HandleEntity(entity);
@@ -95,7 +97,7 @@ namespace Entitas
 				}
 			}
 
-			_entities.ResetModifiedEntities();
+			//_entities.ResetModifiedEntities();
 		}
 
 		private string _toStringCache;
