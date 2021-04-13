@@ -15,6 +15,9 @@ namespace Entitas
 			get => _contextName;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal IComponentPool[] GetComponentPools() => _componentPools;
+
 		public Context(string contextName)
 		{
 			_contextName = contextName;
@@ -30,10 +33,30 @@ namespace Entitas
 
 		public void Poll()
 		{
-			HandleGroupChanges();
+			if (_modifiedEntities.Count <= 0)
+				return;
 
-			DestroyDisabledEntities();
-			ResetModifiedEntities(); 
+			foreach (var e in _modifiedEntities.Values)
+			{
+				// update all groups, TODO: optimize matching
+				for (int j = 0; j < _groupList.Count; j++)
+					_groupList[j].HandleEntity(e);
+
+				if (e.isEnabled)
+				{
+					e.ResetModified();
+				}
+				else 
+				{
+					// remove disabled entities
+					_entities.Remove(e.id);
+
+					e.InternalDestroy();
+					_entityPool.Return(e);
+				}
+			}
+
+			_modifiedEntities.Clear();
 		}
 
 		public void Clear()

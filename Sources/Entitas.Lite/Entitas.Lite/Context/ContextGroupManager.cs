@@ -31,30 +31,6 @@ namespace Entitas
 			return group;
 		}
 
-		private void HandleGroupChanges()
-		{
-			var modifiedEntities = _modifiedEntities.Values;
-			if (modifiedEntities.Count <= 0)
-				return;
-
-			//for (int i = 0; i < _entities.Count; i++)
-			//{
-			//	var entity = _entities[i];
-
-			foreach (var entity in modifiedEntities)
-			{
-				if (entity.isModified || !entity.isEnabled)
-				{
-					for (int j = 0; j < _groupList.Count; j++)
-						_groupList[j].HandleEntity(entity);
-
-					entity.ResetModified();
-				}
-			}
-
-			//_entities.ResetModifiedEntities();
-		}
-
 		private void ClearGroups()
 		{
 			_groupList.Clear();

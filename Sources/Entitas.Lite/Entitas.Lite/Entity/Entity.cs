@@ -7,41 +7,8 @@ using Entitas.Utils;
 
 namespace Entitas
 {
-	/// Use context.CreateEntity() to create a new entity and entity.Destroy() to destroy it.
-	/// You can add and remove IComponent to an entity.
 	public class Entity
 	{
-		/*
-		/// Occurs when a component gets added.
-        /// All event handlers will be removed when
-        /// the entity gets destroyed by the context.
-        public event EntityComponentChanged OnComponentAdded;
-
-        /// Occurs when a component gets removed.
-        /// All event handlers will be removed when
-        /// the entity gets destroyed by the context.
-        public event EntityComponentChanged OnComponentRemoved;
-
-        /// Occurs when a component gets replaced.
-        /// All event handlers will be removed when
-        /// the entity gets destroyed by the context.
-        public event EntityComponentReplaced OnComponentReplaced;
-
-        /// Occurs when an entity gets released and is not retained anymore.
-        /// All event handlers will be removed when
-        /// the entity gets destroyed by the context.
-        public event EntityEvent OnEntityReleased;
-
-		/// Occurs when calling entity.Destroy().
-		/// All event handlers will be removed when
-		/// the entity gets destroyed by the context.
-		public event EntityEvent OnDestroyEntity;
-		*/
-
-		/// The total amount of components an entity can possibly have.
-		//public int totalComponents => _totalComponents;
-
-		/// Each entity has its own unique id which will be set by the context when you create the entity.
 		public int id
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,38 +36,30 @@ namespace Entitas
 			get => _modified;
 		}
 
-		/// The contextInfo is set by the context which created the entity and
-		/// contains information about the context.
-		/// It's used to provide better error messages.
-		//public ContextInfo contextInfo => _contextInfo;
-
 		private int _id;
 		private string _name;
 		private bool _enabled;
 		private bool _modified;
 
-		private IComponent[] _components;
-		private IComponentPool[] _componentPools;
-		//private ContextInfo _contextInfo;
+		private readonly IComponent[] _components;
+		private readonly IComponentPool[] _componentPools;
 
-		//private object _syncObj = new object();
+		//private readonly Context owner;
 
 		private Dictionary<int, Entity> _modifiedSet;
 
-		internal Entity()
-		{
-		}
+		//private object _syncObj = new object();
+
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void Init(IComponentPool[] componentPools, Dictionary<int, Entity> modifiedSet)
+		internal Entity(Context owner, IComponentPool[] componentPools, Dictionary<int, Entity> modifiedSet)
 		{
-			_modifiedSet = modifiedSet;
+			//this.owner = owner;
+
 			_componentPools = componentPools;
+			_components = new IComponent[_componentPools.Length];
 
-			int componentCount = componentPools.Length;
-
-			if (_components == null || _components.Length != componentCount)
-				_components = new IComponent[componentCount];
+			_modifiedSet = modifiedSet;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -118,8 +77,6 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		/// Adds a component at the specified index.
-		/// If already exists, return the old component.
 		public IComponent AddComponent(int index)
 		{
 			//lock (_syncObj)
@@ -173,7 +130,6 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		/// Returns a component at the specified index for modification. Modified flag is set automatically.
 		public IComponent ModifyComponent(int index)
 		{
 			var component = GetComponent(index);

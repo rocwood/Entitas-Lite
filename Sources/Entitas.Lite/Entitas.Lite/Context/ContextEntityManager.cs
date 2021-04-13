@@ -10,7 +10,7 @@ namespace Entitas
 		public static int maxRetainedEntities = 128;
 
 		private readonly EntityTable _entities = new EntityTable(defaultEntityCapacity);
-		private readonly EntityPool _entityPool = new EntityPool(maxRetainedEntities);
+		private readonly SimplePool<Entity> _entityPool = new SimplePool<Entity>(maxRetainedEntities);
 		private readonly Dictionary<int, Entity> _modifiedEntities = new Dictionary<int, Entity>(defaultModifiedCapacity);
 
 		private int _lastId = 0;
@@ -26,8 +26,7 @@ namespace Entitas
 		{
 			var id = ++_lastId;
 
-			var entity = _entityPool.Get();
-			entity.Init(_componentPools, _modifiedEntities);
+			var entity = _entityPool.Get() ?? new Entity(this, _componentPools, _modifiedEntities);
 			entity.Active(id, entityName);
 
 			_entities.Add(entity);
@@ -51,31 +50,6 @@ namespace Entitas
 		public IEnumerator<Entity> GetEnumerator()
 		{
 			return _entities.GetEnumerator();
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void DestroyDisabledEntities()
-		{
-			var modifiedEntities = _modifiedEntities.Values;
-			if (modifiedEntities.Count <= 0)
-				return;
-
-			foreach (var e in modifiedEntities)
-			{
-				if (e.isEnabled)
-					continue;
-
-				_entities.Remove(e.id);
-
-				e.InternalDestroy();
-				_entityPool.Return(e);
-			}
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void ResetModifiedEntities()
-		{
-			_modifiedEntities.Clear();
 		}
 	}
 }
