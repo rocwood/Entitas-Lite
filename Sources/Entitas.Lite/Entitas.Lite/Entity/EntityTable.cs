@@ -22,7 +22,7 @@ namespace Entitas
 		private int freeList;
 		private int freeCount;
 
-		private int version;
+		//private int version;
 
 		public EntityTable(int capacity = 0)
 		{
@@ -58,6 +58,15 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool Remove(Entity value)
+		{
+			if (value == null)
+				return false;
+
+			return Remove(value.id);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Clear()
 		{
 			if (count > 0)
@@ -67,7 +76,7 @@ namespace Entitas
 				freeList = -1;
 				count = 0;
 				freeCount = 0;
-				version++;
+				//version++;
 			}
 		}
 
@@ -137,7 +146,7 @@ namespace Entitas
 				if (entries[i].hashCode == hashCode && entries[i].key == key)
 				{
 					entries[i].value = value;
-					version++;
+					//version++;
 					return;
 				}
 			}
@@ -164,7 +173,7 @@ namespace Entitas
 			entries[index].key = key;
 			entries[index].value = value;
 			buckets[targetBucket] = index;
-			version++;
+			//version++;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -223,7 +232,7 @@ namespace Entitas
 						entries[i].value = null;
 						freeList = i;
 						freeCount++;
-						version++;
+						//version++;
 						return true;
 					}
 				}
@@ -231,18 +240,55 @@ namespace Entitas
 			return false;
 		}
 
+		/*
+		public class RawList : IReadOnlyList<Entity>
+		{
+			private readonly EntityTable _container;
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			internal RawList(EntityTable container)
+			{
+				_container = container;
+			}
+
+			public Entity this[int index]
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				get => _container.entries[index].value;
+			}
+
+			public int Count
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining)]
+				get => _container.entries.Length;
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			public IEnumerator<Entity> GetEnumerator()
+			{
+				return new Enumerator(_container);
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return this.GetEnumerator();
+			}
+		}
+		*/
+
 		public struct Enumerator : IEnumerator<Entity>
 		{
 			private EntityTable container;
 			private int index;
-			private int version;
+			//private int version;
 			private Entity currentValue;
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			internal Enumerator(EntityTable container)
 			{
 				this.container = container;
-				this.version = container.version;
+				//this.version = container.version;
 				index = 0;
 				currentValue = null;
 			}
@@ -255,8 +301,8 @@ namespace Entitas
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public bool MoveNext()
 			{
-				if (version != container.version)
-					throw new InvalidOperationException("EnumFailedVersion");
+				//if (version != container.version)
+				//	throw new InvalidOperationException("EnumFailedVersion");
 
 				while ((uint)index < (uint)container.count)
 				{
@@ -293,8 +339,8 @@ namespace Entitas
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			void IEnumerator.Reset()
 			{
-				if (version != container.version)
-					throw new InvalidOperationException("EnumFailedVersion");
+				//if (version != container.version)
+				//	throw new InvalidOperationException("EnumFailedVersion");
 
 				index = 0;
 				currentValue = null;

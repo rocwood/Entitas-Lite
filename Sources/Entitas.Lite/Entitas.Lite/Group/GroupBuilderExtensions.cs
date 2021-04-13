@@ -4,11 +4,13 @@ namespace Entitas
 {
 	public static class GroupBuilderExtensions
 	{
+		/*
 		public static IReadOnlyList<Entity> GetEntities(this GroupBuilder builder)
 		{
 			var group = builder.GetGroup();
 			return group.GetEntities();
 		}
+		*/
 
 		public static void GetEntities(this GroupBuilder builder, IList<Entity> output)
 		{

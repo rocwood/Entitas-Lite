@@ -168,19 +168,21 @@ namespace Entitas
 		public struct Enumerator : IEnumerator<Entity>
 		{
 			private readonly EntitySet _container;
+			private readonly int _count;
 			private int _index;
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			internal Enumerator(EntitySet container)
 			{
 				_container = container;
+				_count = container.Count;
 				_index = -1;
 			}
 
 			public Entity Current
 			{
 				[MethodImpl(MethodImplOptions.AggressiveInlining)]
-				get => _container.GetAt(_index);
+				get => _container._items[_index];
 			}
 
 			object IEnumerator.Current
@@ -192,7 +194,7 @@ namespace Entitas
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public bool MoveNext()
 			{
-				return ++_index < _container.Count;
+				return ++_index < _count;
 			}
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
