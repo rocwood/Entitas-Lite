@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Entitas.Utils
 {
@@ -24,6 +25,7 @@ namespace Entitas.Utils
 				: new List<T>();
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public T Get()
 		{
 			T result;
@@ -42,6 +44,7 @@ namespace Entitas.Utils
 			return result;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Return(T obj)
 		{
 			if (obj == null /*|| _pool.IndexOf(obj) >= 0*/)
@@ -59,6 +62,7 @@ namespace Entitas.Utils
 			_pool.Add(obj);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Clear()
 		{
 			for (int i = 0; i < _pool.Count; i++)

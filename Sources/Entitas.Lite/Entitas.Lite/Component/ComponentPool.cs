@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 #if THREADSAFE_POOL
 using Microsoft.Extensions.ObjectPool;
@@ -40,11 +41,13 @@ namespace Entitas
 		}
 #endif
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IComponent Get()
 		{
 			return _pool.Get();
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Return(IComponent obj)
 		{
 			_pool.Return(obj);
@@ -63,11 +66,13 @@ namespace Entitas
 				_objType = objType;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public IComponent Create()
 			{
 				return (IComponent)Activator.CreateInstance(_objType);
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public bool Return(IComponent obj)
 			{
 				if (obj == null)
@@ -86,6 +91,7 @@ namespace Entitas
 				return true;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Dispose(IComponent obj)
 			{
 			}
@@ -107,18 +113,17 @@ namespace Entitas
 
 	static class ComponentPoolFactory
 	{
-		public static IComponentPool Create(Type objType, int maxRetained = 0)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static IComponentPool Create(Type objType, bool zeroSize, int maxRetained)
 		{
-			if (!typeof(IComponent).IsAssignableFrom(objType))
-				throw new ArgumentException($"{objType.FullName} isn't IComponent");
-
-			if (ComponentTrait.IsZeroSize(objType))
+			if (zeroSize)
 				return new ZeroSizeComponentPool(objType);
 			else
 				return new ComponentPool(objType, maxRetained);
 		}
 	}
 
+	/*
 	static class ComponentTrait
 	{
 		public static bool IsZeroSize<T>() where T : class, IComponent
@@ -141,4 +146,5 @@ namespace Entitas
 			}
 		}
 	}
+	*/
 }

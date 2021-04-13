@@ -1,4 +1,3 @@
-
 using System.Runtime.CompilerServices;
 
 namespace Entitas
@@ -8,36 +7,31 @@ namespace Entitas
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Add<T>(this Entity entity) where T : IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			return (T)entity.AddComponent(index);
+			return (T)entity.AddComponent(ComponentTypeInfo<T>.index);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Remove<T>(this Entity entity) where T: IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			entity.RemoveComponent(index);
+			entity.RemoveComponent(ComponentTypeInfo<T>.index);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool Has<T>(this Entity entity) where T : IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			return entity.HasComponent(index);
+			return entity.HasComponent(ComponentTypeInfo<T>.index);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Get<T>(this Entity entity) where T : IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			return (T)entity.GetComponent(index);
+			return (T)entity.GetComponent(ComponentTypeInfo<T>.index);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T Modify<T>(this Entity entity) where T : IComponent
 		{
-			int index = ComponentIndex<T>.Get();
-			return (T)entity.ModifyComponent(index);
+			return (T)entity.ModifyComponent(ComponentTypeInfo<T>.index);
 		}
 	}
 }

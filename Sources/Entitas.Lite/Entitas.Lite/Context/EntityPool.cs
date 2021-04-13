@@ -1,6 +1,7 @@
 #if THREADSAFE_POOL
 using Microsoft.Extensions.ObjectPool;
 #else
+using System.Runtime.CompilerServices;
 using Entitas.Utils;
 #endif
 
@@ -29,11 +30,13 @@ namespace Entitas
 			_pool = new ObjectPool<Entity>(new PoolPolicy(), maxRetained);
 		}
 #endif
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Entity Get()
 		{
 			return _pool.Get();
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Return(Entity obj)
 		{
 			_pool.Return(obj);
@@ -45,11 +48,13 @@ namespace Entitas
 		class PoolPolicy : ObjectPool<Entity>.Policy
 #endif
 		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public Entity Create()
 			{
 				return new Entity();
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public bool Return(Entity obj)
 			{
 				if (obj == null)
@@ -58,6 +63,7 @@ namespace Entitas
 				return true;
 			}
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Dispose(Entity obj)
 			{
 			}

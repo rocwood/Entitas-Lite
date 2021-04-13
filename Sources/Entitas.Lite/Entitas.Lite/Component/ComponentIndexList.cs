@@ -15,7 +15,7 @@ namespace Entitas
 			return indices;
 		}
 
-		protected static int idx<T>() where T : IComponent => ComponentIndex<T>.Get();
+		protected static int idx<T>() where T : IComponent => ComponentTypeInfo<T>.index;
 	}
 
 	class ComponentIndexList<T1> : ComponentIndexListBase where T1 : IComponent

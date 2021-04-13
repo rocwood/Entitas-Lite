@@ -1,27 +1,73 @@
 using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
-	public class ContextInfo
+	public static class ContextInfo
 	{
-		public readonly string[] componentNames;
-		public readonly Type[] componentTypes;
+		private static ComponentTypeInfo[] _componentInfoList;
 
-		internal ContextInfo(Type[] componentTypes)
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static ComponentTypeInfo[] GetComponentInfoList()
 		{
-			int count = componentTypes.Length;
-			var componentNames = new string[count];
+			if (_componentInfoList == null)
+				_componentInfoList = CollectComponents();
 
-			for (int i = 0; i < count; i++)
-				componentNames[i] = componentTypes[i].Name;
-
-			this.componentNames = componentNames;
-			this.componentTypes = componentTypes;
+			return _componentInfoList;
 		}
 
-		public int GetComponentCount() => componentTypes.Length;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int GetIndexOf<T>() where T : IComponent
+		{
+			return ComponentTypeInfo<T>.index;
+		}
 
-		internal int GetComponentIndex<T>() where T : IComponent => GetComponentIndex(typeof(T));
-		internal int GetComponentIndex(Type type) => Array.IndexOf(componentTypes, type);
+		private static ComponentTypeInfo[] CollectComponents()
+		{
+			var types = AppDomain.CurrentDomain
+						.GetAssemblies()
+						.Where(s => !s.FullName.StartsWith("System.") && !s.FullName.StartsWith("Entitas."))
+						.SelectMany(s => s.GetTypes())
+						.Where(p => p.IsClass && p.IsPublic && !p.IsAbstract && typeof(IComponent).IsAssignableFrom(p))
+						.ToArray();
+
+			Array.Sort(types, (x, y) => string.CompareOrdinal(x.FullName, y.FullName));
+
+			var list = new ComponentTypeInfo[types.Length];
+			for (int i = 0; i < types.Length; i++)
+			{
+				var t = types[i];
+				var typeInfo = new ComponentTypeInfo(t, i, IsZeroSize(t));
+
+				list[i] = typeInfo;
+
+				var infoType = typeof(ComponentTypeInfo<>).MakeGenericType(t);
+
+				var fieldIndex = infoType.GetField("index", BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic);
+				fieldIndex?.SetValue(null, i);
+				var fieldZeroSize = infoType.GetField("zeroSize", BindingFlags.Static|BindingFlags.Public|BindingFlags.NonPublic);
+				fieldZeroSize?.SetValue(null, typeInfo.zeroSize);
+			}
+
+			return list;
+		}
+
+		private static bool IsZeroSize(Type type)
+		{
+			for (; ; )
+			{
+				if (type == null || type == typeof(object))
+					return true;
+
+				var members = type.GetMembers(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.DeclaredOnly);
+				if (members.Any(m => m.MemberType != MemberTypes.Constructor))
+					return false;
+
+				type = type.BaseType;
+			}
+		}
 	}
 }
