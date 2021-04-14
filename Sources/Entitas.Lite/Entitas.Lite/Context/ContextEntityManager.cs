@@ -9,9 +9,10 @@ namespace Entitas
 		public static int defaultModifiedCapacity = 256;
 		public static int maxRetainedEntities = 128;
 
-		private readonly EntityTable _entities = new EntityTable(defaultEntityCapacity);
 		private readonly SimplePool<Entity> _entityPool = new SimplePool<Entity>(maxRetainedEntities);
-		private readonly Dictionary<int, Entity> _modifiedEntities = new Dictionary<int, Entity>(defaultModifiedCapacity);
+
+		private readonly EntityTable _entities = new EntityTable(defaultEntityCapacity);
+		private readonly Dictionary<int, Entity> _entitiesModified = new Dictionary<int, Entity>(defaultModifiedCapacity);
 
 		private int _lastId = 0;
 
@@ -26,12 +27,18 @@ namespace Entitas
 		{
 			var id = ++_lastId;
 
-			var entity = _entityPool.Get() ?? new Entity(this, _componentPools, _modifiedEntities);
+			var entity = _entityPool.Get() ?? new Entity(this, _componentPools);
 			entity.Active(id, entityName);
 
 			_entities.Add(entity);
 
 			return entity;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void MarkModified(Entity e)
+		{
+			_entitiesModified[e.id] = e;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

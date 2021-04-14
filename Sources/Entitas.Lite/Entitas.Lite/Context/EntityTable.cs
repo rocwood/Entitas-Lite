@@ -135,7 +135,7 @@ namespace Entitas
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void Insert(int key, Entity value)
 		{
-			if (key <= 0 || value == null)
+			if (key <= 0) // || value == null)
 				return;
 
 			int hashCode = key & 0x7FFFFFFF;

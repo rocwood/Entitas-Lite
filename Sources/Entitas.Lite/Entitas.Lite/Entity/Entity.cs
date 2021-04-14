@@ -42,24 +42,21 @@ namespace Entitas
 		private bool _modified;
 
 		private readonly IComponent[] _components;
+
 		private readonly IComponentPool[] _componentPools;
+		private readonly Context _owner;
 
-		//private readonly Context owner;
-
-		private Dictionary<int, Entity> _modifiedSet;
-
+		//private Dictionary<int, Entity> _modifiedSet;
 		//private object _syncObj = new object();
 
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal Entity(Context owner, IComponentPool[] componentPools, Dictionary<int, Entity> modifiedSet)
+		internal Entity(Context owner, IComponentPool[] componentPools)
 		{
-			//this.owner = owner;
+			_owner = owner;
 
 			_componentPools = componentPools;
 			_components = new IComponent[_componentPools.Length];
-
-			_modifiedSet = modifiedSet;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,10 +66,9 @@ namespace Entitas
 			{
 				_id = id;
 				_name = name;
-
 				_enabled = true;
-				_modified = true;
-				_modifiedSet[_id] = this;
+
+				//SetModified();
 			}
 		}
 
@@ -96,8 +92,7 @@ namespace Entitas
 				_components[index] = component = _componentPools[index].Get();
 				component.Modify();
 
-				_modified = true;
-				_modifiedSet[_id] = this;
+				SetModified();
 
 				return component;
 			}
@@ -113,8 +108,7 @@ namespace Entitas
 
 				RemoveComponentImpl(index);
 
-				_modified = true;
-				_modifiedSet[_id] = this;
+				SetModified();
 			}
 		}
 
@@ -175,6 +169,13 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void SetModified()
+		{
+			_modified = true;
+			_owner.MarkModified(this);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ResetModified()
 		{
 			_modified = false;
@@ -183,9 +184,9 @@ namespace Entitas
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Destroy()
 		{
+			SetModified();
+
 			_enabled = false;
-			_modified = true;
-			_modifiedSet[_id] = this;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -33,10 +33,10 @@ namespace Entitas
 
 		public void Poll()
 		{
-			if (_modifiedEntities.Count <= 0)
+			if (_entitiesModified.Count <= 0)
 				return;
 
-			foreach (var e in _modifiedEntities.Values)
+			foreach (var e in _entitiesModified.Values)
 			{
 				// update all groups, TODO: optimize matching
 				for (int j = 0; j < _groupList.Count; j++)
@@ -56,7 +56,7 @@ namespace Entitas
 				}
 			}
 
-			_modifiedEntities.Clear();
+			_entitiesModified.Clear();
 		}
 
 		public void Clear()
