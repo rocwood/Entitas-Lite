@@ -26,11 +26,15 @@ namespace Entitas
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void HandleEntity(Entity entity)
+		internal void HandleAddEntity(Entity entity)
 		{
-			if (entity == null)
-				return;
+			if (_matcher.Matches(entity))
+				_entities.Add(entity);
+		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void HandleUpdateEntity(Entity entity)
+		{
 			if (entity.isEnabled && _matcher.Matches(entity))
 				_entities.Add(entity);
 			else
@@ -43,8 +47,6 @@ namespace Entitas
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetEntities(IList<Entity> output)
 		{
-			output.Clear();
-
 			for (int i = 0; i < _entities.Count; i++)
 				output.Add(_entities.GetAt(i));
 		}

@@ -40,7 +40,7 @@ namespace Entitas
 			{
 				// update all groups, TODO: optimize matching
 				for (int j = 0; j < _groupList.Count; j++)
-					_groupList[j].HandleEntity(e);
+					_groupList[j].HandleUpdateEntity(e);
 
 				if (e.isEnabled)
 				{

@@ -21,7 +21,7 @@ namespace Entitas
 					//var entity = _entities[i];
 
 					if (entity.isEnabled)
-						group.HandleEntity(entity);
+						group.HandleAddEntity(entity);
 				}
 
 				_groupLookup.Add(matcher, group);

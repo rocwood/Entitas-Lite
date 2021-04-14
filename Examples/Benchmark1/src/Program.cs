@@ -145,7 +145,11 @@ namespace ECS.Benchmark
 			var e = context.CreateEntity();
 
 			e.Add<Position>();			// x = y = 0, without Velocity
-			e.Add<LifeTime>().id = 1;	// ticks = 0
+			e.Add<LifeTime>().id = 1;   // ticks = 0
+
+			context.WithAll<Position, Velocity>().GetGroup();
+			context.WithAll<Position, LifeTime>().GetGroup();
+			context.Poll();
 		}
 
 		public int frameId { get; private set; }
