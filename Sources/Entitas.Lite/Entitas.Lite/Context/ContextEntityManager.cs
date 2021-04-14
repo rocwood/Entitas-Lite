@@ -28,7 +28,7 @@ namespace Entitas
 			var id = ++_lastId;
 
 			var entity = _entityPool.Get() ?? new Entity(this, _componentPools);
-			entity.Active(id, entityName);
+			entity.Activate(id, entityName);
 
 			_entities.Add(entity);
 

@@ -44,12 +44,12 @@ namespace ECS.Benchmark
 	{
 		private const float axisBound = 100;
 
-		private Group query;
+		private EntityQuery query;
 
 		public override void Execute()
 		{
 			if (query == null)
-				query = context.WithAll<Position, Velocity>().GetGroup();
+				query = context.WithAll<Position, Velocity>().Get();
 
 			//var entities = query.GetEntities();
 
@@ -83,12 +83,12 @@ namespace ECS.Benchmark
 		private const int maxChildLifeTime = 1000;
 		private const float maxAxisSpeed = 20;
 
-		private Group query;
+		private EntityQuery query;
 
 		public override void Execute()
 		{
 			if (query == null)
-				query = context.WithAll<Position, LifeTime>().GetGroup();
+				query = context.WithAll<Position, LifeTime>().Get();
 
 			//var entities = query.GetEntities();
 
@@ -147,8 +147,8 @@ namespace ECS.Benchmark
 			e.Add<Position>();			// x = y = 0, without Velocity
 			e.Add<LifeTime>().id = 1;   // ticks = 0
 
-			context.WithAll<Position, Velocity>().GetGroup();
-			context.WithAll<Position, LifeTime>().GetGroup();
+			context.WithAll<Position, Velocity>().Get();
+			context.WithAll<Position, LifeTime>().Get();
 			context.Poll();
 		}
 

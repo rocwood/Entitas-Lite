@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Entitas.Utils
+namespace Entitas
 {
 	class ObjectPool<T> where T:class
 	{

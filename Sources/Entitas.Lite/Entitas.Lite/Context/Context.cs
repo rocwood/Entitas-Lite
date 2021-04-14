@@ -29,6 +29,8 @@ namespace Entitas
 
 			for (int i = 0; i < componentCount; i++)
 				_componentPools[i] = ComponentPoolFactory.Create(componentInfoList[i].type, componentInfoList[i].zeroSize, maxRetainedComponents);
+
+			_createQueryParams = new object[] { this };
 		}
 
 		public void Poll()
@@ -39,8 +41,8 @@ namespace Entitas
 			foreach (var e in _entitiesModified.Values)
 			{
 				// update all groups, TODO: optimize matching
-				for (int j = 0; j < _groupList.Count; j++)
-					_groupList[j].HandleUpdateEntity(e);
+				for (int j = 0; j < _queryList.Count; j++)
+					_queryList[j].HandleEntityUpdate(e);
 
 				if (e.isEnabled)
 				{
@@ -51,7 +53,7 @@ namespace Entitas
 					// remove disabled entities
 					_entities.Remove(e.id);
 
-					e.InternalDestroy();
+					e.DestroyImpl();
 					_entityPool.Return(e);
 				}
 			}

@@ -5,8 +5,6 @@ using System.Runtime.CompilerServices;
 
 #if THREADSAFE_POOL
 using Microsoft.Extensions.ObjectPool;
-#else
-using Entitas.Utils;
 #endif
 
 namespace Entitas
@@ -122,29 +120,4 @@ namespace Entitas
 				return new ComponentPool(objType, maxRetained);
 		}
 	}
-
-	/*
-	static class ComponentTrait
-	{
-		public static bool IsZeroSize<T>() where T : class, IComponent
-		{
-			return IsZeroSize(typeof(T));
-		}
-
-		public static bool IsZeroSize(Type type)
-		{
-			for (; ; )
-			{
-				if (type == null || type == typeof(object))
-					return true;
-
-				var members = type.GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-				if (members.Any(m => m.MemberType != MemberTypes.Constructor))
-					return false;
-
-				type = type.BaseType;
-			}
-		}
-	}
-	*/
 }
