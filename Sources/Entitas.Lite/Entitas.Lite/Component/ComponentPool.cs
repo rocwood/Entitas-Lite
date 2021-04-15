@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
-	public interface IComponentPool
+	interface IComponentPool
 	{
 		IComponent Get();
 		void Return(IComponent obj);
