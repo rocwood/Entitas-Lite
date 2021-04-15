@@ -74,14 +74,10 @@ namespace Entitas
 				// If exists, return the old component
 				var component = _components[index];
 				if (component != null)
-				{
-					component.Modify();
 					return component;
-				}
 
-				// add from pool
-				_components[index] = component = _componentPools[index].Get();
-				component.Modify();
+				component = _componentPools[index].Get();
+				_components[index] = component;
 
 				SetModified();
 
@@ -112,15 +108,6 @@ namespace Entitas
 
 			_components[index] = null;
 			_componentPools[index].Return(component);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private IComponent ModifyComponent(int index)
-		{
-			var component = GetComponent(index);
-			component?.Modify();
-
-			return component;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

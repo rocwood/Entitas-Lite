@@ -27,11 +27,5 @@ namespace Entitas
 		{
 			return (T)GetComponent(ComponentTypeInfo<T>.index);
 		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T Modify<T>() where T : IComponent
-		{
-			return (T)ModifyComponent(ComponentTypeInfo<T>.index);
-		}
 	}
 }

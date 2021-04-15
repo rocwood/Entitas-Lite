@@ -34,14 +34,8 @@ namespace Entitas
 			if (obj == null)
 				return;
 
-			if (obj is IResetable resetable)
-				resetable.Reset();
-			if (obj is IDisposable disposable)
-				disposable.Dispose();
-			if (obj is IModifiable modifiable)
-				modifiable.modified = false;
-			if (obj is IEntityIdRef entityIdRef)
-				entityIdRef.entityId = 0;
+			if (obj is IAutoReset autoReset)
+				autoReset.Reset();
 
 			_pool.Return(obj);
 		}
