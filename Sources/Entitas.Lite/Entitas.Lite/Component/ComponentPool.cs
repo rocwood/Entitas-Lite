@@ -1,11 +1,6 @@
 using System;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
-#if THREADSAFE_POOL
-using Microsoft.Extensions.ObjectPool;
-#endif
 
 namespace Entitas
 {
@@ -17,82 +12,38 @@ namespace Entitas
 
 	class ComponentPool : IComponentPool
 	{
-#if THREADSAFE_POOL
-		private readonly ObjectPool<IComponent> _pool;
-	
+		private readonly SimplePool<IComponent> _pool;
+		private readonly Type _objType;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public ComponentPool(Type objType, int maxRetained = 0)
 		{
-			var provider = new DefaultObjectPoolProvider();
-			if (maxRetained > 0)
-				provider.MaximumRetained = maxRetained;
-
-			var policy = new PoolPolicy(objType);
-
-			_pool = provider.Create(policy);
+			_pool = new SimplePool<IComponent>(maxRetained);
+			_objType = objType;
 		}
-#else
-		private readonly ObjectPool<IComponent> _pool;
-
-		public ComponentPool(Type objType, int maxRetained = 0)
-		{
-			_pool = new ObjectPool<IComponent>(new PoolPolicy(objType), maxRetained);
-		}
-#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public IComponent Get()
 		{
-			return _pool.Get();
+			return _pool.Get() ?? (IComponent)Activator.CreateInstance(_objType);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Return(IComponent obj)
 		{
+			if (obj == null)
+				return;
+
+			if (obj is IResetable resetable)
+				resetable.Reset();
+			if (obj is IDisposable disposable)
+				disposable.Dispose();
+			if (obj is IModifiable modifiable)
+				modifiable.modified = false;
+			if (obj is IEntityIdRef entityIdRef)
+				entityIdRef.entityId = 0;
+
 			_pool.Return(obj);
-		}
-
-#if THREADSAFE_POOL
-		class PoolPolicy : IPooledObjectPolicy<IComponent>
-#else
-		class PoolPolicy : ObjectPool<IComponent>.Policy
-#endif
-		{
-			private readonly Type _objType;
-
-			public PoolPolicy(Type objType)
-			{
-				_objType = objType;
-			}
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public IComponent Create()
-			{
-				return (IComponent)Activator.CreateInstance(_objType);
-			}
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public bool Return(IComponent obj)
-			{
-				if (obj == null)
-					return false;
-
-				// Reset component status before returning to pool
-				if (obj is IResetable resetable)
-					resetable.Reset();
-				if (obj is IDisposable disposable)
-					disposable.Dispose();
-				if (obj is IModifiable modifiable)
-					modifiable.modified = false;
-				if (obj is IEntityIdRef entityIdRef)
-					entityIdRef.entityId = 0;
-
-				return true;
-			}
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			public void Dispose(IComponent obj)
-			{
-			}
 		}
 	}
 
