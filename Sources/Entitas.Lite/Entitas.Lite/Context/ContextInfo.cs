@@ -55,6 +55,7 @@ namespace Entitas
 			return list;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static bool IsZeroSize(Type type)
 		{
 			for (; ; )

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
 	public class SystemManager
 	{
+		public static int defaultSystemCapacity = 128;
+
 		private readonly Context _context;
-		private readonly List<SystemProxy> _systems = new List<SystemProxy>(128);
+		private readonly List<SystemProxy> _systems = new List<SystemProxy>(defaultSystemCapacity);
 
 		private bool _hasSorted = false;
 
@@ -25,7 +28,7 @@ namespace Entitas
 				throw new EntitasException($"Duplicate {system.GetType().FullName} is found in SystemManager");
 
 			if (system.context != null)
-				throw new EntitasException($"Conflict context for {system.GetType().FullName} is found in SystemManager");
+				throw new EntitasException($"Context conflict of {system.GetType().FullName} in SystemManager");
 
 			system.context = _context;
 
@@ -46,16 +49,7 @@ namespace Entitas
 			}
 		}
 
-		public void GetSystems(IList<SystemBase> output)
-		{
-			output.Clear();
-
-			MakeSorted();
-
-			for (int i = 0; i < _systems.Count; i++)
-				output.Add(_systems[i].system);
-		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void MakeSorted()
 		{
 			if (_hasSorted)
@@ -65,7 +59,7 @@ namespace Entitas
 			_hasSorted = true;
 		}
 
-		private class SystemProxy : IComparable<SystemProxy>
+		class SystemProxy : IComparable<SystemProxy>
 		{
 			public readonly SystemBase system;
 			public readonly int priority;

@@ -1,15 +1,18 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Entitas
 {
 	public static class SystemManagerExtensions
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static SystemManager Add<T>(this SystemManager manager, int priority = 0) where T : SystemBase, new()
 		{
 			return manager.Add(new T(), priority);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static SystemManager Add(this SystemManager manager, Type type, int priority = 0)
 		{
 			if (!typeof(SystemBase).IsAssignableFrom(type))
