@@ -12,7 +12,7 @@ Just write your own Components and Systems, then a GameController class for game
 ## Example 1a
 
 ```csharp
-//hello
+//hello123
 public class PositionComponent : IComponent
 {
 	public int x;
